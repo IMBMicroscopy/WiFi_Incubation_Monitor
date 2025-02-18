@@ -7,6 +7,7 @@ void setup() {
   Wire.begin();                     // Start I2C for sensor readings
   initTFT();                        // Initialize the TFT display
   startupText();                    // Display startup text
+  saveDefaultConfig();              // save default Config parameters to FS if they dont exist already
   delay(2000);
 
   initWiFi();                       // Configure WiFi if Dashboard is enabled
@@ -16,6 +17,7 @@ void setup() {
   initTimers();                     // Get the current time for loop operations
   constrainRates();                 // Constrain user-defined readout rates to acceptable values
 
+  Serial.print("use lowCO2 = "); Serial.println(lowCO2);
   Serial.println(F("\nFinished setup\n"));
 } // setup()
 

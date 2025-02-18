@@ -23,17 +23,17 @@ float switchCO2Sensor = 0.7; // Changeover from low-CO2 (SCD41) to high-CO2 (STC
 // Measurement Limits (Incubation Settings)
 // Below or above these thresholds, an alarm condition (e.g., TFT color change) occurs
 // -------------------------------------------------------------------
-int lowCO2   = 4;   // CO2 % value BELOW this triggers an alarm
-int highCO2  = 6;   // CO2 % value ABOVE this triggers an alarm
-int lowRH    = 40;  // Relative humidity % BELOW this triggers an alarm
-int highRH   = 100; // Relative humidity % ABOVE this triggers an alarm
-int lowTemp  = 35;  // Temperature (°C) BELOW this triggers an alarm
-int highTemp = 38;  // Temperature (°C) ABOVE this triggers an alarm
+float lowCO2   = 4.1;   // CO2 % value BELOW this triggers an alarm
+float highCO2  = 6;   // CO2 % value ABOVE this triggers an alarm
+float lowRH    = 40;  // Relative humidity % BELOW this triggers an alarm
+float highRH   = 100; // Relative humidity % ABOVE this triggers an alarm
+float lowTemp  = 35;  // Temperature (°C) BELOW this triggers an alarm
+float highTemp = 38;  // Temperature (°C) ABOVE this triggers an alarm
 
 // -------------------------------------------------------------------
 // Battery Settings
 // -------------------------------------------------------------------
-int lowBatt = 20; // Battery State of Charge (SOC) in % BELOW this triggers an alarm
+float lowBatt = 20; // Battery State of Charge (SOC) in % BELOW this triggers an alarm
 
 // -------------------------------------------------------------------
 // Measurement Rates (in seconds)
