@@ -1,95 +1,93 @@
 # WiFi enabled Incubation Monitor
 
-##   Monitor environmental conditions for live samples using an ESP32 device with STC31 CO2 sensor and SHTC3 temperature and relative humidity sensors
+## Monitor environmental conditions for live samples using an ESP32 device with STC31 CO2 sensor and SHTC3 temperature and relative humidity sensors
 
-Calibrate the CO2 sensor using Temperature, Humidity and Pressure
-Monitor LiPo battery SOC and discharge rate
-Report values to the TFT display, serial port and online dashboard
+- Calibrate the CO2 sensor using Temperature, Humidity and Pressure
+- Monitor LiPo battery SOC and discharge rate
+- Report values to the TFT display, serial port and online dashboard
+- **Each device will record the conditions for ONE incubator**
 
-An Adafruit IO account is required for logging of incubation conditions over time to the online dashboard: https://accounts.adafruit.com/users/sign_in
+**An Adafruit IO account is required for logging of incubation conditions over time to the online dashboard: https://accounts.adafruit.com/users/sign_in**
 
-Each device will record the conditions for ONE incubator
-First you will need to create a unique dashboard name for each device, which will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
-Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
-The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
-ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
+- First you will need to create a unique dashboard name for each device, which will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
+- Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
+- The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
+- ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
+- Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
 
-Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
+**Required hardware:**
 
+- Arduino compatible hardware such as: the following tested hardware
+- Adafruit Feather ESP32-S3TFT mainboard such as [https://learn.adafruit.com/adafruit-esp32-s3-tft-feather/overview](https://learn.adafruit.com/adafruit-esp32-s3-tft-feather/overview) (the code for the TFT has been optimised for this display size/resolution and will require modification for other displays)
+- STC31 CO2 sensor board such as [https://www.sparkfun.com/products/18385](https://www.sparkfun.com/products/18385)
+- Sparkfun Qwiic connector 500mm (or longer) cable: [https://www.sparkfun.com/products/17257](https://www.sparkfun.com/products/17257) (or you may manually solder the cables)
+- This minimum configuration requires no soldering or electronics knowledge
 
-Required hardware:
-Arduino compatible hardware such as: the following tested hardware
-Adafruit Feather ESP32-S3TFT mainboard such as https://learn.adafruit.com/adafruit-esp32-s3-tft-feather/overview (the code for the TFT has been optimised for this display size/resolution and will require modification for other displays)
-STC31 CO2 sensor board such as https://www.sparkfun.com/products/18385
-Sparkfun Qwiic connector 500mm (or longer) cable: https://www.sparkfun.com/products/17257 (or you may manually solder the cables)
-This minimum configuration requires no soldering or electronics knowledge
+**Required software libraries:**
 
-Required software libraries:
-"SPI.h" built in library for SPI comms to tft display
-"WiFi.h" library for inbuit wifi comms to online dashboard
-"Preferences.h" for saving parameters to Flash for reuse later
-"SparkFun_STC3x_Arduino_Library.h" CO2 sensor library http://librarymanager/All#SparkFun_STC3x
-"SparkFun_SHTC3.h" Temperature and Relative Humidity sensor library http://librarymanager/All#SparkFun_SHTC3
-"Adafruit_GFX.h" Core graphics library for TFT display http://librarymanager/All#Adafruit_GFX_Library
-"Adafruit_ST7789.h" Hardware-specific library for ST7789 controller http://librarymanager/All#Adafruit_ST7789
-Adafruit IO Arduino Library http://librarymanager/All#Adafruit_IO_Arduino
-  includes: 
-    "Adafruit_Sensor.h" Adafruit sensor library 
-    "AdafruitIO_WiFi.h" for data feed functionality 
-    "WiFiManager.h" for configuration of the sensors and WiFi 
+- "SPI.h" built in library for SPI comms to tft display
 
+- "WiFi.h" library for inbuit wifi comms to online dashboard
 
+- "Preferences.h" for saving parameters to Flash for reuse later
 
-Optional:
-3D printed case: 
+- "SparkFun_STC3x_Arduino_Library.h" CO2 sensor library [http://librarymanager/All#SparkFun_STC3x](http://librarymanager/All#SparkFun_STC3x)
 
-Atmospheric pressure sensor such as a BME280 sensor https://www.sparkfun.com/products/15440 to measure atmospheric pressure for CO2 sensor calibration
-Adafruit BME280 Library for Environmental sensor http://librarymanager/All#BME280
+- "SparkFun_SHTC3.h" Temperature and Relative Humidity sensor library [http://librarymanager/All#SparkFun_SHTC3](http://librarymanager/All#SparkFun_SHTC3)
 
-Low concentration CO2 sensor such as a SCD41 https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html
-"SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library http://librarymanager/All#SparkFun_SCD4x
+- "Adafruit_GFX.h" Core graphics library for TFT display [http://librarymanager/All#Adafruit_GFX_Library](http://librarymanager/All#Adafruit_GFX_Library)
 
-LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector 
-"Adafruit_MAX1704X.h" library for lipo battery measurements http://librarymanager/All#Adafruit_MAX1704X
+- "Adafruit_ST7789.h" Hardware-specific library for ST7789 controller [http://librarymanager/All#Adafruit_ST7789](http://librarymanager/All#Adafruit_ST7789)
 
+- Adafruit IO Arduino Library [http://librarymanager/All#Adafruit_IO_Arduino](http://librarymanager/All#Adafruit_IO_Arduino)
 
+  - "AdafruitIO_WiFi.h" for data feed functionality
+  - "WiFiManager.h" for configuration of the sensors and WiFi
 
-Incubation Monitor Setup Instructions:
+**Optional:**
 
-  Download and Install Arduino IDE: https://www.arduino.cc/en/software
-  Follow the instructions here: https://learn.adafruit.com/esp32-s3-reverse-tft-feather/arduino-ide-setup-2
-  To configure the Arduino IDE and to install the required drivers for the ESP32 board
-  Install required plugins for ESP32 and sensors as listed above
-  Restart the Arduino IDE
+- 3D printed case:
+- Atmospheric pressure sensor such as a BME280 sensor [https://www.sparkfun.com/products/15440](https://www.sparkfun.com/products/15440) to measure atmospheric pressure for CO2 sensor calibration
+- Adafruit BME280 Library for Environmental sensor [http://librarymanager/All#BME280](http://librarymanager/All#BME280)
+- Low concentration CO2 sensor such as a SCD41 [https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html](https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html)
+- "SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library [http://librarymanager/All#SparkFun_SCD4x](http://librarymanager/All#SparkFun_SCD4x)
+- LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector
+- "Adafruit_MAX1704X.h" library for lipo battery measurements [http://librarymanager/All#Adafruit_MAX1704X](http://librarymanager/All#Adafruit_MAX1704X)
 
-  Open the WiFi_Incubation_Monitor.ino file and wait for the associated files to load.
-  Connect the ESP32 device with sensors to the computer via USB cable
-  Go to "Tools" menu and select "Board" and select the ESP32, then select the Adafruit Feather ESP-32 S3 Reverse TFT
-  Go to "Tools" menu and select "Port" and then select the Adafruit Feather 
+**Incubation Monitor Setup Instructions:**
 
-  Upload "Incubation_Monitor" sketch to ESP32 hardware, the device will restart when the upload is complete (if it doesnt, press the RST button on the ESP32)
-  Click on the Arduino IDE serial monitor and ensure it is set to "Both NL & CR" and "115200 baud" to monitor the device setup progress
-  The Mac address for the device will be displayed in the serial monitor, you may need to register this with your IT department to gain WiFi access to hidden WiFi networks
+**Configure Arduino IDE**
 
-  For new hardware installs, the ESP32 will automatically create a hotspot as configured in the WiFi_Incubation_Monitor.ino file, default is "Incubation_Setup"
-    
-  On your PC/Phone/Tablet select the new temporary WiFi network "Incubation Setup", enter the password as per WiFi_Incubation_Monitor.ino and a popup window should appear after a few seconds,
-  This is important, First, Click the "Setup" button to configure the IO Dashboard, installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.
-    for further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
-  Click Save, then use the back button to go back to the home page.
-  Now, Click "Configure WiFi" to enter the SSID name and password, then click save.
-  The device will now attempt to connect to WiFi and if successful will close the popup window, 
-  The device will then attempt to connect to the IO dashboard, before testing the sensors and begin acquiring data.
-  
+- Download and Install Arduino IDE: [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software)
+- Follow the instructions here: [https://learn.adafruit.com/esp32-s3-reverse-tft-feather/arduino-ide-setup-2](https://learn.adafruit.com/esp32-s3-reverse-tft-feather/arduino-ide-setup-2), to configure the Arduino IDE and to install the required drivers for the ESP32 board
+- Install required plugins for ESP32 and sensors as listed above
+- Restart the Arduino IDE
 
-To adjust the Wifi and/or Adafruit parameters, press the Reset button on the ESP32 device, 
-Then when "Config ->" appears on the display, press and hold the top right D0 button for one second, 
-The "Incubation Setup" Wifi access point will appear on your network after a few seconds.
-Enter the hotspot password configured in the WiFi_Incubation_Monitor.ino file 
-Then adjust the parameters in the "setup" and "Wifi setup" pages as required, then click Save
+**Configure and upload code**
 
-To edit only the custom parameters on the setup page, you will first modify the parameters, click save, then go back to the homepage and click exit.
+- Open the WiFi_Incubation_Monitor.ino file and wait for the associated files to load.
+- Connect the ESP32 device with sensors to the computer via USB cable
+- Go to "Tools" menu and select "Board" and select the ESP32, then select the Adafruit Feather ESP-32 S3 Reverse TFT
+- Go to "Tools" menu and select "Port" and then select the Adafruit Feather
+- Upload "Incubation_Monitor" sketch to ESP32 hardware, the device will restart when the upload is complete (if it doesnt, press the RST button on the ESP32)
+- Click on the Arduino IDE serial monitor and ensure it is set to "Both NL & CR" and "115200 baud" to monitor the device setup progress
+- The Mac address for the device will be displayed in the serial monitor, you may need to register this with your IT department to gain WiFi access to hidden WiFi networks
+- For new hardware installs, the ESP32 will automatically create a hotspot as configured in the WiFi_Incubation_Monitor.ino file, default is "Incubation_Setup"
 
+**Configure Hardware (ESP32)**
 
+- On your PC/Phone/Tablet select the new temporary WiFi network "Incubation Setup", enter the password as per WiFi_Incubation_Monitor.ino and a popup window should appear after a few seconds,
+- This is important, First, Click the "Setup" button to configure the IO Dashboard, installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.  For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
+- Click Save, then use the back button to go back to the home page.
+- Now, Click "Configure WiFi" to enter the SSID name and password, then click save.
+- The device will now attempt to connect to WiFi and if successful will close the popup window,
+- The device will then attempt to connect to the IO dashboard, before testing the sensors and begin acquiring data.
 
+**Adjust Parameters**
 
+- To adjust the Wifi and/or Adafruit parameters after initial setup and at any time, press the Reset button on the ESP32 device,
+- Then when "Config -&gt;" appears on the display, press and hold the top right D0 button for one second,
+- The "Incubation Setup" Wifi access point will appear on your network after a few seconds.
+- Enter the hotspot password configured in the WiFi_Incubation_Monitor.ino file
+- Then adjust the parameters in the "setup" and "Wifi setup" pages as required, then click Save
+- To edit only the custom parameters on the setup page, you will first modify the parameters, click save, then go back to the homepage and click exit.
