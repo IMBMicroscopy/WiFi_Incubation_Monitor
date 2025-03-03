@@ -91,3 +91,7 @@
 - Enter the hotspot password configured in the WiFi_Incubation_Monitor.ino file
 - Then adjust the parameters in the "setup" and "Wifi setup" pages as required, then click Save
 - To edit only the custom parameters on the setup page, you will first modify the parameters, click save, then go back to the homepage and click exit.
+
+**Acknowledgements**
+The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured
+
