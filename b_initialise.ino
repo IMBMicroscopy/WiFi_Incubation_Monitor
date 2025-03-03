@@ -29,63 +29,80 @@ SHTC3 mySHTC3;
 #include <WiFiManager.h>
 #include <WiFi.h>
 #include "AdafruitIO_WiFi.h"
-#include "ArduinoJson.h"
-#include <LittleFS.h>
-#include "FS.h"
+
+// save parameters to preferences file
+#include <Preferences.h>
+Preferences preferences;
 
 // Define constants and parameters
-#define FORMAT_LITTLEFS_IF_FAILED true
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
 
-// WiFi Manager parameters
-char IO_USERNAME[64] = "";
-char IO_KEY[64] = "";
-char IO_Dashboard[64] = "";
-char CO2_FeedName[64] = "";
-char Temp_FeedName[64] = "";
-char RH_FeedName[64] = "";
+// WiFi Manager parameters stored in character array buffers
+char IO_USERNAME_buff[64] = "";
+char IO_KEY_buff[64] = "";
+char IO_Dashboard_buff[64] = "";
+char CO2_FeedName_buff[64] = "";
+char Temp_FeedName_buff[64] = "";
+char RH_FeedName_buff[64] = "";
 
 //optional configuration parameters to store character array of values for use in WiFiManager
-char param_lowCO2[64] = "";
-char param_highCO2[64] = "";
-char param_lowRH[64] = "";
-char param_highRH[64] = "";
-char param_lowTemp[64] = "";
-char param_highTemp[64] = "";
-char param_sensorRate[64] = "";
-char param_compensateRate[64] = "";
-char param_dashboardRate[64] = "";
-char param_batteryRate[64] = "";
-char param_pressure[64] = "";
-char Default_Values[64] = "";
+char low_CO2_Monitor_buff[6] = "";
+char high_CO2_Monitor_buff[6] = "";
+char pressure_Monitor_buff[6] = "";
+char battery_Monitor_buff[6] = "";
+char dashboard_Monitor_buff[6] = "";
+char switchCO2Sensors_buff[8] = "";
+char lowCO2_buff[8] = "";
+char highCO2_buff[8] = "";
+char lowRH_buff[8] = "";
+char highRH_buff[8] = "";
+char lowTemp_buff[8] = "";
+char highTemp_buff[8] = "";
+char lowBatt_buff[8] = "";
+char sensorRate_buff[8] = "";
+char compensateRate_buff[8] = "";
+char dashboardRate_buff[8] = "";
+char batteryRate_buff[8] = "";
+char pressure_buff[8] = "";
+char baud_buff[8] = "";
 
 // Adafruit IO variables
 static uint8_t objStorage[sizeof(AdafruitIO_WiFi)];
-AdafruitIO_WiFi *io;             // Adafruit IO pointer
-AdafruitIO_Feed *CO2_Feed;
-AdafruitIO_Feed *Temp_Feed;
-AdafruitIO_Feed *RH_Feed;
+AdafruitIO_WiFi *io;        // Adafruit IO pointer
+AdafruitIO_Feed *CO2_Feed;  //CO2 data feed to IO dashboard
+AdafruitIO_Feed *Temp_Feed; //Temp data feed to IO dashboard
+AdafruitIO_Feed *RH_Feed;   //RH data feed to IO dashboard
 
-// Create WiFiManager object and custom parameters
+// Create WiFiManager object and custom parameters to display on hotspot website
 WiFiManager wifiManager;
-WiFiManagerParameter custom_IO_USERNAME("io_user", "Adafruit IO Username", IO_USERNAME, 60);
-WiFiManagerParameter custom_IO_KEY("io_key", "Adafruit IO Key", IO_KEY, 60);
-WiFiManagerParameter custom_IO_Dashboard("io_dashboard", "Adafruit IO Feed", IO_Dashboard, 60);
-
-//optional WiFiManager parameters
 WiFiManagerParameter custom_dashboard_title("<p>-------------------IO Dashboard Parameters-------------------</p>");
+WiFiManagerParameter custom_IO_USERNAME("io_user", "Adafruit IO Username", IO_USERNAME_buff, 60);
+WiFiManagerParameter custom_IO_KEY("io_key", "Adafruit IO Key", IO_KEY_buff, 60);
+WiFiManagerParameter custom_IO_Dashboard("io_dashboard", "Adafruit IO Dashboard Name", IO_Dashboard_buff, 60);
+
+// Optional WiFiManager parameters
+WiFiManagerParameter custom_monitor_title("<p>-------------------Hardware Toggles-------------------</p>");
+WiFiManagerParameter custom_low_CO2_Monitor("low_CO2_Monitor", "low CO2 monitor (true/false)", low_CO2_Monitor_buff, 6);
+WiFiManagerParameter custom_high_CO2_Monitor("high_CO2_Monitor", "high CO2 monitor (true/false)", high_CO2_Monitor_buff, 6);
+WiFiManagerParameter custom_pressure_Monitor("pressure_Monitor", "pressure monitor (true/false)", pressure_Monitor_buff, 6);
+WiFiManagerParameter custom_battery_Monitor("battery_Monitor", "battery monitor (true/false)", battery_Monitor_buff, 6);
+WiFiManagerParameter custom_dashboard_Monitor("dashboard_Monitor", "dashboard monitor (true/false)", dashboard_Monitor_buff, 6);
+
 WiFiManagerParameter custom_sensor_title("<p>----------------------Sensor Parameters----------------------</p>");
-WiFiManagerParameter custom_lowCO2("lowCO2", "low CO2 alert (%)", param_lowCO2, 60);
-WiFiManagerParameter custom_highCO2("highCO2", "high CO2 alert (%)", param_highCO2, 60);
-WiFiManagerParameter custom_lowRH("lowRH", "low RH alert (%)", param_lowRH, 60);
-WiFiManagerParameter custom_highRH("highRH", "high RH alert (%)", param_highRH, 60);
-WiFiManagerParameter custom_lowTemp("lowTemp", "low Temp alert (C)", param_lowTemp, 60);
-WiFiManagerParameter custom_highTemp("highTemp", "high Temp alert (C)", param_highTemp, 60);
-WiFiManagerParameter custom_sensorRate("sensorRate", "sensor readout rate (s)", param_sensorRate, 60);
-WiFiManagerParameter custom_compensateRate("compensateRate", "compensate sensor Rate (s)", param_compensateRate, 60);
-WiFiManagerParameter custom_dashboardRate("dashboardRate", "dashboard update Rate (s)", param_dashboardRate, 60);
-WiFiManagerParameter custom_batteryRate("batteryRate", "battery BMS readout rate (s)", param_batteryRate, 60);
-WiFiManagerParameter custom_pressure("pressure", "manual pressure value (mbar)", param_pressure, 60);
+WiFiManagerParameter custom_switch_CO2_Sensors("switch_CO2_Sensors", "switch between CO2 sensors (%)", switchCO2Sensors_buff, 8);
+WiFiManagerParameter custom_lowCO2("low_CO2", "low CO2 alert (%)", lowCO2_buff, 8);
+WiFiManagerParameter custom_highCO2("high_CO2", "high CO2 alert (%)", highCO2_buff, 8);
+WiFiManagerParameter custom_lowRH("low_RH", "low RH alert (%)", lowRH_buff, 8);
+WiFiManagerParameter custom_highRH("high_RH", "high RH alert (%)", highRH_buff, 8);
+WiFiManagerParameter custom_lowTemp("low_Temp", "low Temp alert (C)", lowTemp_buff, 8);
+WiFiManagerParameter custom_highTemp("high_Temp", "high Temp alert (C)", highTemp_buff, 8);
+WiFiManagerParameter custom_lowBatt("low_Batt", "low Battery alert (%)", lowBatt_buff, 8);
+WiFiManagerParameter custom_sensorRate("sensor_Rate", "sensor readout rate (s)", sensorRate_buff, 8);
+WiFiManagerParameter custom_compensateRate("compensate_Rate", "compensate sensor Rate (s)", compensateRate_buff, 8);
+WiFiManagerParameter custom_dashboardRate("dashboard_Rate", "dashboard update Rate (s)", dashboardRate_buff, 8);
+WiFiManagerParameter custom_batteryRate("battery_Rate", "battery BMS readout rate (s)", batteryRate_buff, 8);
+WiFiManagerParameter custom_pressure("pressure", "manual pressure value (mbar)", pressure_buff, 8);
+WiFiManagerParameter custom_baud("baud", "USB baud rate (115200 default)", baud_buff, 8);
 
 // Constants for time calculations
 #define ms_per_hour 3600000
@@ -125,3 +142,4 @@ bool ioConnectedFlag = false;
 bool startPortalFlag = false;
 bool writeConfigValues = false;
 bool shouldSaveConfig = false;
+bool saveIO = false;

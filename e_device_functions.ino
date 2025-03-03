@@ -183,7 +183,7 @@ void readSensors() {
     }
     
     //use the SCD41 CO2 sensor for low CO2 values if available
-    if(low_CO2_Monitor && scdCO2 && ((scdCO2 <= switchCO2Sensor) || (!high_CO2_Monitor) )) { 
+    if(low_CO2_Monitor && scdCO2 && ((scdCO2 <= switchCO2Sensors) || (!high_CO2_Monitor) )) { 
       myCO2 = scdCO2;
     }else{myCO2 = stcCO2;}
 

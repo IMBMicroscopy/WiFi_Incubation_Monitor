@@ -181,3 +181,40 @@ void updateTFT(){
     }
   }
 }
+
+
+void boolToCharArray(bool value, char* output) {
+    strcpy(output, value ? "true" : "false");
+}
+
+
+bool charArrayToBool(const char* str) {
+    if (strcmp(str, "true") == 0 || strcmp(str, "1") == 0) {
+        return true;
+    }
+    return false;
+}
+
+//copy default config values to character arrays
+void convertParamsToCharArray(){
+  boolToCharArray(low_CO2_Monitor, low_CO2_Monitor_buff);
+  boolToCharArray(high_CO2_Monitor, high_CO2_Monitor_buff);
+  boolToCharArray(pressure_Monitor, pressure_Monitor_buff);
+  boolToCharArray(battery_Monitor, battery_Monitor_buff);
+  boolToCharArray(dashboard_Monitor, dashboard_Monitor_buff);
+
+  dtostrf(switchCO2Sensors, 4, 2, switchCO2Sensors_buff);
+  dtostrf(lowCO2, 4, 2, lowCO2_buff);
+  dtostrf(highCO2, 4, 2, highCO2_buff);
+  dtostrf(lowRH, 4, 2, lowRH_buff);
+  dtostrf(highRH, 4, 2, highRH_buff);
+  dtostrf(lowTemp, 4, 2, lowTemp_buff);
+  dtostrf(highTemp, 4, 2, highTemp_buff);
+  dtostrf(lowBatt, 4, 2, lowBatt_buff);
+  dtostrf(sensorRate, 4, 0, sensorRate_buff);
+  dtostrf(compensateRate, 4, 0, compensateRate_buff);
+  dtostrf(dashboardRate, 4, 0, dashboardRate_buff);
+  dtostrf(batteryRate, 4, 0, batteryRate_buff);
+  dtostrf(baud, 4, 0, baud_buff);
+  dtostrf(pressure, 4, 2, pressure_buff);
+}

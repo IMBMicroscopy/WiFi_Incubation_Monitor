@@ -1,6 +1,7 @@
 /*********************************************************************
- * User-Definable Settings for the Incubation Monitor
- * Adjust as required
+ * User-Definable default Settings for the Incubation Monitor
+ * Adjust as parameters as required
+ * These settings are the default settings installed onto the ESP32 device at first compile, and used on first load of the configuration hotspot, but may be altered and saved from the hotspot
  *********************************************************************/
 
 // -------------------------------------------------------------------
@@ -16,15 +17,16 @@ bool dashboard_Monitor  = true; // Enable/disable online dashboard reporting (re
 // -------------------------------------------------------------------
 // CO2 Sensor Configuration
 // -------------------------------------------------------------------
-float switchCO2Sensor = 0.7; // Changeover from low-CO2 (SCD41) to high-CO2 (STC31) sensor. 
+float switchCO2Sensors = 0.7; // Changeover from low-CO2 (SCD41) to high-CO2 (STC31) sensor. 
 // If STC31 reading > 0.7%, use STC31; otherwise, use SCD41.
+// the STC31 doesnt record below ~. 0.7% CO2
 
 // -------------------------------------------------------------------
 // Measurement Limits (Incubation Settings)
 // Below or above these thresholds, an alarm condition (e.g., TFT color change) occurs
 // -------------------------------------------------------------------
-float lowCO2   = 4.1;   // CO2 % value BELOW this triggers an alarm
-float highCO2  = 6;   // CO2 % value ABOVE this triggers an alarm
+float lowCO2   = 4.0;   // CO2 % value BELOW this triggers an alarm
+float highCO2  = 6.0;   // CO2 % value ABOVE this triggers an alarm
 float lowRH    = 40;  // Relative humidity % BELOW this triggers an alarm
 float highRH   = 100; // Relative humidity % ABOVE this triggers an alarm
 float lowTemp  = 35;  // Temperature (°C) BELOW this triggers an alarm
@@ -33,7 +35,7 @@ float highTemp = 38;  // Temperature (°C) ABOVE this triggers an alarm
 // -------------------------------------------------------------------
 // Battery Settings
 // -------------------------------------------------------------------
-float lowBatt = 20; // Battery State of Charge (SOC) in % BELOW this triggers an alarm
+float lowBatt = 20; // Battery State of Charge (SOC) in % BELOW this triggers an alarm (changes colour on the display)
 
 // -------------------------------------------------------------------
 // Measurement Rates (in seconds)
@@ -47,7 +49,7 @@ int batteryRate     = 300; // Check BMS hibernation status and wake if needed (>
 // Additional Configurations
 // -------------------------------------------------------------------
 int   baud      = 115200;  // Serial port baud rate
-float pressure  = 1020.0;  // Ambient average pressure (mbar) used for CO2 calibration if no BME280
+float pressure  = 1020.0;  // Ambient average pressure (mbar) used for CO2 calibration if no BME280 pressure sensor is installed
 
 // -------------------------------------------------------------------
 // Configuration Hotspot
