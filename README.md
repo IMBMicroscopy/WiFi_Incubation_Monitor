@@ -6,14 +6,9 @@
 - Monitor LiPo battery SOC and discharge rate
 - Report values to the TFT display, serial port and online dashboard
 - **Each device will record the conditions for ONE incubator**
-
-**An Adafruit IO account is required for logging of incubation conditions over time to the online dashboard: https://accounts.adafruit.com/users/sign_in**
-
-- First you will need to create a unique dashboard name for each device, which will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
-- Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
-- The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
-- ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
-- Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
+- **An Adafruit IO account is required for logging of incubation conditions over time to the online dashboard**
+  -  https://accounts.adafruit.com/users/sign_in
+  -  **This must be done before configuring the hardware below** 
 
 **Required hardware:**
 
@@ -92,6 +87,15 @@
 - Then adjust the parameters in the "setup" and "Wifi setup" pages as required, then click Save
 - To edit only the custom parameters on the setup page, you will first modify the parameters, click save, then go back to the homepage and click exit.
 
+**Configure Adafruit IO Dashboard**
+- If you havent already, you will need to create an account: https://accounts.adafruit.com/users/sign_in
+- Each incubation monitor will generally require a uniquesly named dashboard to display its data feeds, these feeds are configured on the device after following the Incubation Monitor Setup Instructions steps below.
+- You will need to create a unique dashboard name for each ESP32 based Incubation Monitor device, the device will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
+- Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
+- The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
+- ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
+- Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
+  
 **Acknowledgements**
 The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured
 
