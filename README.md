@@ -88,6 +88,7 @@
 - To edit only the custom parameters on the setup page, you will first modify the parameters, click save, then go back to the homepage and click exit.
 
 **Configure Adafruit IO Dashboard**
+
 - If you havent already, you will need to create an account: https://accounts.adafruit.com/users/sign_in
 - Each incubation monitor will generally require a uniquesly named dashboard to display its data feeds, these feeds are configured on the device after following the Incubation Monitor Setup Instructions steps below.
 - You will need to create a unique dashboard name for each ESP32 based Incubation Monitor device, the device will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
@@ -98,4 +99,19 @@
   
 **Acknowledgements**
 The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured
+
+**Issues/Notes**
+
+- Tested on Mac OS with Arduino IDE 2.3.4
+- Library versions tested
+  - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
+  - "SparkFun_SHTC3.h" 1.1.4
+  - "Adafruit_GFX.h" 1.12.0
+  - "Adafruit_ST7789.h" 1.11.0
+  - "Adafruit IO Arduino Library" 4.3.0
+  - "WiFiManager" 2.0.17
+  - "Adafruit BME280 Library" 2.2.4
+  - "SparkFun_SCD4x_Arduino_Library.h" 1.1.2
+  - "Adafruit_MAX1704X.h" 1.0.3
+
 
