@@ -98,7 +98,9 @@
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
   
 **Acknowledgements**
-The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured
+The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  Please see individual license files for each library for terms and conditions of that license.
+
+
 
 **Issues/Notes**
 
