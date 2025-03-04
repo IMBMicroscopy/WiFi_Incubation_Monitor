@@ -1,7 +1,7 @@
 /*********************************************************************
  * User-Definable default Settings for the Incubation Monitor
- * Adjust as parameters as required
  * These settings are the default settings installed onto the ESP32 device at first compile, and used on first load of the configuration hotspot, but may be altered and saved from the hotspot
+ * Adjust as parameters as required
  *********************************************************************/
 
 // -------------------------------------------------------------------
@@ -20,6 +20,7 @@ bool dashboard_Monitor  = true; // Enable/disable online dashboard reporting (re
 float switchCO2Sensors = 0.7; // Changeover from low-CO2 (SCD41) to high-CO2 (STC31) sensor. 
 // If STC31 reading > 0.7%, use STC31; otherwise, use SCD41.
 // the STC31 doesnt record below ~. 0.7% CO2
+// ignored if low_CO2_Monitor = false
 
 // -------------------------------------------------------------------
 // Measurement Limits (Incubation Settings)
@@ -40,7 +41,7 @@ float lowBatt = 20; // Battery State of Charge (SOC) in % BELOW this triggers an
 // -------------------------------------------------------------------
 // Measurement Rates (in seconds)
 // -------------------------------------------------------------------
-int sensorRate      = 15;  // Read sensors and report every X seconds (>=1)
+int sensorRate      = 15;  // Read sensors and update TFT every X seconds (>=1)
 int compensateRate  = 15;  // Recalibrate CO2 sensor (T, RH, Pressure) every X seconds (>= sensorRate)
 int dashboardRate   = 60;  // Update the online dashboard every X seconds (>= sensorRate)
 int batteryRate     = 300; // Check BMS hibernation status and wake if needed (>= sensorRate)

@@ -124,11 +124,22 @@
   - "SparkFun_SCD4x_Arduino_Library.h" 1.1.2
 
   - "Adafruit_MAX1704X.h" 1.0.3
+<<<<<<< Updated upstream
 
 **Acknowledgements**
 The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  Please see individual license files of each library for terms and conditions specific to that library.
 
 MIT License
+=======
+ 
+    
+**Acknowledgements and License**
+The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  
+Please see individual license files of each library for terms and conditions specific to that library.
+
+
+This code uses the MIT License
+>>>>>>> Stashed changes
 
 Copyright (c) \[2025\] \[James Springfield, The University of Queensland\]
 

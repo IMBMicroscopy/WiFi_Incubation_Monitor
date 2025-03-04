@@ -46,14 +46,12 @@ void initWiFi(){
     userActivatedHotspot();
     Serial.printf("\n\n");
     initTFT();
-    //loadParams();
     convertParamsToCharArray();
 
     if((IO_USERNAME_buff[0] == '\0') or (IO_KEY_buff[0] == '\0') or (IO_Dashboard_buff[0] == '\0')){
       Serial.printf("Adafruit IO values missing - reset WiFi Manager settings");
       startPortalFlag = true;
     }else{
-      Serial.print("Username=");Serial.println(IO_USERNAME_buff);
       Serial.printf("loaded Adafruit IO values for Username: %s , Dashboard: %s.\n", IO_USERNAME_buff, IO_Dashboard_buff);
     }
   
@@ -63,6 +61,8 @@ void initWiFi(){
 }
 
 void saveParams() {
+  constrainRates();                 // Constrain user-defined readout rates to acceptable values
+
   preferences.begin("custom", true); // Open Preferences in read mode
   int test = preferences.getInt("baud", -1);  //test if default values exist in flash
   preferences.end();
@@ -110,37 +110,38 @@ void saveParams() {
 
 
 void loadParams() {
-    preferences.begin("custom", true); // Open Preferences in read mode
+  preferences.begin("custom", true); // Open Preferences in read mode
 
-    //read parameters from preferences file, if they're not available then use the default values
-    (preferences.getString("IO_USERNAME", "")).toCharArray(IO_USERNAME_buff, sizeof(IO_USERNAME_buff));  //may need to convert to character array from string first
-    (preferences.getString("IO_KEY", "")).toCharArray(IO_KEY_buff, sizeof(IO_KEY_buff));
-    (preferences.getString("IO_Dashboard","")).toCharArray(IO_Dashboard_buff, sizeof(IO_Dashboard_buff));
+  //read parameters from preferences file, if they're not available then use the default values
+  (preferences.getString("IO_USERNAME", "")).toCharArray(IO_USERNAME_buff, sizeof(IO_USERNAME_buff));  //may need to convert to character array from string first
+  (preferences.getString("IO_KEY", "")).toCharArray(IO_KEY_buff, sizeof(IO_KEY_buff));
+  (preferences.getString("IO_Dashboard","")).toCharArray(IO_Dashboard_buff, sizeof(IO_Dashboard_buff));
 
-    low_CO2_Monitor = preferences.getBool("low_CO2_Monitor", low_CO2_Monitor);
-    high_CO2_Monitor = preferences.getBool("high_CO2_Monitor", high_CO2_Monitor);
-    pressure_Monitor = preferences.getBool("pressure_Monitor", pressure_Monitor);
-    battery_Monitor = preferences.getBool("battery_Monitor", battery_Monitor);
-    dashboard_Monitor = preferences.getBool("dashboard_Monitor", dashboard_Monitor);
+  low_CO2_Monitor = preferences.getBool("low_CO2_Monitor", low_CO2_Monitor);
+  high_CO2_Monitor = preferences.getBool("high_CO2_Monitor", high_CO2_Monitor);
+  pressure_Monitor = preferences.getBool("pressure_Monitor", pressure_Monitor);
+  battery_Monitor = preferences.getBool("battery_Monitor", battery_Monitor);
+  dashboard_Monitor = preferences.getBool("dashboard_Monitor", dashboard_Monitor);
 
-    switchCO2Sensors = preferences.getFloat("switchCO2Sensors", switchCO2Sensors);
-    lowCO2 = preferences.getFloat("lowCO2", lowCO2);
-    highCO2 = preferences.getFloat("highCO2", highCO2);
-    lowRH = preferences.getFloat("lowRH", lowRH);
-    highRH = preferences.getFloat("highRH", highRH);
-    lowTemp = preferences.getFloat("lowTemp", lowTemp);
-    highTemp = preferences.getFloat("highTemp", highTemp);
-    lowBatt = preferences.getFloat("lowBatt", lowBatt);
+  switchCO2Sensors = preferences.getFloat("switchCO2Sensors", switchCO2Sensors);
+  lowCO2 = preferences.getFloat("lowCO2", lowCO2);
+  highCO2 = preferences.getFloat("highCO2", highCO2);
+  lowRH = preferences.getFloat("lowRH", lowRH);
+  highRH = preferences.getFloat("highRH", highRH);
+  lowTemp = preferences.getFloat("lowTemp", lowTemp);
+  highTemp = preferences.getFloat("highTemp", highTemp);
+  lowBatt = preferences.getFloat("lowBatt", lowBatt);
 
-    sensorRate = preferences.getInt("sensorRate", sensorRate);
-    compensateRate = preferences.getInt("compensateRate", compensateRate);
-    dashboardRate = preferences.getInt("dashboardRate", dashboardRate);
-    batteryRate = preferences.getInt("batteryRate", batteryRate);
-    baud = preferences.getInt("baud", baud);
+  sensorRate = preferences.getInt("sensorRate", sensorRate);
+  compensateRate = preferences.getInt("compensateRate", compensateRate);
+  dashboardRate = preferences.getInt("dashboardRate", dashboardRate);
+  batteryRate = preferences.getInt("batteryRate", batteryRate);
+  baud = preferences.getInt("baud", baud);
 
-    pressure = preferences.getFloat("pressure", pressure);
+  pressure = preferences.getFloat("pressure", pressure);
 
-    preferences.end();
+  preferences.end();
+  constrainRates();                 // Constrain user-defined readout rates to acceptable values
 }
 
 // callback notifying us of the need to save config
@@ -194,7 +195,7 @@ void saveConfigCallback() {
   baud = atof(baud_buff);
 
   //save files to preferences
-  saveIO = true;
+  saveIO = true;  //flag to activate save
   saveParams();
 
   WiFi.disconnect();   // Disconnect from any previous WiFi
@@ -344,14 +345,10 @@ void initDashboard() {
       Serial.printf("Relative Humidity data feed name: %s\n", RH_FeedName_buff);
       Serial.println("");
 
-      Serial.print("CO2string: ");Serial.print(CO2String);Serial.print(" : ");Serial.print("String isnt empty: ");Serial.println(CO2String != "CO2_");
-      Serial.print("TempString: ");Serial.print(TempString);Serial.print(" : ");Serial.print("String isnt empty: ");Serial.println(TempString != "TEMP_");
-      Serial.print("RHString: ");Serial.print(RHString);Serial.print(" : ");Serial.print("String isnt empty: ");Serial.println(RHString != "RH_");
-
       //if dashboad feed name was created, then connect to dashboard, otherwise dont
       if((CO2String != "CO2_") && (TempString != "TEMP_") && (RHString != "RH_")){
         io = new (objStorage) AdafruitIO_WiFi(IO_USERNAME_buff, IO_KEY_buff, "", ""); //create IO object with user details for subsequent connection
-        Serial.printf("\nConnecting to Adafruit IO with User: %s Key: %s Dashboard: %s.\n", IO_USERNAME_buff, IO_KEY_buff, IO_Dashboard_buff);
+        Serial.printf("\nConnecting to Adafruit IO with User: %s, Dashboard: %s.\n", IO_USERNAME_buff, IO_Dashboard_buff);
 
         io->connect(); //initiate IO connection for data feeds
 
@@ -387,7 +384,6 @@ void initDashboard() {
       }else{
         Serial.println(F("Adafruit IO values missing - disable dashboard upload"));
         Serial.print(F("IO_USERNAME: "));Serial.println(IO_USERNAME_buff);
-        Serial.print(F("IO_KEY: "));Serial.println(IO_KEY_buff);
         Serial.print(F("IO_Dashboard: "));Serial.println(IO_Dashboard_buff);
         if(firstRun){
           tft.setCursor(cursorX0, cursorY0);
@@ -443,6 +439,7 @@ void updateDashboard(){
       updatingDashboardFlag = true;
       //report elapsed time
       Serial.println(F("")); Serial.print(F("Elapsed Time = ")); Serial.print(hour); Serial.print("h:"); Serial.print(minute); Serial.print("m"); Serial.print(second); Serial.println("s");
+      
       Serial.println(F("Updating Dashboard"));
       
       //update online dashboard values

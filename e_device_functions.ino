@@ -39,8 +39,8 @@ void initSensors(){
     }
   }   
 
+  //find low pressure sensor if enabled in settings
   if(low_CO2_Monitor){
-    //.begin will start periodic measurements for us (see the later examples for details on how to override this)
     for(int i=0; i<=5; i++){
       if(!mySCD41.begin()) {
         Serial.println(F("SCD41 sensor not detected."));
@@ -57,6 +57,7 @@ void initSensors(){
     }
   }
 
+  //find high pressure sensor if enabled in settings
   if(high_CO2_Monitor){
     //mySTC31.enableDebugging(); // Uncomment this line to get helpful debug messages on Serial
     for(int i=0; i<=5; i++){
@@ -124,7 +125,7 @@ void recalSensor() {
 
     //report elapsed time
     Serial.println(F("")); Serial.print(F("Elapsed Time = ")); Serial.print(hour); Serial.print(F("h:")); Serial.print(minute); Serial.print(F("m")); Serial.print(second); Serial.println(F("s"));
-
+    
     compensate(); //compensate CO2 measurement for Temp, RH and Pressure
   }
 }
@@ -137,6 +138,7 @@ void readSensors() {
 
     //report elapsed time
     Serial.println(F("")); Serial.print(F("Elapsed Time = ")); Serial.print(hour); Serial.print(F("h:")); Serial.print(minute); Serial.print(F("m")); Serial.print(second); Serial.println(F("s"));
+    
 
     if(pressure_Monitor){
       //can use a live measurement if you include a pressure sensor, or define average value at beginning of code
@@ -240,6 +242,7 @@ void batteryMonitoring() {
 
     //report elapsed time
     Serial.println(F("")); Serial.print(F("Elapsed Time = ")); Serial.print(hour); Serial.print(F("h:")); Serial.print(minute); Serial.print(F("m")); Serial.print(second); Serial.println(F("s"));
+    
 
     //If required wake the Battery Monitor from Hibernation
         if (maxlipo.isHibernating()) {
