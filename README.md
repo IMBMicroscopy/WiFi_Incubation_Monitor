@@ -107,10 +107,6 @@
 
 - Tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
 
-- Tested with a piicodev Atmospheric Sensor BME280, and requires the I2C address switch to be set to the ON position to avoid conflicts (possibly with the battery BMS)
-  - Other BME280 models may not have a dipswitch and will require you to solder on a surface mount resistor to affect I2C address change
-
-
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
 
