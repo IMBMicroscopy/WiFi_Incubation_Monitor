@@ -94,6 +94,7 @@
 - You will then need the Username and Active Key values to load into the ESP32 device to enable data streaming.
 - Each incubation monitor will generally require a uniquely named dashboard to display its data feeds, these feeds are configured on the device after following the Incubation Monitor Setup Instructions steps above.
 - You will need to create a unique dashboard name for each ESP32 based Incubation Monitor device, the device will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
+- Once the ESP32 device is running and has started transmitting the data feeds, they should appear in the Data Feeds section of Adafruit IO
 - Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
 - The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
 - ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
@@ -105,32 +106,22 @@
 
 **Issues/Notes**
 
-- Tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
-
+- Installation has been tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
+- The Arduino IDE Serial monitor can be used to monitor and debug operation of the unit if required (ensure "Both NL & CR" and the correct baud rate (115200 default))
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
-
   - "SparkFun_SHTC3.h" 1.1.4
-
   - "Adafruit_GFX.h" 1.12.0
-
   - "Adafruit_ST7789.h" 1.11.0
-
   - "Adafruit IO Arduino Library" 4.3.0
-
   - "WiFiManager" 2.0.17
-
   - "Adafruit BME280 Library" 2.2.4
-
   - "SparkFun_SCD4x_Arduino_Library.h" 1.1.2
-
   - "Adafruit_MAX1704X.h" 1.0.3
-
-
-
 
     
 **Acknowledgements and License**
+
 The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  
 Please see individual license files of each library for terms and conditions specific to that library.
 
