@@ -101,7 +101,7 @@
 - Edit the layout, to resize and position the blocks, then save your layout
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
 
-![]([https://holocron.so/tutorial/meme.jpeg](https://github.com/IMBMicroscopy/WiFi_Incubation_Monitor/blob/main/Adafruit_IO_Dashboard.png))
+![]([https://github.com/IMBMicroscopy/WiFi_Incubation_Monitor/blob/main/Adafruit_IO_Dashboard.png])
 
 **Issues/Notes**
 
