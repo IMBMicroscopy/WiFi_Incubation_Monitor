@@ -7,9 +7,9 @@
 - Report values to the TFT display, serial port and online dashboard
 - **Each device will record the conditions for ONE incubator**
 - **An Adafruit IO account is required for logging of incubation conditions over time to the online dashboard**
-  -  https://accounts.adafruit.com/users/sign_in
-  -  You will then need the Username and Active Key values to load into the ESP32 device to enable data streaming.
-  -  **This must be done before configuring the hardware below** 
+  - https://accounts.adafruit.com/users/sign_in
+  - You will then need the Username and Active Key values to load into the ESP32 device to enable data streaming.
+  - **This must be done before configuring the hardware below**
 
 **Required hardware:**
 
@@ -97,31 +97,40 @@
 - Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
 - The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
 - ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
-- 
+- Once the Dashboard is created, Create a new block such as a line graph and link them to the relevant datafeeds to display your data
+- Edit the layout, to resize and position the blocks, then save your layout
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
+
+![](https://holocron.so/tutorial/meme.jpeg)
 
 **Issues/Notes**
 
-- Tested on Mac OS 15.3.1 with Arduino IDE 2.3.4 
+- Tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
+
   - "SparkFun_SHTC3.h" 1.1.4
+
   - "Adafruit_GFX.h" 1.12.0
+
   - "Adafruit_ST7789.h" 1.11.0
+
   - "Adafruit IO Arduino Library" 4.3.0
+
   - "WiFiManager" 2.0.17
+
   - "Adafruit BME280 Library" 2.2.4
+
   - "SparkFun_SCD4x_Arduino_Library.h" 1.1.2
+
   - "Adafruit_MAX1704X.h" 1.0.3
- 
-    
+
 **Acknowledgements**
 The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  Please see individual license files of each library for terms and conditions specific to that library.
 
-
 MIT License
 
-Copyright (c) [2025] [James Springfield, The University of Queensland]
+Copyright (c) \[2025\] \[James Springfield, The University of Queensland\]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -140,7 +149,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-
-
-
