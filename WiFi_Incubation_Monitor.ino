@@ -1,7 +1,8 @@
 /*********************************************************************
  * User-Definable default Settings for the Incubation Monitor
- * These settings are the default settings installed onto the ESP32 device at first compile, and used on first load of the configuration hotspot, but may be altered and saved from the hotspot
- * Adjust as parameters as required
+ * These settings are the default settings installed onto the ESP32 device at first compile
+ * and used on first load of the configuration hotspot, but may be altered and saved to flash from the hotspot
+ * Adjust parameters as required
  *********************************************************************/
 
 // -------------------------------------------------------------------
@@ -39,7 +40,7 @@ float highTemp = 38;  // Temperature (°C) ABOVE this triggers an alarm
 float lowBatt = 20; // Battery State of Charge (SOC) in % BELOW this triggers an alarm (changes colour on the display)
 
 // -------------------------------------------------------------------
-// Measurement Rates (in seconds)
+// Measurement Rates (in seconds) (values will be constrained automatically in code as per requirements below)
 // -------------------------------------------------------------------
 int sensorRate      = 15;  // Read sensors and update TFT every X seconds (>=1)
 int compensateRate  = 15;  // Recalibrate CO2 sensor (T, RH, Pressure) every X seconds (>= sensorRate)
@@ -53,7 +54,7 @@ int   baud      = 115200;  // Serial port baud rate
 float pressure  = 1020.0;  // Ambient average pressure (mbar) used for CO2 calibration if no BME280 pressure sensor is installed
 
 // -------------------------------------------------------------------
-// Configuration Hotspot
+// Configuration Hotspot (values below are configurable in hotspot)
 // -------------------------------------------------------------------
 char hotspotSSID[64] = "Incubation Setup";  // SSID for the configuration hotspot
 char hotspotPWD[64]  = "setup123";         // Password (must be exactly 8 chars)
