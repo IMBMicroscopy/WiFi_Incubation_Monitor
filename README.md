@@ -101,7 +101,7 @@
 - Edit the layout, to resize and position the blocks, then save your layout
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
 
-![](https://holocron.so/tutorial/meme.jpeg)
+![Image](https://github.com/user-attachments/assets/7b07f74f-5639-4913-8092-9b42df199ed7)
 
 **Issues/Notes**
 
@@ -124,34 +124,17 @@
   - "SparkFun_SCD4x_Arduino_Library.h" 1.1.2
 
   - "Adafruit_MAX1704X.h" 1.0.3
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
-**Acknowledgements**
-The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  Please see individual license files of each library for terms and conditions specific to that library.
 
+
+
+    
+**Acknowledgements and License**
+The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  
+Please see individual license files of each library for terms and conditions specific to that library.
+
+    
 MIT License
-=======
- 
-    
-**Acknowledgements and License**
-The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  
-Please see individual license files of each library for terms and conditions specific to that library.
-=======
- 
-    
-**Acknowledgements and License**
-The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  
-Please see individual license files of each library for terms and conditions specific to that library.
-
-
-This code uses the MIT License
->>>>>>> Stashed changes
-
-
-This code uses the MIT License
->>>>>>> Stashed changes
-
 Copyright (c) \[2025\] \[James Springfield, The University of Queensland\]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
