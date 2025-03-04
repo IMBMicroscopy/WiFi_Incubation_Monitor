@@ -99,7 +99,7 @@
 
 **Issues/Notes**
 
-- Tested on Mac OS with Arduino IDE 2.3.4
+- Tested on Mac OS 15.3.1 with Arduino IDE 2.3.4 
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
   - "SparkFun_SHTC3.h" 1.1.4
