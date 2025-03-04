@@ -121,6 +121,7 @@
 
     
 **Acknowledgements and License**
+
 The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  
 Please see individual license files of each library for terms and conditions specific to that library.
 
