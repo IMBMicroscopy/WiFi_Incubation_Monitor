@@ -96,11 +96,6 @@
 - The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
 - ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
-  
-**Acknowledgements**
-The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  Please see individual license files for each library for terms and conditions of that license.
-
-
 
 **Issues/Notes**
 
@@ -115,5 +110,34 @@ The author wishes to acknowledge the contributions from all of the hardware and 
   - "Adafruit BME280 Library" 2.2.4
   - "SparkFun_SCD4x_Arduino_Library.h" 1.1.2
   - "Adafruit_MAX1704X.h" 1.0.3
+ 
+    
+**Acknowledgements**
+The author wishes to acknowledge the contributions from all of the hardware and software library creators that are featured in this code, without whom this tool would not be possible.  Please see individual license files of each library for terms and conditions specific to that library.
+
+
+MIT License
+
+Copyright (c) [2025] [James Springfield, The University of Queensland]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
 
 
