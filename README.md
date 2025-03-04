@@ -8,6 +8,7 @@
 - **Each device will record the conditions for ONE incubator**
 - **An Adafruit IO account is required for logging of incubation conditions over time to the online dashboard**
   -  https://accounts.adafruit.com/users/sign_in
+  -  You will then need the Username and Active Key values to load into the ESP32 device to enable data streaming.
   -  **This must be done before configuring the hardware below** 
 
 **Required hardware:**
@@ -72,7 +73,7 @@
 **Configure Hardware (ESP32)**
 
 - On your PC/Phone/Tablet select the new temporary WiFi network "Incubation Setup", enter the password as per WiFi_Incubation_Monitor.ino and a popup window should appear after a few seconds,
-- This is important, First, Click the "Setup" button to configure the IO Dashboard, installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.  For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
+- This is important, First, Click the "Setup" button to configure the IO Dashboard (*Username, Key and Dashboard name*), installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.  For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
 - Click Save, then use the back button to go back to the home page.
 - Now, Click "Configure WiFi" to enter the SSID name and password, then click save.
 - The device will now attempt to connect to WiFi and if successful will close the popup window,
@@ -90,11 +91,13 @@
 **Configure Adafruit IO Dashboard**
 
 - If you havent already, you will need to create an account: https://accounts.adafruit.com/users/sign_in
-- Each incubation monitor will generally require a uniquesly named dashboard to display its data feeds, these feeds are configured on the device after following the Incubation Monitor Setup Instructions steps below.
+- You will then need the Username and Active Key values to load into the ESP32 device to enable data streaming.
+- Each incubation monitor will generally require a uniquely named dashboard to display its data feeds, these feeds are configured on the device after following the Incubation Monitor Setup Instructions steps above.
 - You will need to create a unique dashboard name for each ESP32 based Incubation Monitor device, the device will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
 - Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
 - The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
 - ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
+- 
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
 
 **Issues/Notes**
