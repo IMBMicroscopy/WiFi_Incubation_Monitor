@@ -106,28 +106,18 @@
 
 **Issues/Notes**
 
-- Tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
+- Installation has been tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
+- The Arduino IDE Serial monitor can be used to monitor and debug operation of the unit if required (ensure "Both NL & CR" and the correct baud rate (115200 default))
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
-
   - "SparkFun_SHTC3.h" 1.1.4
-
   - "Adafruit_GFX.h" 1.12.0
-
   - "Adafruit_ST7789.h" 1.11.0
-
   - "Adafruit IO Arduino Library" 4.3.0
-
   - "WiFiManager" 2.0.17
-
   - "Adafruit BME280 Library" 2.2.4
-
   - "SparkFun_SCD4x_Arduino_Library.h" 1.1.2
-
   - "Adafruit_MAX1704X.h" 1.0.3
-
-
-
 
     
 **Acknowledgements and License**
