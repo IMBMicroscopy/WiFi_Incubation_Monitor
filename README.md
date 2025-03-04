@@ -73,7 +73,7 @@
 **Configure Hardware (ESP32)**
 
 - On your PC/Phone/Tablet select the new temporary WiFi network "Incubation Setup", enter the password as per WiFi_Incubation_Monitor.ino and a popup window should appear after a few seconds,
-- This is important, First, Click the "Setup" button to configure the IO Dashboard (*Username, Key and Dashboard name*), installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.  For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
+- This is important, First, Click the "Setup" button to configure the IO Dashboard (**Username, Key and Dashboard name**), installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.  For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
 - Click Save, then use the back button to go back to the home page.
 - Now, Click "Configure WiFi" to enter the SSID name and password, then click save.
 - The device will now attempt to connect to WiFi and if successful will close the popup window,
