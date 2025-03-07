@@ -49,9 +49,8 @@
 - Adafruit BME280 Library for Environmental sensor [http://librarymanager/All#BME280](http://librarymanager/All#BME280)
 - Low concentration CO2 sensor SCD41 [https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html](https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html)
 - "SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library [http://librarymanager/All#SparkFun_SCD4x](http://librarymanager/All#SparkFun_SCD4x)
-- LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector
+- LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector https://core-electronics.com.au/polymer-lithium-ion-battery-1000mah-38458.html
 - "Adafruit_MAX1704X.h" library for lipo battery measurements [http://librarymanager/All#Adafruit_MAX1704X](http://librarymanager/All#Adafruit_MAX1704X)
-- ![Image](https://github.com/user-attachments/assets/083cea4c-5243-401e-ae74-b1a748294d85)
 
 **Incubation Monitor Setup Instructions:**
 
@@ -111,6 +110,7 @@
 
 - Installation has been tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
 - The Arduino IDE Serial monitor can be used to monitor and debug operation of the unit if required (ensure "Both NL & CR" and the correct baud rate (115200 default))
+- The BME280 may cause an I2C address conflict by default and you will need to change the address, either by setting the dipswitch to ON or installing a surface mount resistor to the address pad as per the board manufacturers instructions
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
   - "SparkFun_SHTC3.h" 1.1.4
