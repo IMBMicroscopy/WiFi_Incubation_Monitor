@@ -17,7 +17,7 @@
 
 - Arduino compatible hardware such as: the following tested hardware
 - Adafruit Feather ESP32-S3TFT mainboard such as [https://learn.adafruit.com/adafruit-esp32-s3-tft-feather/overview](https://learn.adafruit.com/adafruit-esp32-s3-tft-feather/overview) (the code for the TFT has been optimised for this display size/resolution and will require modification for other displays)
-- STC31 CO2 sensor board such as [https://www.sparkfun.com/products/18385](https://www.sparkfun.com/products/18385) or https://sensirion.com/products/catalog/SEK-STC31-C
+- STC31 CO2 sensor board such as [https://www.sparkfun.com/products/18385](https://www.sparkfun.com/products/18385) or https://sensirion.com/products/catalog/SEK-STC31-C (a custom sensor board which includes the BME280 pressure sensor is in development)
 - Sparkfun Qwiic connector 500mm (or longer) cable: [https://www.sparkfun.com/products/17257](https://www.sparkfun.com/products/17257) (or you may manually solder the cables)
 - This minimum configuration requires no soldering or electronics knowledge
 
