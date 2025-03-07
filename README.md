@@ -51,6 +51,7 @@
 - "SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library [http://librarymanager/All#SparkFun_SCD4x](http://librarymanager/All#SparkFun_SCD4x)
 - LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector
 - "Adafruit_MAX1704X.h" library for lipo battery measurements [http://librarymanager/All#Adafruit_MAX1704X](http://librarymanager/All#Adafruit_MAX1704X)
+- ![Image](https://github.com/user-attachments/assets/083cea4c-5243-401e-ae74-b1a748294d85)
 
 **Incubation Monitor Setup Instructions:**
 
