@@ -111,6 +111,13 @@
 - Installation has been tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
 - The Arduino IDE Serial monitor can be used to monitor and debug operation of the unit if required (ensure "Both NL & CR" and the correct baud rate (115200 default))
 - The BME280 may cause an I2C address conflict by default and you will need to change the address, either by setting the dipswitch to ON or installing a surface mount resistor to the address pad as per the board manufacturers instructions
+- due to the limitied size of the included TFT display, some creativity was required to squish everything onto the display.
+  - "*" indicates the system is calibrating (rate is set in the code or via the configuration hotspot)
+  - "^" indicates the system is uploading data to the dashboard (rate is set in the code or via the configuration hotspot)
+  - the current CO2 reading reported on the TFT is selected by the "switchCO2Sensors" value, below which the lowCO2 sensor is used if active.
+  - the battery discharge rate information doesnt currently fit on the display due to WiFi and IO indicates, so have been commented out in the code
+ 
+    
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
   - "SparkFun_SHTC3.h" 1.1.4
