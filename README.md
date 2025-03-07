@@ -45,9 +45,9 @@
 **Optional:**
 
 - 3D printed case:
-- Atmospheric pressure sensor such as a BME280 sensor [https://www.sparkfun.com/products/15440](https://www.sparkfun.com/products/15440) to measure atmospheric pressure for CO2 sensor calibration
+- Atmospheric pressure BME280 sensor [https://www.sparkfun.com/products/15440](https://www.sparkfun.com/products/15440) to measure atmospheric pressure for CO2 sensor calibration
 - Adafruit BME280 Library for Environmental sensor [http://librarymanager/All#BME280](http://librarymanager/All#BME280)
-- Low concentration CO2 sensor such as a SCD41 [https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html](https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html)
+- Low concentration CO2 sensor SCD41 [https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html](https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html)
 - "SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library [http://librarymanager/All#SparkFun_SCD4x](http://librarymanager/All#SparkFun_SCD4x)
 - LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector
 - "Adafruit_MAX1704X.h" library for lipo battery measurements [http://librarymanager/All#Adafruit_MAX1704X](http://librarymanager/All#Adafruit_MAX1704X)
