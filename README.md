@@ -61,28 +61,52 @@
 
 - Download and Install Arduino IDE: [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software)
 - Follow the instructions here: [https://learn.adafruit.com/esp32-s3-reverse-tft-feather/arduino-ide-setup-2](https://learn.adafruit.com/esp32-s3-reverse-tft-feather/arduino-ide-setup-2), to configure the Arduino IDE and to install the required drivers for the ESP32 board
-- Install required plugins for ESP32 and sensors as listed above
+- Using the library manager, search for and install required plugins for ESP32 and sensors as listed above
 - Restart the Arduino IDE
 
 **Configure and upload code**
 
-- Open the WiFi_Incubation_Monitor.ino file and wait for the associated files to load.
-- Connect the ESP32 device with sensors to the computer via USB cable
-- Go to "Tools" menu and select "Board" and select the ESP32, then select the Adafruit Feather ESP-32 S3 Reverse TFT
-- Go to "Tools" menu and select "Port" and then select the Adafruit Feather
-- Upload "Incubation_Monitor" sketch to ESP32 hardware, the device will restart when the upload is complete (if it doesnt, press the RST button on the ESP32)
-- Click on the Arduino IDE serial monitor and ensure it is set to "Both NL & CR" and "115200 baud" to monitor the device setup progress
+- Within Arduino IDE, open the WiFi_Incubation_Monitor.ino file and wait for the associated files to load.
+- Connect the sensors to the ESP32 using the I2C cable
+- Connect the ESP32 to the computer via USB cable
+- Go to "Tools" menu and select "Board" and select "ESP32", then select the "Adafruit Feather ESP-32 S3 Reverse TFT" board
+- Go to "Tools" menu and select "Port" and then select the device that contains the "Adafruit Feather"
+- Upload "Incubation_Monitor" sketch to ESP32 hardware (use the arrow button in the top left corner of the IDE), the device will restart when the upload is complete (if it doesnt, press the RST button on the ESP32)
+- Click on the Arduino IDE serial monitor (top right corner of IDE) and ensure it is set to "Both NL & CR" and "115200 baud" to monitor the device setup progress
 - The Mac address for the device will be displayed in the serial monitor, you may need to register this with your IT department to gain WiFi access to hidden WiFi networks
 - For new hardware installs, the ESP32 will automatically create a hotspot as configured in the WiFi_Incubation_Monitor.ino file, default is "Incubation_Setup"
 
 **Configure Hardware (ESP32)**
+<br />
 
-- On your PC/Phone/Tablet select the new temporary WiFi network "Incubation Setup", enter the password as per WiFi_Incubation_Monitor.ino and a popup window should appear after a few seconds,
-- This is important, First, Click the "Setup" button to configure the IO Dashboard (**Username, Key and Dashboard name**), installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.  For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
-- Click Save, then use the back button to go back to the home page.
-- Now, Click "Configure WiFi" to enter the SSID name and password, then click save.
-- The device will now attempt to connect to WiFi and if successful will close the popup window,
-- The device will then attempt to connect to the IO dashboard, before testing the sensors and begin acquiring data.
+- On your PC/Phone/Tablet select the new temporary WiFi network "Incubation Setup", enter the password as per WiFi_Incubation_Monitor.ino and a popup window should appear after a few seconds
+
+<br />
+  
+- **Dashboard users**
+  - First, if you intend to use the Adafruit IO Dashboard, record your IO username and key, and decide on your dashboard name (name of incubator/microscope etc)
+  - It's critical that you are within coverage range of your nearest WiFi access point in order to connect to the AP and then the IO Dashboard.
+  - This is important, First, Click the "Setup" button to configure hardware parameters:
+    -  Ensure "Dashboard" feature is toggled to ON
+    - Enter the IO Dashboard values (**Username, Key and Dashboard name**)
+    - Toggle the required installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.
+    - For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
+  - Click Save, then use the back button to go back to the home page.
+  - Now, Click "Configure WiFi" to enter the SSID name and password, then click save.
+  - The device will now attempt to connect to WiFi and if successful will close the popup window 
+  - The device will then attempt to connect to the IO dashboard, before initialising the sensors and begin acquiring data.
+
+<br />
+
+- **Non Dashboard users**   
+  - Click the "Setup" button to configure hardware parameters:
+    - Toggle OFF the "Dashboard" feature
+    - Toggle the required installed sensors and their sensor parameters if they differ from the default settings in WiFi_Incubation_Monitor.ino file.
+    - For further information about these parameters, consult the WiFi_Incubation_Monitor.ino file.
+  - Click Save, then use the back button to go back to the home page.
+  - Now, Click "Exit" and the hotspot will close after a few seconds, the device will now initialise the sensors and begin acquiring data
+  
+<br />
 
 **Adjust Parameters**
 
