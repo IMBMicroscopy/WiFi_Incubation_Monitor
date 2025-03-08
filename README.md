@@ -55,7 +55,7 @@
 - "SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library [http://librarymanager/All#SparkFun_SCD4x](http://librarymanager/All#SparkFun_SCD4x)
 - LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector https://core-electronics.com.au/polymer-lithium-ion-battery-1000mah-38458.html
 - "Adafruit_MAX1704X.h" library for lipo battery measurements [http://librarymanager/All#Adafruit_MAX1704X](http://librarymanager/All#Adafruit_MAX1704X)
-- Additional short and long I2C cables for the BME280 and SCD41 sensor boards as required
+- Additional short and long STEMMA/QWIIC connector I2C cables for the BME280 and SCD41 sensor boards as required (or just makeup and solder your own)
 
 <br />
 <br />
