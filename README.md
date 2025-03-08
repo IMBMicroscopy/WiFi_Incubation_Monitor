@@ -51,6 +51,7 @@
 - "SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library [http://librarymanager/All#SparkFun_SCD4x](http://librarymanager/All#SparkFun_SCD4x)
 - LiPo Battery for 3.7V - 4.2V such as 603450 with JST 2pin connector https://core-electronics.com.au/polymer-lithium-ion-battery-1000mah-38458.html
 - "Adafruit_MAX1704X.h" library for lipo battery measurements [http://librarymanager/All#Adafruit_MAX1704X](http://librarymanager/All#Adafruit_MAX1704X)
+- Additional short and long I2C cables for the BME280 and SCD41 sensor boards as required
 
 <br />
 <br />
@@ -143,6 +144,10 @@
   - "^" indicates the system is uploading data to the dashboard (rate is set in the code or via the configuration hotspot)
   - the current CO2 reading reported on the TFT is selected by the "switchCO2Sensors" value, below which the lowCO2 sensor is used if active.
   - the battery discharge rate information doesnt currently fit on the display due to WiFi and IO indicates, so have been commented out in the code
+- Additional sensors such as the BME280 (Environmental Sensor including Pressure) and SCD41 (low CO2) can be daisy chained in any order with the STC31 (high CO2 sensor) to the ESP32 using addtional I2C cables using the STEMMA/QWIIC connector or via solder joints  
+- 3D Printed Case:
+-   The included 3D printed case file allows for a BME280 breakout board to be installed as well as a lithium ion battery inside the case 
+-   However you may also mount the BME280 breakout board outside of the case in a location of your choosing such as the main incubation chamber of the microscope, to monitor ambient incubation conditions, and daisy chain on the SCD41 (low CO2) and STC31 breakout board (high CO2) with another I2C cable to install inside the imaging chamber near the sample.
  
     
 - Library versions tested
