@@ -1,6 +1,6 @@
 # WiFi enabled Incubation Monitor
 
-![Image](https://github.com/user-attachments/assets/40afcd86-0e84-4c9b-8beb-6de6bf2e63d1)
+![updated incubation monitor](https://github.com/user-attachments/assets/96d33d65-d92c-4610-86c6-9e21cd06d4ff)
 
 ![Image](https://github.com/user-attachments/assets/02aba95f-da6f-4bfc-8eb2-71706fd93b8e)
 
