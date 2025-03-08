@@ -12,7 +12,7 @@
 - Monitor LiPo battery SOC and discharge rate
 - Report values to the TFT display, serial port and online dashboard
 - **Each device will record the conditions for ONE incubator**
-- **An Adafruit IO account is required for logging of incubation conditions over time to the online dashboard**
+- **A free Adafruit IO account is required for logging of incubation conditions over time to the online dashboard**
   - https://accounts.adafruit.com/users/sign_in
   - You will then need the Username and Active Key values to load into the ESP32 device to enable data streaming.
   - **This must be done before configuring the hardware below**
