@@ -1,7 +1,9 @@
 # WiFi enabled Incubation Monitor
 
-![Image](https://github.com/user-attachments/assets/933f4e5c-c2fe-440d-b98f-8726e7f18814)
-![Image](https://github.com/user-attachments/assets/eb6d1944-53ae-418f-9365-659f209e6ab4)
+![Image](https://github.com/user-attachments/assets/40afcd86-0e84-4c9b-8beb-6de6bf2e63d1)
+
+![Image](https://github.com/user-attachments/assets/02aba95f-da6f-4bfc-8eb2-71706fd93b8e)
+
 
 ## Monitor environmental conditions for live samples using an ESP32 device with STC31 CO2 sensor and SHTC3 temperature and relative humidity sensors
 
