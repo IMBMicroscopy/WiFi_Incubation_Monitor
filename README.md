@@ -4,6 +4,7 @@
 
 ![Image](https://github.com/user-attachments/assets/02aba95f-da6f-4bfc-8eb2-71706fd93b8e)
 
+![Image](https://github.com/user-attachments/assets/93f48372-cce1-4dd0-94da-fd26b47a517c)
 
 ## Monitor environmental conditions for live samples using an ESP32 device with STC31 CO2 sensor and SHTC3 temperature and relative humidity sensors
 
