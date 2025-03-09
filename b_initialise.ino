@@ -78,7 +78,7 @@ WiFiManager wifiManager;
 WiFiManagerParameter custom_dashboard_title("<p>-------------------IO Dashboard Parameters-------------------</p>");
 WiFiManagerParameter custom_IO_USERNAME("io_user", "Adafruit IO Username", IO_USERNAME_buff, 60);
 WiFiManagerParameter custom_IO_KEY("io_key", "Adafruit IO Key", IO_KEY_buff, 60);
-WiFiManagerParameter custom_IO_Dashboard("io_dashboard", "Adafruit IO Dashboard Name", IO_Dashboard_buff, 60);
+WiFiManagerParameter custom_IO_Dashboard("io_dashboard", "Adafruit IO Dashboard Short Name", IO_Dashboard_buff, 60);
 
 // Optional WiFiManager parameters
 WiFiManagerParameter custom_monitor_title("<p>-------------------Hardware Toggles-------------------</p>");
