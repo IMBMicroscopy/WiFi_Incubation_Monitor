@@ -1,5 +1,18 @@
 //general functions
 
+//get default WiFi Mac Address
+String getDefaultMacAddress() {
+  String mac = "";
+  unsigned char mac_base[6] = {0};
+
+  if (esp_efuse_mac_get_default(mac_base) == ESP_OK) {
+    char buffer[18];  // 6*2 characters for hex + 5 characters for colons + 1 character for null terminator
+    sprintf(buffer, "%02X:%02X:%02X:%02X:%02X:%02X", mac_base[0], mac_base[1], mac_base[2], mac_base[3], mac_base[4], mac_base[5]);
+    mac = buffer;
+  }
+  return mac;
+}
+
 //initialise timers at end of setup for code execution in loop
 void initTimers(){
   //used to calculate loop timers
@@ -106,8 +119,15 @@ void updateTFT(){
     }else{
       tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
     }
-    tft.print(myTemp, 1); tft.print("C");
-    if(compFlag){tft.println(" *");}else{tft.println("");}
+    tft.print(myTemp, 1);// tft.print("C");
+    if(room_Monitor){
+      tft.setTextColor(ST77XX_WHITE);
+      tft.setTextSize(2);
+      tft.print(" / "); 
+      tft.setTextSize(3);
+      tft.print(bmeTemp, 1); 
+    }
+    tft.print("C"); tft.println("");
 
     //Relative Humidity
     tft.setTextColor(ST77XX_WHITE);
@@ -122,9 +142,15 @@ void updateTFT(){
     }else{
       tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
     }
-    tft.print(myRH, 0); tft.print("%");
-
-    if(compFlag){tft.println(" *");}else{tft.println("");}
+    tft.print(myRH, 0); //tft.print("%");
+    if(room_Monitor){
+      tft.setTextColor(ST77XX_WHITE);
+      tft.setTextSize(2);
+      tft.print(" / "); 
+      tft.setTextSize(3);
+      tft.print(bmeCRH, 0); 
+    }
+    tft.print("%"); tft.println("");
     
     compFlag = false;
 
@@ -202,6 +228,14 @@ void convertParamsToCharArray(){
   boolToCharArray(pressure_Monitor, pressure_Monitor_buff);
   boolToCharArray(battery_Monitor, battery_Monitor_buff);
   boolToCharArray(dashboard_Monitor, dashboard_Monitor_buff);
+  boolToCharArray(room_Monitor, room_Monitor_buff);
+  
+  dtostrf(offsetTemp, 4, 2, offsetTemp_buff);
+  boolToCharArray(calibrateRH, calibrateRH_buff);
+  dtostrf(high_Standard, 4, 2, high_Standard_buff);
+  dtostrf(high_bme280, 4, 2, high_bme280_buff);
+  dtostrf(low_Standard, 4, 2, low_Standard_buff);
+  dtostrf(low_bme280, 4, 2, low_bme280_buff);
 
   dtostrf(switchCO2Sensors, 4, 2, switchCO2Sensors_buff);
   dtostrf(lowCO2, 4, 2, lowCO2_buff);
