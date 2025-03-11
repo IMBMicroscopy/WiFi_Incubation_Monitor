@@ -127,11 +127,12 @@
 - If you havent already, you will need to create an account: https://accounts.adafruit.com/users/sign_in
 - You will then need the Username and Active Key values to load into the ESP32 device to enable data streaming.
 - Each incubation monitor will generally require a uniquely named dashboard to display its data feeds, these feeds are configured on the device after following the Incubation Monitor Setup Instructions steps above.
-- You will need to create a unique dashboard name for each ESP32 based Incubation Monitor device, the device will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
+- You will need to create a unique data feed name for each ESP32 based Incubation Monitor device, the device will then automatically create data feeds for each parameter: CO2, Temperature and Relative Humidity
 - Once the ESP32 device is running and has started transmitting the data feeds, they should appear in the Data Feeds section of Adafruit IO
 - Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
 - The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
-- ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the CO2 data feed will be automatically called "CO2_Live_Imager_1"
+- ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the data feed name will be something like LI1 and will automatically create "LI1_probe_CO2", "LI1_probe_Temp" and "LI1_probe_RH" 
+- you can also enable room monitoring to create additional feeds from the bme280 sensor in the 3D printed case, ie: "LI1_room_Temp", "LI1_room_RH" and "LI1_room_press"
 - Once the Dashboard is created, Create a new block such as a line graph and link them to the relevant datafeeds to display your data
 - Edit the layout, to resize and position the blocks, then save your layout
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
@@ -143,7 +144,7 @@
 - Installation has been tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
 - The Arduino IDE Serial monitor can be used to monitor and debug operation of the unit if required (ensure "Both NL & CR" and the correct baud rate (115200 default))
 - The BME280 may cause an I2C address conflict by default and you will need to change the address, either by setting the dipswitch to ON or installing a surface mount resistor to the address pad as per the board manufacturers instructions
-- due to the limitied size of the included TFT display, some creativity was required to squish everything onto the display.
+- due to the limited size of the included TFT display, some creativity was required to squish everything onto the display.
   - "*" indicates the system is calibrating (rate is set in the code or via the configuration hotspot)
   - "^" indicates the system is uploading data to the dashboard (rate is set in the code or via the configuration hotspot)
   - the current CO2 reading reported on the TFT is selected by the "switchCO2Sensors" value, below which the lowCO2 sensor is used if active.
