@@ -11,10 +11,12 @@ Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST); // TFT variable 
 #include "Adafruit_MAX1704X.h"   // LiPo battery measurements
 Adafruit_MAX17048 maxlipo;       // Battery monitor variable
 
-#include <BME280I2C.h>           // BME280 air pressure sensor library
-BME280I2C myBME280;
-BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
-BME280::PresUnit presUnit(BME280::PresUnit_Pa);
+#include <Adafruit_BME280.h>
+Adafruit_BME280 myBME280;
+
+//#include <BME280I2C.h>           // BME280 air pressure sensor library
+//BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
+//BME280::PresUnit presUnit(BME280::PresUnit_Pa);
 
 #include "SparkFun_SCD4x_Arduino_Library.h"  // SCD41 CO2 sensor library
 SCD4x mySCD41;
@@ -44,6 +46,9 @@ char IO_Dashboard_buff[64] = "";
 char CO2_FeedName_buff[64] = "";
 char Temp_FeedName_buff[64] = "";
 char RH_FeedName_buff[64] = "";
+char roomTemp_FeedName_buff[64] = "";
+char roomRH_FeedName_buff[64] = "";
+char roomPress_FeedName_buff[64] = "";
 
 //optional configuration parameters to store character array of values for use in WiFiManager
 char low_CO2_Monitor_buff[6] = "";
@@ -51,6 +56,15 @@ char high_CO2_Monitor_buff[6] = "";
 char pressure_Monitor_buff[6] = "";
 char battery_Monitor_buff[6] = "";
 char dashboard_Monitor_buff[6] = "";
+char room_Monitor_buff[6] = "";
+
+char offsetTemp_buff[8] = "";
+char calibrateRH_buff[6] = "";
+char high_Standard_buff[8] = "";
+char high_bme280_buff[8] = "";
+char low_Standard_buff[8] = "";
+char low_bme280_buff[8] = "";
+
 char switchCO2Sensors_buff[8] = "";
 char lowCO2_buff[8] = "";
 char highCO2_buff[8] = "";
@@ -72,6 +86,9 @@ AdafruitIO_WiFi *io;        // Adafruit IO pointer
 AdafruitIO_Feed *CO2_Feed;  //CO2 data feed to IO dashboard
 AdafruitIO_Feed *Temp_Feed; //Temp data feed to IO dashboard
 AdafruitIO_Feed *RH_Feed;   //RH data feed to IO dashboard
+AdafruitIO_Feed *roomTemp_Feed;   //room Temperature data feed to IO dashboard
+AdafruitIO_Feed *roomRH_Feed;   //room RH data feed to IO dashboard
+AdafruitIO_Feed *roomPress_Feed;   //room Pressure data feed to IO dashboard
 
 // Create WiFiManager object and custom parameters to display on hotspot website
 WiFiManager wifiManager;
@@ -87,6 +104,15 @@ WiFiManagerParameter custom_high_CO2_Monitor("high_CO2_Monitor", "high CO2 monit
 WiFiManagerParameter custom_pressure_Monitor("pressure_Monitor", "pressure monitor (true/false)", pressure_Monitor_buff, 6);
 WiFiManagerParameter custom_battery_Monitor("battery_Monitor", "battery monitor (true/false)", battery_Monitor_buff, 6);
 WiFiManagerParameter custom_dashboard_Monitor("dashboard_Monitor", "dashboard monitor (true/false)", dashboard_Monitor_buff, 6);
+WiFiManagerParameter custom_room_Monitor("room_Monitor", "Room monitor (true/false)", room_Monitor_buff, 6);
+
+WiFiManagerParameter custom_bme280_title("<p>----------------------bme280 Calibration ----------------------</p>");
+WiFiManagerParameter custom_offsetTemp("offset_Temp", "offset bme280 temperature to match other sensors", offsetTemp_buff, 8);
+WiFiManagerParameter custom_calibrateRH("calibrate_RH", "Apply RH calibration values below (true/false)", calibrateRH_buff, 6);
+WiFiManagerParameter custom_high_Standard("high_Standard", "HIGH reference humidity chamber value (70-100%)", high_Standard_buff, 8);
+WiFiManagerParameter custom_high_bme280("high_bme280", "BME280 measured HIGH reference value", high_bme280_buff, 8);
+WiFiManagerParameter custom_low_Standard("low_Standard", "LOW reference humidity chamber value (10-30%)", low_Standard_buff, 8);
+WiFiManagerParameter custom_low_bme280("low_bme280", "BME280 measured LOW reference value", low_bme280_buff, 8);
 
 WiFiManagerParameter custom_sensor_title("<p>----------------------Sensor Parameters----------------------</p>");
 WiFiManagerParameter custom_switch_CO2_Sensors("switch_CO2_Sensors", "switch between CO2 sensors (%)", switchCO2Sensors_buff, 8);
@@ -127,8 +153,8 @@ int cursorX = 0, cursorY = 0, cursorX0 = 0, cursorY0 = 0;
 float battVoltage = 0.00, battPercent = 0.00, battRate = 0.00;
 float stcCO2 = 0.00, stcTemp = 0.00, stcRH = 0.00;
 float scdCO2 = 0.00, scdTemp = 0.00, scdRH = 0.00;
-float bmeTemp(NAN), bmeRH(NAN), bmePress(NAN);
-float myCO2 = 0.00, myTemp = 0.00, myRH = 0.00;
+float bmeTemp = 0.00, bmeRH = 0.00, bmePress = 0.00, bmeCRH = 0.00;
+float myCO2 = 0.00, myTemp = 0.00, myRH = 0.00, myPress = 0.00;
 long int compCounter = 0, battCounter = 0;
 
 // Flags

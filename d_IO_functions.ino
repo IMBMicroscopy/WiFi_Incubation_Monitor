@@ -1,15 +1,4 @@
-//get default WiFi Mac Address
-String getDefaultMacAddress() {
-  String mac = "";
-  unsigned char mac_base[6] = {0};
-
-  if (esp_efuse_mac_get_default(mac_base) == ESP_OK) {
-    char buffer[18];  // 6*2 characters for hex + 5 characters for colons + 1 character for null terminator
-    sprintf(buffer, "%02X:%02X:%02X:%02X:%02X:%02X", mac_base[0], mac_base[1], mac_base[2], mac_base[3], mac_base[4], mac_base[5]);
-    mac = buffer;
-  }
-  return mac;
-}
+//IO related functions
 
 void userActivatedHotspot(){
   //Check for user initiated Wifi hotspot request by button press
@@ -64,7 +53,7 @@ void saveParams() {
   constrainRates();                 // Constrain user-defined readout rates to acceptable values
 
   preferences.begin("custom", true); // Open Preferences in read mode
-  int test = preferences.getInt("baud", -1);  //test if default values exist in flash
+  int test = preferences.getInt("baud", -1);  //test if default values exist in flash, if they dont, set value to -1
   preferences.end();
 
   preferences.begin("custom", false); // Open Preferences in write mode
@@ -85,6 +74,14 @@ void saveParams() {
     preferences.putBool("pressure_Monitor", pressure_Monitor);
     preferences.putBool("battery_Monitor", battery_Monitor);
     preferences.putBool("dashboard_Monitor", dashboard_Monitor);
+    preferences.putBool("room_Monitor", room_Monitor);
+
+    preferences.putFloat("offsetTemp", offsetTemp);
+    preferences.putBool("calibrateRH", calibrateRH);
+    preferences.putFloat("high_Standard", high_Standard);
+    preferences.putFloat("high_bme280", high_bme280);
+    preferences.putFloat("low_Standard", low_Standard);
+    preferences.putFloat("low_bme280", low_bme280);
 
     preferences.putFloat("switchCO2Sensors", switchCO2Sensors);
     preferences.putFloat("lowCO2", lowCO2);
@@ -122,6 +119,14 @@ void loadParams() {
   pressure_Monitor = preferences.getBool("pressure_Monitor", pressure_Monitor);
   battery_Monitor = preferences.getBool("battery_Monitor", battery_Monitor);
   dashboard_Monitor = preferences.getBool("dashboard_Monitor", dashboard_Monitor);
+  room_Monitor = preferences.getBool("room_Monitor", room_Monitor);
+
+  offsetTemp = preferences.getFloat("offsetTemp", offsetTemp);
+  calibrateRH = preferences.getBool("calibrateRH", calibrateRH);
+  high_Standard = preferences.getFloat("high_Standard", high_Standard);
+  high_bme280 = preferences.getFloat("high_bme280", high_bme280);
+  low_Standard = preferences.getFloat("low_Standard", low_Standard);
+  low_bme280 = preferences.getFloat("low_bme280", low_bme280);
 
   switchCO2Sensors = preferences.getFloat("switchCO2Sensors", switchCO2Sensors);
   lowCO2 = preferences.getFloat("lowCO2", lowCO2);
@@ -158,6 +163,15 @@ void saveConfigCallback() {
   strcpy(pressure_Monitor_buff, custom_pressure_Monitor.getValue());
   strcpy(battery_Monitor_buff, custom_battery_Monitor.getValue());
   strcpy(dashboard_Monitor_buff, custom_dashboard_Monitor.getValue());
+  strcpy(room_Monitor_buff, custom_room_Monitor.getValue());
+
+  strcpy(offsetTemp_buff, custom_offsetTemp.getValue());
+  strcpy(calibrateRH_buff, custom_calibrateRH.getValue());
+  strcpy(high_Standard_buff, custom_high_Standard.getValue());
+  strcpy(high_bme280_buff, custom_high_bme280.getValue());
+  strcpy(low_Standard_buff, custom_low_Standard.getValue());
+  strcpy(low_bme280_buff, custom_low_bme280.getValue());
+
   strcpy(switchCO2Sensors_buff, custom_switch_CO2_Sensors.getValue());
   strcpy(lowCO2_buff, custom_lowCO2.getValue());
   strcpy(highCO2_buff, custom_highCO2.getValue());
@@ -179,6 +193,15 @@ void saveConfigCallback() {
   pressure_Monitor = charArrayToBool(pressure_Monitor_buff);
   battery_Monitor = charArrayToBool(battery_Monitor_buff);
   dashboard_Monitor = charArrayToBool(dashboard_Monitor_buff);
+  room_Monitor = charArrayToBool(room_Monitor_buff);
+
+  offsetTemp = atof(offsetTemp_buff);
+  calibrateRH = charArrayToBool(calibrateRH_buff);
+  high_Standard = atof(high_Standard_buff);
+  high_bme280 = atof(high_bme280_buff);
+  low_Standard = atof(low_Standard_buff);
+  low_bme280 = atof(low_bme280_buff);
+
   switchCO2Sensors = atof(switchCO2Sensors_buff);
   lowCO2 = atof(lowCO2_buff);
   highCO2 = atof(highCO2_buff);
@@ -248,6 +271,15 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_pressure_Monitor);  
   wifiManager.addParameter(&custom_battery_Monitor);  
   wifiManager.addParameter(&custom_dashboard_Monitor);  
+  wifiManager.addParameter(&custom_room_Monitor);
+
+  wifiManager.addParameter(&custom_bme280_title);
+  wifiManager.addParameter(&custom_offsetTemp);
+  wifiManager.addParameter(&custom_calibrateRH);
+  wifiManager.addParameter(&custom_high_Standard);
+  wifiManager.addParameter(&custom_high_bme280);
+  wifiManager.addParameter(&custom_low_Standard);
+  wifiManager.addParameter(&custom_low_bme280);
 
   //custom parameters for sensors
   wifiManager.addParameter(&custom_sensor_title);
@@ -275,6 +307,15 @@ void initWiFiManager() {
   custom_pressure_Monitor.setValue(pressure_Monitor_buff, 6);
   custom_battery_Monitor.setValue(battery_Monitor_buff, 6);
   custom_dashboard_Monitor.setValue(dashboard_Monitor_buff, 6);
+  custom_room_Monitor.setValue(room_Monitor_buff, 6);
+
+  custom_offsetTemp.setValue(offsetTemp_buff, 8);
+  custom_calibrateRH.setValue(calibrateRH_buff, 6);
+  custom_high_Standard.setValue(high_Standard_buff, 8);
+  custom_high_bme280.setValue(high_bme280_buff, 8);
+  custom_low_Standard.setValue(low_Standard_buff, 8);
+  custom_low_bme280.setValue(low_bme280_buff, 8);
+
   custom_switch_CO2_Sensors.setValue(switchCO2Sensors_buff, 8);
   custom_lowCO2.setValue(lowCO2_buff, 8);
   custom_highCO2.setValue(highCO2_buff, 8);
@@ -325,28 +366,51 @@ void initDashboard() {
   if(dashboard_Monitor){
     if(wifiConnectedFlag){
       //create feed names
-      strcpy (CO2_FeedName_buff, "CO2_");
-      strcat (CO2_FeedName_buff, IO_Dashboard_buff);  //create string identifier for data feed
+      strcpy (CO2_FeedName_buff, IO_Dashboard_buff);
+      strcat (CO2_FeedName_buff, "_probe_CO2");  //create string identifier for data feed
       String CO2String((char*)CO2_FeedName_buff);
       strlwr (CO2_FeedName_buff);  //make lower case
 
-      strcpy (Temp_FeedName_buff, "TEMP_");
-      strcat (Temp_FeedName_buff, IO_Dashboard_buff);  //create string identifier for data feed
+      strcpy(Temp_FeedName_buff, IO_Dashboard_buff);
+      strcat(Temp_FeedName_buff, "_probe_TEMP");  //create string identifier for data feed
       String TempString((char*)Temp_FeedName_buff);
-      strlwr (Temp_FeedName_buff); //make lower case
+      strlwr(Temp_FeedName_buff);  //make lower case
 
-      strcpy (RH_FeedName_buff, "RH_");
-      strcat (RH_FeedName_buff, IO_Dashboard_buff);  //create string identifier for data feed
+      strcpy(RH_FeedName_buff, IO_Dashboard_buff);
+      strcat(RH_FeedName_buff, "_probe_RH");  //create string identifier for data feed
       String RHString((char*)RH_FeedName_buff);
-      strlwr (RH_FeedName_buff); //make lower case
+      strlwr(RH_FeedName_buff);  //make lower case
 
       Serial.printf("\nCO2 data feed name: %s\n", CO2_FeedName_buff);
       Serial.printf("Temperature data feed name: %s\n", Temp_FeedName_buff);
       Serial.printf("Relative Humidity data feed name: %s\n", RH_FeedName_buff);
       Serial.println("");
 
+      if(room_Monitor){
+        //create feed names for the room monitor
+        strcpy(roomTemp_FeedName_buff, IO_Dashboard_buff);
+        strcat(roomTemp_FeedName_buff, "_room_TEMP");  //create string identifier for data feed
+        String roomTempString((char*)roomTemp_FeedName_buff);
+        strlwr(roomTemp_FeedName_buff);  //make lower case
+      
+        strcpy(roomRH_FeedName_buff, IO_Dashboard_buff);
+        strcat(roomRH_FeedName_buff, "_room_RH");  //create string identifier for data feed
+        String roomRHString((char*)roomRH_FeedName_buff);
+        strlwr(roomRH_FeedName_buff);  //make lower case
+
+        strcpy(roomPress_FeedName_buff, IO_Dashboard_buff);
+        strcat(roomPress_FeedName_buff, "_room_Press");  //create string identifier for data feed
+        String roomPressString((char*)roomPress_FeedName_buff);
+        strlwr(roomPress_FeedName_buff);  //make lower case
+
+        Serial.printf("Temperature data feed name: %s\n", roomTemp_FeedName_buff);
+        Serial.printf("Relative Humidity data feed name: %s\n", roomRH_FeedName_buff);
+        Serial.printf("Pressure data feed name: %s\n", roomPress_FeedName_buff);
+        Serial.println("");
+      }
+
       //if dashboad feed name was created, then connect to dashboard, otherwise dont
-      if((CO2String != "CO2_") && (TempString != "TEMP_") && (RHString != "RH_")){
+      if((CO2String != "_CO2") && (TempString != "_TEMP") && (RHString != "_RH")){
         io = new (objStorage) AdafruitIO_WiFi(IO_USERNAME_buff, IO_KEY_buff, "", ""); //create IO object with user details for subsequent connection
         Serial.printf("\nConnecting to Adafruit IO with User: %s, Dashboard: %s.\n", IO_USERNAME_buff, IO_Dashboard_buff);
 
@@ -373,6 +437,12 @@ void initDashboard() {
         CO2_Feed = io->feed(CO2_FeedName_buff);
         Temp_Feed = io->feed(Temp_FeedName_buff);
         RH_Feed = io->feed(RH_FeedName_buff);
+
+        if(room_Monitor){
+          roomPress_Feed = io->feed(roomPress_FeedName_buff);
+          roomTemp_Feed = io->feed(roomTemp_FeedName_buff);
+          roomRH_Feed = io->feed(roomRH_FeedName_buff);
+        }
 
         Serial.println(F("Adafruit IO connection established\n"));
         if(firstRun){
@@ -446,6 +516,12 @@ void updateDashboard(){
       if(myCO2 >0){CO2_Feed->save(myCO2);}
       Temp_Feed->save(myTemp);
       RH_Feed->save(myRH);
+
+      if(room_Monitor){
+        roomTemp_Feed->save(bmeTemp);
+        roomRH_Feed->save(bmeRH);
+        roomPress_Feed->save(bmePress);
+      }
     }
   }
 }

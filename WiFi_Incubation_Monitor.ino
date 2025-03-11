@@ -14,7 +14,7 @@ bool high_CO2_Monitor   = true; // STC31 sensor (0.7 - 100% CO2) attached?
 bool pressure_Monitor   = true; // Optional BME280 sensor for measuring ambient pressure
 bool battery_Monitor    = true; // Monitor battery charge if a battery is connected
 bool dashboard_Monitor  = true; // Enable/disable online dashboard reporting (requires WiFi or Ethernet)
-
+bool room_Monitor       = true; // if pressure_Monitor is true, Enable/disable reporting of T, RH and Pressure values from bme280 installed in the display case
 // -------------------------------------------------------------------
 // CO2 Sensor Configuration
 // -------------------------------------------------------------------
@@ -22,6 +22,21 @@ float switchCO2Sensors = 0.7; // Changeover from low-CO2 (SCD41) to high-CO2 (ST
 // If STC31 reading > 0.7%, use STC31; otherwise, use SCD41.
 // the STC31 doesnt record below ~. 0.7% CO2
 // ignored if low_CO2_Monitor = false
+
+// -------------------------------------------------------------------
+// bme280 calibration
+// -------------------------------------------------------------------
+float offsetTemp = -1;  //offset bme280 temperature to match other sensors
+
+bool calibrateRH = true;  //Optionally: Use a humidity controlled environment to calibrate the bme280 Humidity Sensor
+//Calibration standards such as salt media (NaCL and MgCL) or an electronically controlled humidity chamber can be used
+//Place saturated salt solution (salt + a little water) in an airtight container.
+//75% RH (NaCl) and 33% RH (MgCl₂)
+//Place sensor in chamber, wait 24hrs or until value plateaus before recording measurement
+float high_Standard = 76;   // High reference humidity chamber value (70-100%) 
+float high_bme280 = 64;     // BME280 measured value when sensor is measuring in high_Standard value chamber
+float low_Standard = 14;    // Low reference humidity chamber value (10-30%) 
+float low_bme280 = 10;      // BME280 measured value when sensor is measuring in low_Standard value chamber
 
 // -------------------------------------------------------------------
 // Measurement Limits (Incubation Settings)

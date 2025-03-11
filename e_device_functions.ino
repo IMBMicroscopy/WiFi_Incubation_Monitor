@@ -7,37 +7,32 @@ void initSensors(){
 
   if(pressure_Monitor){
     for(int i=0;i <=5;i++) {  
-      if(!myBME280.begin()){
+      if(!myBME280.begin(0x76, &Wire) && !myBME280.begin(0x77, &Wire)){
         Serial.println(F("Couldn't find BME280 sensor!"));
         if(i == 5){
           pressure_Monitor = false;
+          BME280Exists = false;
           tft.println(F("Fail BME280"));
           break;
         }
         delay(1000);
       }else{
-        switch(myBME280.chipModel()) {
-          case BME280::ChipModel_BME280:
-            Serial.println(F("Found BME280 sensor."));
-            tft.println(F("Found BME280"));
-            BME280Exists = true;
-            break;
-          case BME280::ChipModel_BMP280:
-            Serial.println(F("Found BMP280 sensor! No Humidity available."));
-            tft.println(F("Found BMP280"));
-            break;
-          default:
-            Serial.println(F("Found UNKNOWN sensor! Error!"));
-            tft.println(F("Fail BME280"));
-            pressure_Monitor = false;
-            BME280Exists = false;
-            break;
-        }
-        delay(1000);
+        Serial.println(F("Found BME280 sensor."));
+        tft.println(F("Found BME280"));
+        BME280Exists = true;
         break;
       }
+      delay(1000);
+      break;
     }
-  }   
+    myBME280.setSampling(Adafruit_BME280::MODE_FORCED,
+                        Adafruit_BME280::SAMPLING_X4, // temperature
+                        Adafruit_BME280::SAMPLING_X4, // pressure
+                        Adafruit_BME280::SAMPLING_X4, // humidity
+                        Adafruit_BME280::FILTER_X4   );
+
+    myBME280.MODE_SLEEP;
+  }
 
   //find low pressure sensor if enabled in settings
   if(low_CO2_Monitor){
@@ -55,11 +50,11 @@ void initSensors(){
       }
       delay(1000);
     }
+    //mySCD41.stopPeriodicMeasurement();
   }
 
   //find high pressure sensor if enabled in settings
   if(high_CO2_Monitor){
-    //mySTC31.enableDebugging(); // Uncomment this line to get helpful debug messages on Serial
     for(int i=0; i<=5; i++){
       if (!mySTC31.begin()){
         Serial.println(F("STC31 sensor not detected."));
@@ -130,6 +125,73 @@ void recalSensor() {
   }
 }
 
+float correctedRH(float RH){
+  if(calibrateRH){
+    // Function to calibrate the bme280 humidity against a known standard (or the STC31)
+    // Calculate correction factor (slope) and offset
+    float a = (high_Standard - low_Standard) / (high_bme280 - low_bme280);
+    float b = high_Standard - (a * high_bme280);
+
+    // Apply correction 
+    float cRH = (a * RH) + b;
+    return cRH;
+  }else{return RH;}
+}
+
+void readBME() {
+  myBME280.takeForcedMeasurement();
+  delay(50);
+  bmeTemp = myBME280.readTemperature();
+  bmePress = myBME280.readPressure();
+  bmeRH = myBME280.readHumidity();
+  bmeCRH = correctedRH(bmeRH);
+  
+  Serial.print(F("BME280: "));
+  Serial.print(F("Temperature: ")); Serial.print(bmeTemp,1); Serial.print('C');
+  Serial.print(F("\tHumidity: ")); Serial.print(bmeRH, 0); Serial.print(F("%"));
+  Serial.print(F("\tcHumidity: ")); Serial.print(bmeCRH, 0); Serial.print(F("%"));
+  Serial.print(F("\tPressure: ")); Serial.print(bmePress*.01, 1); Serial.println(F("mBar"));
+}
+
+void readSCD41(){
+  //mySCD41.measureSingleShot();
+  //delay(5000);  //required for low power single shot mode
+  if (mySCD41.readMeasurement() ) // readMeasurement will return true when fresh data is available
+  {
+    scdTemp = mySCD41.getTemperature();
+    scdCO2 = mySCD41.getCO2()*0.0001;
+    scdRH = mySCD41.getHumidity();
+
+    Serial.print(F("SCD41: "));
+    Serial.print(F("\tTemperature: ")); Serial.print(scdTemp, 1); Serial.print(F("C"));
+    Serial.print(F("\tHumidity: ")); Serial.print(scdRH, 0); Serial.print(F("%"));
+    Serial.print(F("\tCO2: ")); Serial.print(scdCO2, 2); Serial.print(F("%"));
+    Serial.println();
+  }
+}
+
+void readSTC31() {
+  if (mySHTC3.update() != SHTC3_Status_Nominal) {// Request a measurement
+      Serial.println(F("Could not read the RH and T from the SHTC3!"));
+      while (1)
+        ;
+  }
+  if (mySTC31.measureGasConcentration()) { // measureGasConcentration will return true when fresh data is available
+    delay(20);
+    //get sensor readings
+    stcCO2 = mySTC31.getCO2();
+    stcTemp = mySTC31.getTemperature();
+    stcRH = mySHTC3.toPercent();
+
+    //write to Serial port
+    Serial.print(F("STC31: "));
+    Serial.print(F("\tTemperature: ")); Serial.print(stcTemp, 1); Serial.print(F("C"));
+    Serial.print(F("\tHumidity: ")); Serial.print(stcRH, 0); Serial.print(F("%"));
+    Serial.print(F("\tCO2:")); Serial.print(stcCO2, 2); Serial.print(F("%"));
+    Serial.println(F(""));
+  }
+}
+
 void readSensors() {
   elapsedSensorTime = (millis() - lastSensorTime)/1000;
   //take sensor readings on first run and then at sensorRate
@@ -142,46 +204,17 @@ void readSensors() {
 
     if(pressure_Monitor){
       //can use a live measurement if you include a pressure sensor, or define average value at beginning of code
-      myBME280.read(bmePress, bmeTemp, bmeRH, tempUnit, presUnit);
-      Serial.print(F("BME280: "));
-      Serial.print(F("Temperature: ")); Serial.print(bmeTemp,1); Serial.print(String(tempUnit == BME280::TempUnit_Celsius ? 'C' :'F'));
-      Serial.print(F("\tHumidity: ")); Serial.print(bmeRH, 0); Serial.print(F("%"));
-      Serial.print(F("\tPressure: ")); Serial.print(bmePress*.01, 1); Serial.println(F("mBar"));
+      readBME();
     }
 
     if(low_CO2_Monitor){
       //read values from SCD41 CO2 board
-      if (mySCD41.readMeasurement() ) // readMeasurement will return true when fresh data is available
-      {
-        scdTemp = mySCD41.getTemperature();
-        scdCO2 = mySCD41.getCO2()*0.0001;
-        scdRH = mySCD41.getHumidity();
-
-        Serial.print(F("SCD41: "));
-        Serial.print(F("\tTemperature: ")); Serial.print(scdTemp); Serial.print(F("C"));
-        Serial.print(F("\tHumidity: ")); Serial.print(scdRH); Serial.print(F("%"));
-        Serial.print(F("\tCO2: ")); Serial.print(scdCO2); Serial.print(F("%"));
-        Serial.println();
-      }
+      readSCD41();
     }
 
     if(high_CO2_Monitor){
       //read values from STC31 CO2 board
-      if (mySTC31.measureGasConcentration()) { 
-        // measureGasConcentration will return true when fresh data is available
-
-        //get sensor readings
-        stcCO2 = mySTC31.getCO2();
-        stcTemp = mySTC31.getTemperature();
-        stcRH = mySHTC3.toPercent();
-
-        //write to Serial port
-        Serial.print(F("STC31: "));
-        Serial.print(F("\tTemperature: ")); Serial.print(stcTemp, 1); Serial.print(F("C"));
-        Serial.print(F("\tHumidity: ")); Serial.print(stcRH, 0); Serial.print(F("%"));
-        Serial.print(F("\tCO2:")); Serial.print(stcCO2, 2); Serial.print(F("%"));
-        Serial.println(F(""));
-      }
+      readSTC31();
     }
     
     //use the SCD41 CO2 sensor for low CO2 values if available
@@ -202,8 +235,19 @@ void readSensors() {
     if(pressure_Monitor && !low_CO2_Monitor && !high_CO2_Monitor){
       myCO2 = 0.0;
       myTemp = bmeTemp;
-      myRH = bmeRH;
+      myRH = bmeCRH;
     }
+
+    if(pressure_Monitor){
+      myPress = bmePress *0.01;
+    }else{myPress = pressure;}
+
+    Serial.print(F("Report: "));
+    Serial.print(F("Temperature: ")); Serial.print(myTemp, 1); Serial.print(F("C"));
+    Serial.print(F("\tHumidity: ")); Serial.print(myRH, 0); Serial.print(F("%"));
+    Serial.print(F("\tCO2:")); Serial.print(myCO2, 2); Serial.print(F("%"));
+    Serial.print(F("\tPressure: ")); Serial.print(myPress, 1); Serial.print(F("mBar"));
+    Serial.println(F(""));
   }
 }
 
@@ -268,7 +312,7 @@ void batteryMonitoring() {
       Serial.print(F("\tBatt %: ")); Serial.print(battPercent, 1); Serial.print(F("%"));
       Serial.print(F("\tCharge rate : ")); Serial.print(battRate, 1); Serial.println(F("%/hr"));
     }
-
+    maxlipo.hibernate();
   }
 }
 
@@ -279,21 +323,12 @@ void compensate() {
   //take sensor readings, pressure required for CO2 compensation
   if(pressure_Monitor){
     //read values from BME280 board
-    myBME280.read(bmePress, bmeTemp, bmeRH, tempUnit, presUnit);
-    Serial.print(F("BME280: "));
-    Serial.print(F("Temperature: ")); Serial.print(bmeTemp,1); Serial.print(String(tempUnit == BME280::TempUnit_Celsius ? 'C' :'F'));
-    Serial.print(F("\tHumidity: ")); Serial.print(bmeRH, 0); Serial.print(F("%"));
-    Serial.print(F("\tPressure: ")); Serial.print(bmePress*.01, 1); Serial.println(F("mBar"));
+    readBME();  
   }
 
   if(high_CO2_Monitor){
-    if (mySHTC3.update() != SHTC3_Status_Nominal) // Request a measurement
-    {
-      Serial.println(F("Could not read the RH and T from the SHTC3!"));
-      while (1)
-        ;
-    }
-  
+    readSTC31();
+
     //include Temperature in CO2 calculation
     float temperature = mySHTC3.toDegC(); // "toDegC" returns the temperature as a floating point number in deg C
     Serial.print(F("Setting STC3x temperature to ")); Serial.print(temperature, 2); Serial.print(F("C was "));
@@ -317,8 +352,9 @@ void compensate() {
   //update SCD41 readings using calibrated pressure in pascals
   if(low_CO2_Monitor){
     if(BME280Exists && (bmePress > 60000) && (bmePress < 120000)) {pascals = bmePress;}else{pascals = pressure*100;} //use actual pressure from BME280 vs estimated pressure value
-    Serial.print(F("Setting SCD41 pressure to ")); Serial.print(pascals); Serial.println(F("pascals"));
-    mySCD41.setAmbientPressure(pascals);
+    Serial.print(F("Setting SCD41 pressure to ")); Serial.print(pascals); Serial.println(F(" Pa"));
+    if (mySCD41.setAmbientPressure(pascals) == false){Serial.print(F("not "));}
+    Serial.println(F("successful"));
   }
   compFlag = true;  //flag to indicate calibration has been performed on TFT
   delay(2000);
