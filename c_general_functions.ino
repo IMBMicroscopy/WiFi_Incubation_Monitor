@@ -215,7 +215,7 @@ void boolToCharArray(bool value, char* output) {
 
 
 bool charArrayToBool(const char* str) {
-    if (strcmp(str, "true") == 0 || strcmp(str, "1") == 0) {
+    if (strcasecmp(str, "true") == 0 || strcmp(str, "1") == 0) {
         return true;
     }
     return false;

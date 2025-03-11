@@ -1,5 +1,6 @@
 // Include required libraries
 #include "esp_mac.h"             // Exposes esp_mac_type_t values
+#include <cstring>               // For strcmp, strcpy, strcasecmp
 #include <Wire.h>                // I2C communications for CO2 sensor breakout board
 #include <SPI.h>                 // SPI interface for TFT display
 #include <Adafruit_Sensor.h>     // Adafruit sensor library
