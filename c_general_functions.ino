@@ -223,20 +223,14 @@ bool charArrayToBool(const char* str) {
 
 //copy default config values to character arrays
 void convertParamsToCharArray(){
+  //Feature Toggles
   boolToCharArray(low_CO2_Monitor, low_CO2_Monitor_buff);
   boolToCharArray(high_CO2_Monitor, high_CO2_Monitor_buff);
   boolToCharArray(pressure_Monitor, pressure_Monitor_buff);
   boolToCharArray(battery_Monitor, battery_Monitor_buff);
   boolToCharArray(dashboard_Monitor, dashboard_Monitor_buff);
   boolToCharArray(room_Monitor, room_Monitor_buff);
-  
-  dtostrf(offsetTemp, 4, 2, offsetTemp_buff);
-  boolToCharArray(calibrateRH, calibrateRH_buff);
-  dtostrf(high_Standard, 4, 2, high_Standard_buff);
-  dtostrf(high_bme280, 4, 2, high_bme280_buff);
-  dtostrf(low_Standard, 4, 2, low_Standard_buff);
-  dtostrf(low_bme280, 4, 2, low_bme280_buff);
-
+  //Sensor Parameters
   dtostrf(switchCO2Sensors, 4, 2, switchCO2Sensors_buff);
   dtostrf(lowCO2, 4, 2, lowCO2_buff);
   dtostrf(highCO2, 4, 2, highCO2_buff);
@@ -249,6 +243,28 @@ void convertParamsToCharArray(){
   dtostrf(compensateRate, 4, 0, compensateRate_buff);
   dtostrf(dashboardRate, 4, 0, dashboardRate_buff);
   dtostrf(batteryRate, 4, 0, batteryRate_buff);
+  // BME280 calibration
+  dtostrf(bme280_offsetTemp, 4, 2, bme280_offsetTemp_buff);
+  boolToCharArray(bme280_calibrateRH, bme280_calibrateRH_buff);
+  dtostrf(bme280_high_reference, 4, 2, bme280_high_reference_buff);
+  dtostrf(bme280_high_reading, 4, 2, bme280_high_reading_buff);
+  dtostrf(bme280_low_reference, 4, 2, bme280_low_reference_buff);
+  dtostrf(bme280_low_reading, 4, 2, bme280_low_reading_buff);
+  // SHTC3 calibration
+  dtostrf(SHTC3_offsetTemp, 4, 2, SHTC3_offsetTemp_buff);
+  boolToCharArray(SHTC3_calibrateRH, SHTC3_calibrateRH_buff);
+  dtostrf(SHTC3_high_reference, 4, 2, SHTC3_high_reference_buff);
+  dtostrf(SHTC3_high_reading, 4, 2, SHTC3_high_reading_buff);
+  dtostrf(SHTC3_low_reference, 4, 2, SHTC3_low_reference_buff);
+  dtostrf(SHTC3_low_reading, 4, 2, SHTC3_low_reading_buff);
+  // SCD41 calibration
+  dtostrf(SCD41_offsetTemp, 4, 2, SCD41_offsetTemp_buff);
+  boolToCharArray(SCD41_calibrateRH, SCD41_calibrateRH_buff);
+  dtostrf(SCD41_high_reference, 4, 2, SCD41_high_reference_buff);
+  dtostrf(SCD41_high_reading, 4, 2, SCD41_high_reading_buff);
+  dtostrf(SCD41_low_reference, 4, 2, SCD41_low_reference_buff);
+  dtostrf(SCD41_low_reading, 4, 2, SCD41_low_reading_buff);
+  //Additional
   dtostrf(baud, 4, 0, baud_buff);
   dtostrf(pressure, 4, 2, pressure_buff);
 }
