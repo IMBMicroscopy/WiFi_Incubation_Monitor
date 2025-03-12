@@ -55,6 +55,7 @@ char pressure_Monitor_buff[6] = "";
 char battery_Monitor_buff[6] = "";
 char dashboard_Monitor_buff[6] = "";
 char room_Monitor_buff[6] = "";
+
 //Sensor Settings
 char switchCO2Sensors_buff[8] = "";
 char lowCO2_buff[8] = "";
@@ -75,7 +76,6 @@ char bme280_high_reference_buff[8] = "";
 char bme280_high_reading_buff[8] = "";
 char bme280_low_reference_buff[8] = "";
 char bme280_low_reading_buff[8] = "";
-
 // SHTC3 calibration
 char SHTC3_offsetTemp_buff[8] = "";
 char SHTC3_calibrateRH_buff[6] = "";
@@ -83,7 +83,6 @@ char SHTC3_high_reference_buff[8] = "";
 char SHTC3_high_reading_buff[8] = "";
 char SHTC3_low_reference_buff[8] = "";
 char SHTC3_low_reading_buff[8] = "";
-
 // SCD41 calibration
 char SCD41_offsetTemp_buff[8] = "";
 char SCD41_calibrateRH_buff[6] = "";

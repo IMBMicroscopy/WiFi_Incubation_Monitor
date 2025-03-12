@@ -54,6 +54,7 @@ void initSensors(){
     //mySCD41.stopPeriodicMeasurement();
     mySCD41.startPeriodicMeasurement();
     mySCD41.setTemperatureOffset(SCD41_offsetTemp);
+
   }
 
   //find high pressure sensor if enabled in settings
@@ -241,6 +242,7 @@ void readSTC31() {
     }
     if(i == 10){Serial.println(F("STC31 read failed, use last values"));}
     delay(500);
+
   }
 }
 
@@ -342,6 +344,7 @@ void compensate() {
     Serial.print(F("Setting SCD41 pressure to ")); Serial.print(pascals); Serial.print(F(" Pa"));
     if (mySCD41.setAmbientPressure(pascals) == false){Serial.print(F(" not"));}
     Serial.println(F(" successful"));
+
   }
 
   compFlag = true;  //flag to indicate calibration has been performed on TFT
@@ -412,5 +415,3 @@ void batteryMonitoring() {
     maxlipo.hibernate();
   }
 }
-
-

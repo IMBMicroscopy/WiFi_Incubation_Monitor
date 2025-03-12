@@ -24,6 +24,21 @@ float switchCO2Sensors = 0.7; // Changeover from low-CO2 (SCD41) to high-CO2 (ST
 // ignored if low_CO2_Monitor = false
 
 // -------------------------------------------------------------------
+// bme280 calibration
+// -------------------------------------------------------------------
+float offsetTemp = -1;  //offset bme280 temperature to match other sensors
+
+bool calibrateRH = true;  //Optionally: Use a humidity controlled environment to calibrate the bme280 Humidity Sensor
+//Calibration standards such as salt media (NaCL and MgCL) or an electronically controlled humidity chamber can be used
+//Place saturated salt solution (salt + a little water) in an airtight container.
+//75% RH (NaCl) and 33% RH (MgCl₂)
+//Place sensor in chamber, wait 24hrs or until value plateaus before recording measurement
+float high_Standard = 76;   // High reference humidity chamber value (70-100%) 
+float high_bme280 = 64;     // BME280 measured value when sensor is measuring in high_Standard value chamber
+float low_Standard = 14;    // Low reference humidity chamber value (10-30%) 
+float low_bme280 = 10;      // BME280 measured value when sensor is measuring in low_Standard value chamber
+
+// -------------------------------------------------------------------
 // Measurement Limits (Incubation Settings)
 // Below or above these thresholds, an alarm condition (e.g., TFT color change) occurs
 // -------------------------------------------------------------------
