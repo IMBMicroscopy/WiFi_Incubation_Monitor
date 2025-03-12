@@ -1,5 +1,18 @@
 //general functions
 
+//get default WiFi Mac Address
+String getDefaultMacAddress() {
+  String mac = "";
+  unsigned char mac_base[6] = {0};
+
+  if (esp_efuse_mac_get_default(mac_base) == ESP_OK) {
+    char buffer[18];  // 6*2 characters for hex + 5 characters for colons + 1 character for null terminator
+    sprintf(buffer, "%02X:%02X:%02X:%02X:%02X:%02X", mac_base[0], mac_base[1], mac_base[2], mac_base[3], mac_base[4], mac_base[5]);
+    mac = buffer;
+  }
+  return mac;
+}
+
 //initialise timers at end of setup for code execution in loop
 void initTimers(){
   //used to calculate loop timers
@@ -106,8 +119,15 @@ void updateTFT(){
     }else{
       tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
     }
-    tft.print(myTemp, 1); tft.print("C");
-    if(compFlag){tft.println(" *");}else{tft.println("");}
+    tft.print(myTemp, 1);// tft.print("C");
+    if(room_Monitor){
+      tft.setTextColor(ST77XX_WHITE);
+      tft.setTextSize(2);
+      tft.print(" / "); 
+      tft.setTextSize(3);
+      tft.print(bmeTemp, 1); 
+    }
+    tft.print("C"); tft.println("");
 
     //Relative Humidity
     tft.setTextColor(ST77XX_WHITE);
@@ -122,9 +142,15 @@ void updateTFT(){
     }else{
       tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
     }
-    tft.print(myRH, 0); tft.print("%");
-
-    if(compFlag){tft.println(" *");}else{tft.println("");}
+    tft.print(myRH, 0); //tft.print("%");
+    if(room_Monitor){
+      tft.setTextColor(ST77XX_WHITE);
+      tft.setTextSize(2);
+      tft.print(" / "); 
+      tft.setTextSize(3);
+      tft.print(bmeCRH, 0); 
+    }
+    tft.print("%"); tft.println("");
     
     compFlag = false;
 
@@ -189,7 +215,7 @@ void boolToCharArray(bool value, char* output) {
 
 
 bool charArrayToBool(const char* str) {
-    if (strcmp(str, "true") == 0 || strcmp(str, "1") == 0) {
+    if (strcasecmp(str, "true") == 0 || strcmp(str, "1") == 0) {
         return true;
     }
     return false;
@@ -197,12 +223,14 @@ bool charArrayToBool(const char* str) {
 
 //copy default config values to character arrays
 void convertParamsToCharArray(){
+  //Feature Toggles
   boolToCharArray(low_CO2_Monitor, low_CO2_Monitor_buff);
   boolToCharArray(high_CO2_Monitor, high_CO2_Monitor_buff);
   boolToCharArray(pressure_Monitor, pressure_Monitor_buff);
   boolToCharArray(battery_Monitor, battery_Monitor_buff);
   boolToCharArray(dashboard_Monitor, dashboard_Monitor_buff);
-
+  boolToCharArray(room_Monitor, room_Monitor_buff);
+  //Sensor Parameters
   dtostrf(switchCO2Sensors, 4, 2, switchCO2Sensors_buff);
   dtostrf(lowCO2, 4, 2, lowCO2_buff);
   dtostrf(highCO2, 4, 2, highCO2_buff);
@@ -215,6 +243,28 @@ void convertParamsToCharArray(){
   dtostrf(compensateRate, 4, 0, compensateRate_buff);
   dtostrf(dashboardRate, 4, 0, dashboardRate_buff);
   dtostrf(batteryRate, 4, 0, batteryRate_buff);
+  // BME280 calibration
+  dtostrf(bme280_offsetTemp, 4, 2, bme280_offsetTemp_buff);
+  boolToCharArray(bme280_calibrateRH, bme280_calibrateRH_buff);
+  dtostrf(bme280_high_reference, 4, 2, bme280_high_reference_buff);
+  dtostrf(bme280_high_reading, 4, 2, bme280_high_reading_buff);
+  dtostrf(bme280_low_reference, 4, 2, bme280_low_reference_buff);
+  dtostrf(bme280_low_reading, 4, 2, bme280_low_reading_buff);
+  // SHTC3 calibration
+  dtostrf(SHTC3_offsetTemp, 4, 2, SHTC3_offsetTemp_buff);
+  boolToCharArray(SHTC3_calibrateRH, SHTC3_calibrateRH_buff);
+  dtostrf(SHTC3_high_reference, 4, 2, SHTC3_high_reference_buff);
+  dtostrf(SHTC3_high_reading, 4, 2, SHTC3_high_reading_buff);
+  dtostrf(SHTC3_low_reference, 4, 2, SHTC3_low_reference_buff);
+  dtostrf(SHTC3_low_reading, 4, 2, SHTC3_low_reading_buff);
+  // SCD41 calibration
+  dtostrf(SCD41_offsetTemp, 4, 2, SCD41_offsetTemp_buff);
+  boolToCharArray(SCD41_calibrateRH, SCD41_calibrateRH_buff);
+  dtostrf(SCD41_high_reference, 4, 2, SCD41_high_reference_buff);
+  dtostrf(SCD41_high_reading, 4, 2, SCD41_high_reading_buff);
+  dtostrf(SCD41_low_reference, 4, 2, SCD41_low_reference_buff);
+  dtostrf(SCD41_low_reading, 4, 2, SCD41_low_reading_buff);
+  //Additional
   dtostrf(baud, 4, 0, baud_buff);
   dtostrf(pressure, 4, 2, pressure_buff);
 }

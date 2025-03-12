@@ -13,11 +13,10 @@ void setup() {
 
   initWiFi();                       // Configure WiFi if Dashboard is enabled
   initSensors();                    // Initialize the incubation sensors
-  compensate();                     // Perform initial sensor compensation
   initBattery();                    // Initialize the battery monitor
   initTimers();                     // Get the current time for loop operations
 
-  Serial.println(F("\nFinished setup\n"));
+  Serial.println(F("Finished setup"));
 } // setup()
 
 void loop() {

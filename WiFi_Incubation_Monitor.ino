@@ -11,10 +11,10 @@
 // -------------------------------------------------------------------
 bool low_CO2_Monitor    = true; // Optional SCD41 sensor for measuring low ambient levels of CO2 (<1%)
 bool high_CO2_Monitor   = true; // STC31 sensor (0.7 - 100% CO2) attached?
-bool pressure_Monitor   = true; // Optional BME280 sensor for measuring ambient pressure
+bool pressure_Monitor   = true; // Optional BME280 sensor for measuring ambient pressure and room conditions (T and RH)
 bool battery_Monitor    = true; // Monitor battery charge if a battery is connected
 bool dashboard_Monitor  = true; // Enable/disable online dashboard reporting (requires WiFi or Ethernet)
-
+bool room_Monitor       = true; // if pressure_Monitor is true, Enable/disable reporting of T, RH and Pressure values from bme280 installed in the display case
 // -------------------------------------------------------------------
 // CO2 Sensor Configuration
 // -------------------------------------------------------------------
@@ -48,7 +48,52 @@ int dashboardRate   = 60;  // Update the online dashboard every X seconds (>= se
 int batteryRate     = 300; // Check BMS hibernation status and wake if needed (>= sensorRate)
 
 // -------------------------------------------------------------------
-// Additional Configurations
+// bme280 calibration (in case for room monitoring)
+// -------------------------------------------------------------------
+float bme280_offsetTemp = 0;  //offset bme280 temperature to match other sensors
+
+bool bme280_calibrateRH = false;  //Optionally: Use a humidity controlled environment to calibrate the bme280 Humidity Sensor
+//Calibration standards such as salt media (NaCL and MgCL) or an electronically controlled humidity chamber can be used
+//Place saturated salt solution (salt + a little water) in an airtight container.
+//75% RH (NaCl) and 33% RH (MgCl₂)
+//Place sensor in chamber, wait 24hrs or until value plateaus before recording measurement
+float bme280_high_reference = 76;   // High reference humidity chamber value (70-100%) or validated sensor reading 
+float bme280_high_reading = 64;     // BME280 measured value when sensor is measuring in high_reference value chamber
+float bme280_low_reference = 14;    // Low reference humidity chamber value (10-30%) or validated sensor reading
+float bme280_low_reading = 10;      // BME280 measured value when sensor is measuring in low_reference value chamber
+
+// -------------------------------------------------------------------
+// SHTC3 calibration (on High CO2 STC31 sensor board)
+// -------------------------------------------------------------------
+float SHTC3_offsetTemp = 0;  // Offset SHTC3 temperature to match other sensors
+
+bool SHTC3_calibrateRH = false;  // Optionally: Use a humidity-controlled environment to calibrate the SHTC3 Humidity Sensor
+// Calibration standards such as salt media (NaCl and MgCl₂) or an electronically controlled humidity chamber can be used
+// Place saturated salt solution (salt + a little water) in an airtight container.
+// 75% RH (NaCl) and 33% RH (MgCl₂)
+// Place sensor in chamber, wait 24hrs or until value plateaus before recording measurement
+float SHTC3_high_reference = 75;    // High reference humidity chamber value (70-100%) or validated sensor reading
+float SHTC3_high_reading = 75;      // SHTC3 measured value when sensor is measuring in high_reference value chamber
+float SHTC3_low_reference = 33;     // Low reference humidity chamber value (10-30%) or validated sensor reading
+float SHTC3_low_reading = 33;       // SHTC3 measured value when sensor is measuring in low_reference value chamber
+
+// -------------------------------------------------------------------
+// SCD41 calibration (on Low CO2 sensor board)
+// -------------------------------------------------------------------
+float SCD41_offsetTemp = 0;  // Offset SCD41 temperature to match other sensors
+
+bool SCD41_calibrateRH = false;  // Optionally: Use a humidity-controlled environment to calibrate the SCD41 Humidity Sensor
+// Calibration standards such as salt media (NaCl and MgCl₂) or an electronically controlled humidity chamber can be used
+// Place saturated salt solution (salt + a little water) in an airtight container.
+// 75% RH (NaCl) and 33% RH (MgCl₂)
+// Place sensor in chamber, wait 24hrs or until value plateaus before recording measurement
+float SCD41_high_reference = 75;    // High reference humidity chamber value (70-100%) or validated sensor reading
+float SCD41_high_reading = 75;      // SCD41 measured value when sensor is measuring in high_reference value chamber
+float SCD41_low_reference = 33;     // Low reference humidity chamber value (10-30%) or validated sensor reading
+float SCD41_low_reading = 33;       // SCD41 measured value when sensor is measuring in low_reference value chamber
+
+// -------------------------------------------------------------------
+// Additional Parameters
 // -------------------------------------------------------------------
 int   baud      = 115200;  // Serial port baud rate
 float pressure  = 1020.0;  // Ambient average pressure (mbar) used for CO2 calibration if no BME280 pressure sensor is installed

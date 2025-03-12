@@ -1,15 +1,4 @@
-//get default WiFi Mac Address
-String getDefaultMacAddress() {
-  String mac = "";
-  unsigned char mac_base[6] = {0};
-
-  if (esp_efuse_mac_get_default(mac_base) == ESP_OK) {
-    char buffer[18];  // 6*2 characters for hex + 5 characters for colons + 1 character for null terminator
-    sprintf(buffer, "%02X:%02X:%02X:%02X:%02X:%02X", mac_base[0], mac_base[1], mac_base[2], mac_base[3], mac_base[4], mac_base[5]);
-    mac = buffer;
-  }
-  return mac;
-}
+//IO related functions
 
 void userActivatedHotspot(){
   //Check for user initiated Wifi hotspot request by button press
@@ -44,7 +33,7 @@ void initWiFi(){
     tft.printf(" Config -> ", hotspotPin);
 
     userActivatedHotspot();
-    Serial.printf("\n\n");
+    Serial.printf("\n");
     initTFT();
     convertParamsToCharArray();
 
@@ -64,7 +53,7 @@ void saveParams() {
   constrainRates();                 // Constrain user-defined readout rates to acceptable values
 
   preferences.begin("custom", true); // Open Preferences in read mode
-  int test = preferences.getInt("baud", -1);  //test if default values exist in flash
+  int test = preferences.getInt("baud", -1);  //test if default values exist in flash, if they dont, set value to -1
   preferences.end();
 
   preferences.begin("custom", false); // Open Preferences in write mode
@@ -80,12 +69,14 @@ void saveParams() {
   if ((test == -1) || saveIO){
     if(test == -1){Serial.println("default parameters dont exist, write them to flash");}
     if(saveIO){Serial.println("writing customised default parameters to flash");}
+    //feature toggles
     preferences.putBool("low_CO2_Monitor", low_CO2_Monitor);
     preferences.putBool("high_CO2_Monitor", high_CO2_Monitor);
     preferences.putBool("pressure_Monitor", pressure_Monitor);
     preferences.putBool("battery_Monitor", battery_Monitor);
     preferences.putBool("dashboard_Monitor", dashboard_Monitor);
-
+    preferences.putBool("room_Monitor", room_Monitor);
+    //sensor parameters
     preferences.putFloat("switchCO2Sensors", switchCO2Sensors);
     preferences.putFloat("lowCO2", lowCO2);
     preferences.putFloat("highCO2", highCO2);
@@ -94,13 +85,33 @@ void saveParams() {
     preferences.putFloat("lowTemp", lowTemp);
     preferences.putFloat("highTemp", highTemp);
     preferences.putFloat("lowBatt", lowBatt);
-
     preferences.putInt("sensorRate", sensorRate);
     preferences.putInt("compensateRate", compensateRate);
     preferences.putInt("dashboardRate", dashboardRate);
     preferences.putInt("batteryRate", batteryRate);
+    // BME280 calibration
+    preferences.putFloat("bme280_offsetTemp", bme280_offsetTemp);
+    preferences.putBool("bme280_calibrateRH", bme280_calibrateRH);
+    preferences.putFloat("bme280_high_reference", bme280_high_reference);
+    preferences.putFloat("bme280_high_reading", bme280_high_reading);
+    preferences.putFloat("bme280_low_reference", bme280_low_reference);
+    preferences.putFloat("bme280_low_reading", bme280_low_reading);
+    // SHTC3 calibration
+    preferences.putFloat("SHTC3_offsetTemp", SHTC3_offsetTemp);
+    preferences.putBool("SHTC3_calibrateRH", SHTC3_calibrateRH);
+    preferences.putFloat("SHTC3_high_reference", SHTC3_high_reference);
+    preferences.putFloat("SHTC3_high_reading", SHTC3_high_reading);
+    preferences.putFloat("SHTC3_low_reference", SHTC3_low_reference);
+    preferences.putFloat("SHTC3_low_reading", SHTC3_low_reading);
+    // SCD41 calibration
+    preferences.putFloat("SCD41_offsetTemp", SCD41_offsetTemp);
+    preferences.putBool("SCD41_calibrateRH", SCD41_calibrateRH);
+    preferences.putFloat("SCD41_high_reference", SCD41_high_reference);
+    preferences.putFloat("SCD41_high_reading", SCD41_high_reading);
+    preferences.putFloat("SCD41_low_reference", SCD41_low_reference);
+    preferences.putFloat("SCD41_low_reading", SCD41_low_reading);
+    //additional
     preferences.putInt("baud", baud);
-
     preferences.putFloat("pressure", pressure);
 
   }else{Serial.println("default Values exist and havent been customised, dont write new values to flash");}
@@ -116,13 +127,14 @@ void loadParams() {
   (preferences.getString("IO_USERNAME", "")).toCharArray(IO_USERNAME_buff, sizeof(IO_USERNAME_buff));  //may need to convert to character array from string first
   (preferences.getString("IO_KEY", "")).toCharArray(IO_KEY_buff, sizeof(IO_KEY_buff));
   (preferences.getString("IO_Dashboard","")).toCharArray(IO_Dashboard_buff, sizeof(IO_Dashboard_buff));
-
+  //feature toggles
   low_CO2_Monitor = preferences.getBool("low_CO2_Monitor", low_CO2_Monitor);
   high_CO2_Monitor = preferences.getBool("high_CO2_Monitor", high_CO2_Monitor);
   pressure_Monitor = preferences.getBool("pressure_Monitor", pressure_Monitor);
   battery_Monitor = preferences.getBool("battery_Monitor", battery_Monitor);
   dashboard_Monitor = preferences.getBool("dashboard_Monitor", dashboard_Monitor);
-
+  room_Monitor = preferences.getBool("room_Monitor", room_Monitor);
+  //sensor parameters
   switchCO2Sensors = preferences.getFloat("switchCO2Sensors", switchCO2Sensors);
   lowCO2 = preferences.getFloat("lowCO2", lowCO2);
   highCO2 = preferences.getFloat("highCO2", highCO2);
@@ -131,13 +143,33 @@ void loadParams() {
   lowTemp = preferences.getFloat("lowTemp", lowTemp);
   highTemp = preferences.getFloat("highTemp", highTemp);
   lowBatt = preferences.getFloat("lowBatt", lowBatt);
-
   sensorRate = preferences.getInt("sensorRate", sensorRate);
   compensateRate = preferences.getInt("compensateRate", compensateRate);
   dashboardRate = preferences.getInt("dashboardRate", dashboardRate);
   batteryRate = preferences.getInt("batteryRate", batteryRate);
+  // BME280 calibration
+  bme280_offsetTemp = preferences.getFloat("bme280_offsetTemp", bme280_offsetTemp);
+  bme280_calibrateRH = preferences.getBool("bme280_calibrateRH", bme280_calibrateRH);
+  bme280_high_reference = preferences.getFloat("bme280_high_reference", bme280_high_reference);
+  bme280_high_reading = preferences.getFloat("bme280_high_reading", bme280_high_reading);
+  bme280_low_reference = preferences.getFloat("bme280_low_reference", bme280_low_reference);
+  bme280_low_reading = preferences.getFloat("bme280_low_reading", bme280_low_reading);
+  // SHTC3 calibration
+  SHTC3_offsetTemp = preferences.getFloat("SHTC3_offsetTemp", SHTC3_offsetTemp);
+  SHTC3_calibrateRH = preferences.getBool("SHTC3_calibrateRH", SHTC3_calibrateRH);
+  SHTC3_high_reference = preferences.getFloat("SHTC3_high_reference", SHTC3_high_reference);
+  SHTC3_high_reading = preferences.getFloat("SHTC3_high_reading", SHTC3_high_reading);
+  SHTC3_low_reference = preferences.getFloat("SHTC3_low_reference", SHTC3_low_reference);
+  SHTC3_low_reading = preferences.getFloat("SHTC3_low_reading", SHTC3_low_reading);
+  // SCD41 calibration
+  SCD41_offsetTemp = preferences.getFloat("SCD41_offsetTemp", SCD41_offsetTemp);
+  SCD41_calibrateRH = preferences.getBool("SCD41_calibrateRH", SCD41_calibrateRH);
+  SCD41_high_reference = preferences.getFloat("SCD41_high_reference", SCD41_high_reference);
+  SCD41_high_reading = preferences.getFloat("SCD41_high_reading", SCD41_high_reading);
+  SCD41_low_reference = preferences.getFloat("SCD41_low_reference", SCD41_low_reference);
+  SCD41_low_reading = preferences.getFloat("SCD41_low_reading", SCD41_low_reading);
+  //additional
   baud = preferences.getInt("baud", baud);
-
   pressure = preferences.getFloat("pressure", pressure);
 
   preferences.end();
@@ -153,11 +185,14 @@ void saveConfigCallback() {
   strcpy(IO_USERNAME_buff, custom_IO_USERNAME.getValue());
   strcpy(IO_KEY_buff, custom_IO_KEY.getValue());
   strcpy(IO_Dashboard_buff, custom_IO_Dashboard.getValue());
+  //feature toggles
   strcpy(low_CO2_Monitor_buff, custom_low_CO2_Monitor.getValue());
   strcpy(high_CO2_Monitor_buff, custom_high_CO2_Monitor.getValue());
   strcpy(pressure_Monitor_buff, custom_pressure_Monitor.getValue());
   strcpy(battery_Monitor_buff, custom_battery_Monitor.getValue());
   strcpy(dashboard_Monitor_buff, custom_dashboard_Monitor.getValue());
+  strcpy(room_Monitor_buff, custom_room_Monitor.getValue());
+  //sensor parameters
   strcpy(switchCO2Sensors_buff, custom_switch_CO2_Sensors.getValue());
   strcpy(lowCO2_buff, custom_lowCO2.getValue());
   strcpy(highCO2_buff, custom_highCO2.getValue());
@@ -170,15 +205,40 @@ void saveConfigCallback() {
   strcpy(compensateRate_buff, custom_compensateRate.getValue());
   strcpy(dashboardRate_buff, custom_dashboardRate.getValue());
   strcpy(batteryRate_buff, custom_batteryRate.getValue());
+  // BME280 calibration
+  strcpy(bme280_offsetTemp_buff, custom_bme280_offsetTemp.getValue());
+  strcpy(bme280_calibrateRH_buff, custom_bme280_calibrateRH.getValue());
+  strcpy(bme280_high_reference_buff, custom_bme280_high_reference.getValue());
+  strcpy(bme280_high_reading_buff, custom_bme280_high_reading.getValue());
+  strcpy(bme280_low_reference_buff, custom_bme280_low_reference.getValue());
+  strcpy(bme280_low_reading_buff, custom_bme280_low_reading.getValue());
+  // SHTC3 calibration
+  strcpy(SHTC3_offsetTemp_buff, custom_SHTC3_offsetTemp.getValue());
+  strcpy(SHTC3_calibrateRH_buff, custom_SHTC3_calibrateRH.getValue());
+  strcpy(SHTC3_high_reference_buff, custom_SHTC3_high_reference.getValue());
+  strcpy(SHTC3_high_reading_buff, custom_SHTC3_high_reading.getValue());
+  strcpy(SHTC3_low_reference_buff, custom_SHTC3_low_reference.getValue());
+  strcpy(SHTC3_low_reading_buff, custom_SHTC3_low_reading.getValue());
+  // SCD41 calibration
+  strcpy(SCD41_offsetTemp_buff, custom_SCD41_offsetTemp.getValue());
+  strcpy(SCD41_calibrateRH_buff, custom_SCD41_calibrateRH.getValue());
+  strcpy(SCD41_high_reference_buff, custom_SCD41_high_reference.getValue());
+  strcpy(SCD41_high_reading_buff, custom_SCD41_high_reading.getValue());
+  strcpy(SCD41_low_reference_buff, custom_SCD41_low_reference.getValue());
+  strcpy(SCD41_low_reading_buff, custom_SCD41_low_reading.getValue());
+  //additional
   strcpy(pressure_buff, custom_pressure.getValue());
   strcpy(baud_buff, custom_baud.getValue());
 
   //convert character arrays into values used in calculations
+  //feature toggles
   low_CO2_Monitor = charArrayToBool(low_CO2_Monitor_buff);  
   high_CO2_Monitor = charArrayToBool(high_CO2_Monitor_buff);
   pressure_Monitor = charArrayToBool(pressure_Monitor_buff);
   battery_Monitor = charArrayToBool(battery_Monitor_buff);
   dashboard_Monitor = charArrayToBool(dashboard_Monitor_buff);
+  room_Monitor = charArrayToBool(room_Monitor_buff);
+  //sensor parameters
   switchCO2Sensors = atof(switchCO2Sensors_buff);
   lowCO2 = atof(lowCO2_buff);
   highCO2 = atof(highCO2_buff);
@@ -191,6 +251,28 @@ void saveConfigCallback() {
   compensateRate = atof(compensateRate_buff);
   dashboardRate = atof(dashboardRate_buff);
   batteryRate = atof(batteryRate_buff);
+  // BME280 calibration
+  bme280_offsetTemp = atof(bme280_offsetTemp_buff);
+  bme280_calibrateRH = charArrayToBool(bme280_calibrateRH_buff);
+  bme280_high_reference = atof(bme280_high_reference_buff);
+  bme280_high_reading = atof(bme280_high_reading_buff);
+  bme280_low_reference = atof(bme280_low_reference_buff);
+  bme280_low_reading = atof(bme280_low_reading_buff);
+  // SHTC3 calibration
+  SHTC3_offsetTemp = atof(SHTC3_offsetTemp_buff);
+  SHTC3_calibrateRH = charArrayToBool(SHTC3_calibrateRH_buff);
+  SHTC3_high_reference = atof(SHTC3_high_reference_buff);
+  SHTC3_high_reading = atof(SHTC3_high_reading_buff);
+  SHTC3_low_reference = atof(SHTC3_low_reference_buff);
+  SHTC3_low_reading = atof(SHTC3_low_reading_buff);
+  // SCD41 calibration
+  SCD41_offsetTemp = atof(SCD41_offsetTemp_buff);
+  SCD41_calibrateRH = charArrayToBool(SCD41_calibrateRH_buff);
+  SCD41_high_reference = atof(SCD41_high_reference_buff);
+  SCD41_high_reading = atof(SCD41_high_reading_buff);
+  SCD41_low_reference = atof(SCD41_low_reference_buff);
+  SCD41_low_reading = atof(SCD41_low_reading_buff);
+  //additional
   pressure = atof(pressure_buff);
   baud = atof(baud_buff);
 
@@ -240,15 +322,14 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_IO_USERNAME); 
   wifiManager.addParameter(&custom_IO_KEY);      
   wifiManager.addParameter(&custom_IO_Dashboard);  
-  
-  //custom Feature toggles parameters
+    //custom Feature toggles parameters
   wifiManager.addParameter(&custom_monitor_title);
   wifiManager.addParameter(&custom_low_CO2_Monitor); 
   wifiManager.addParameter(&custom_high_CO2_Monitor);      
   wifiManager.addParameter(&custom_pressure_Monitor);  
   wifiManager.addParameter(&custom_battery_Monitor);  
   wifiManager.addParameter(&custom_dashboard_Monitor);  
-
+  wifiManager.addParameter(&custom_room_Monitor);
   //custom parameters for sensors
   wifiManager.addParameter(&custom_sensor_title);
   wifiManager.addParameter(&custom_switch_CO2_Sensors);
@@ -259,10 +340,38 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_lowTemp);
   wifiManager.addParameter(&custom_highTemp);
   wifiManager.addParameter(&custom_lowBatt);
+  //update rates
+  wifiManager.addParameter(&custom_update_title);
   wifiManager.addParameter(&custom_sensorRate);
   wifiManager.addParameter(&custom_compensateRate);
   wifiManager.addParameter(&custom_dashboardRate);
   wifiManager.addParameter(&custom_batteryRate);
+  // BME280 calibration
+  wifiManager.addParameter(&custom_bme280_title);
+  wifiManager.addParameter(&custom_bme280_offsetTemp);
+  wifiManager.addParameter(&custom_bme280_calibrateRH);
+  wifiManager.addParameter(&custom_bme280_high_reference);
+  wifiManager.addParameter(&custom_bme280_high_reading);
+  wifiManager.addParameter(&custom_bme280_low_reference);
+  wifiManager.addParameter(&custom_bme280_low_reading);
+  // SHTC3 calibration
+  wifiManager.addParameter(&custom_SHTC3_title);
+  wifiManager.addParameter(&custom_SHTC3_offsetTemp);
+  wifiManager.addParameter(&custom_SHTC3_calibrateRH);
+  wifiManager.addParameter(&custom_SHTC3_high_reference);
+  wifiManager.addParameter(&custom_SHTC3_high_reading);
+  wifiManager.addParameter(&custom_SHTC3_low_reference);
+  wifiManager.addParameter(&custom_SHTC3_low_reading);
+  // SCD41 calibration
+  wifiManager.addParameter(&custom_SCD41_title);
+  wifiManager.addParameter(&custom_SCD41_offsetTemp);
+  wifiManager.addParameter(&custom_SCD41_calibrateRH);
+  wifiManager.addParameter(&custom_SCD41_high_reference);
+  wifiManager.addParameter(&custom_SCD41_high_reading);
+  wifiManager.addParameter(&custom_SCD41_low_reference);
+  wifiManager.addParameter(&custom_SCD41_low_reading);
+  //additional
+  wifiManager.addParameter(&custom_Additional_title);
   wifiManager.addParameter(&custom_pressure);
   wifiManager.addParameter(&custom_baud);
   
@@ -270,11 +379,14 @@ void initWiFiManager() {
   custom_IO_USERNAME.setValue(IO_USERNAME_buff, 64); // set custom parameter value
   custom_IO_KEY.setValue(IO_KEY_buff, 64);           // set custom parameter value
   custom_IO_Dashboard.setValue(IO_Dashboard_buff, 64); // set custom parameter value
+  //feature toggles
   custom_low_CO2_Monitor.setValue(low_CO2_Monitor_buff, 6);
   custom_high_CO2_Monitor.setValue(high_CO2_Monitor_buff, 6);
   custom_pressure_Monitor.setValue(pressure_Monitor_buff, 6);
   custom_battery_Monitor.setValue(battery_Monitor_buff, 6);
   custom_dashboard_Monitor.setValue(dashboard_Monitor_buff, 6);
+  custom_room_Monitor.setValue(room_Monitor_buff, 6);
+  //sensor parameters
   custom_switch_CO2_Sensors.setValue(switchCO2Sensors_buff, 8);
   custom_lowCO2.setValue(lowCO2_buff, 8);
   custom_highCO2.setValue(highCO2_buff, 8);
@@ -287,6 +399,28 @@ void initWiFiManager() {
   custom_compensateRate.setValue(compensateRate_buff, 8);
   custom_dashboardRate.setValue(dashboardRate_buff, 8);
   custom_batteryRate.setValue(batteryRate_buff, 8);
+  // BME280 calibration
+  custom_bme280_offsetTemp.setValue(bme280_offsetTemp_buff, 8);
+  custom_bme280_calibrateRH.setValue(bme280_calibrateRH_buff, 6);
+  custom_bme280_high_reference.setValue(bme280_high_reference_buff, 8);
+  custom_bme280_high_reading.setValue(bme280_high_reading_buff, 8);
+  custom_bme280_low_reference.setValue(bme280_low_reference_buff, 8);
+  custom_bme280_low_reading.setValue(bme280_low_reading_buff, 8);
+  // SHTC3 calibration
+  custom_SHTC3_offsetTemp.setValue(SHTC3_offsetTemp_buff, 8);
+  custom_SHTC3_calibrateRH.setValue(SHTC3_calibrateRH_buff, 6);
+  custom_SHTC3_high_reference.setValue(SHTC3_high_reference_buff, 8);
+  custom_SHTC3_high_reading.setValue(SHTC3_high_reading_buff, 8);
+  custom_SHTC3_low_reference.setValue(SHTC3_low_reference_buff, 8);
+  custom_SHTC3_low_reading.setValue(SHTC3_low_reading_buff, 8);
+  // SCD41 calibration
+  custom_SCD41_offsetTemp.setValue(SCD41_offsetTemp_buff, 8);
+  custom_SCD41_calibrateRH.setValue(SCD41_calibrateRH_buff, 6);
+  custom_SCD41_high_reference.setValue(SCD41_high_reference_buff, 8);
+  custom_SCD41_high_reading.setValue(SCD41_high_reading_buff, 8);
+  custom_SCD41_low_reference.setValue(SCD41_low_reference_buff, 8);
+  custom_SCD41_low_reading.setValue(SCD41_low_reading_buff, 8);
+  //additional
   custom_pressure.setValue(pressure_buff, 8);
   custom_baud.setValue(baud_buff, 8);
 
@@ -325,30 +459,53 @@ void initDashboard() {
   if(dashboard_Monitor){
     if(wifiConnectedFlag){
       //create feed names
-      strcpy (CO2_FeedName_buff, "CO2_");
-      strcat (CO2_FeedName_buff, IO_Dashboard_buff);  //create string identifier for data feed
+      strcpy (CO2_FeedName_buff, IO_Dashboard_buff);
+      strcat (CO2_FeedName_buff, "_probe_CO2");  //create string identifier for data feed
       String CO2String((char*)CO2_FeedName_buff);
       strlwr (CO2_FeedName_buff);  //make lower case
 
-      strcpy (Temp_FeedName_buff, "TEMP_");
-      strcat (Temp_FeedName_buff, IO_Dashboard_buff);  //create string identifier for data feed
+      strcpy(Temp_FeedName_buff, IO_Dashboard_buff);
+      strcat(Temp_FeedName_buff, "_probe_TEMP");  //create string identifier for data feed
       String TempString((char*)Temp_FeedName_buff);
-      strlwr (Temp_FeedName_buff); //make lower case
+      strlwr(Temp_FeedName_buff);  //make lower case
 
-      strcpy (RH_FeedName_buff, "RH_");
-      strcat (RH_FeedName_buff, IO_Dashboard_buff);  //create string identifier for data feed
+      strcpy(RH_FeedName_buff, IO_Dashboard_buff);
+      strcat(RH_FeedName_buff, "_probe_RH");  //create string identifier for data feed
       String RHString((char*)RH_FeedName_buff);
-      strlwr (RH_FeedName_buff); //make lower case
+      strlwr(RH_FeedName_buff);  //make lower case
 
       Serial.printf("\nCO2 data feed name: %s\n", CO2_FeedName_buff);
       Serial.printf("Temperature data feed name: %s\n", Temp_FeedName_buff);
       Serial.printf("Relative Humidity data feed name: %s\n", RH_FeedName_buff);
       Serial.println("");
 
+      if(room_Monitor){
+        //create feed names for the room monitor
+        strcpy(roomTemp_FeedName_buff, IO_Dashboard_buff);
+        strcat(roomTemp_FeedName_buff, "_room_TEMP");  //create string identifier for data feed
+        String roomTempString((char*)roomTemp_FeedName_buff);
+        strlwr(roomTemp_FeedName_buff);  //make lower case
+      
+        strcpy(roomRH_FeedName_buff, IO_Dashboard_buff);
+        strcat(roomRH_FeedName_buff, "_room_RH");  //create string identifier for data feed
+        String roomRHString((char*)roomRH_FeedName_buff);
+        strlwr(roomRH_FeedName_buff);  //make lower case
+
+        strcpy(roomPress_FeedName_buff, IO_Dashboard_buff);
+        strcat(roomPress_FeedName_buff, "_room_Press");  //create string identifier for data feed
+        String roomPressString((char*)roomPress_FeedName_buff);
+        strlwr(roomPress_FeedName_buff);  //make lower case
+
+        Serial.printf("Temperature data feed name: %s\n", roomTemp_FeedName_buff);
+        Serial.printf("Relative Humidity data feed name: %s\n", roomRH_FeedName_buff);
+        Serial.printf("Pressure data feed name: %s\n", roomPress_FeedName_buff);
+        Serial.println("");
+      }
+
       //if dashboad feed name was created, then connect to dashboard, otherwise dont
-      if((CO2String != "CO2_") && (TempString != "TEMP_") && (RHString != "RH_")){
+      if((CO2String != "_CO2") && (TempString != "_TEMP") && (RHString != "_RH")){
         io = new (objStorage) AdafruitIO_WiFi(IO_USERNAME_buff, IO_KEY_buff, "", ""); //create IO object with user details for subsequent connection
-        Serial.printf("\nConnecting to Adafruit IO with User: %s, Dashboard: %s.\n", IO_USERNAME_buff, IO_Dashboard_buff);
+        Serial.printf("Connecting to Adafruit IO with User: %s, Dashboard: %s.\n", IO_USERNAME_buff, IO_Dashboard_buff);
 
         io->connect(); //initiate IO connection for data feeds
 
@@ -373,6 +530,12 @@ void initDashboard() {
         CO2_Feed = io->feed(CO2_FeedName_buff);
         Temp_Feed = io->feed(Temp_FeedName_buff);
         RH_Feed = io->feed(RH_FeedName_buff);
+
+        if(room_Monitor){
+          roomPress_Feed = io->feed(roomPress_FeedName_buff);
+          roomTemp_Feed = io->feed(roomTemp_FeedName_buff);
+          roomRH_Feed = io->feed(roomRH_FeedName_buff);
+        }
 
         Serial.println(F("Adafruit IO connection established\n"));
         if(firstRun){
@@ -446,6 +609,12 @@ void updateDashboard(){
       if(myCO2 >0){CO2_Feed->save(myCO2);}
       Temp_Feed->save(myTemp);
       RH_Feed->save(myRH);
+
+      if(room_Monitor){
+        roomTemp_Feed->save(bmeTemp);
+        roomRH_Feed->save(bmeRH);
+        roomPress_Feed->save(bmePress);
+      }
     }
   }
 }
