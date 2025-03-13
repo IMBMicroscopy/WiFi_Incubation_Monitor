@@ -239,6 +239,8 @@ void convertParamsToCharArray(){
   dtostrf(lowTemp, 4, 2, lowTemp_buff);
   dtostrf(highTemp, 4, 2, highTemp_buff);
   dtostrf(lowBatt, 4, 2, lowBatt_buff);
+  dtostrf(pressure, 4, 2, pressure_buff);
+  //update rates
   dtostrf(sensorRate, 4, 0, sensorRate_buff);
   dtostrf(compensateRate, 4, 0, compensateRate_buff);
   dtostrf(dashboardRate, 4, 0, dashboardRate_buff);
@@ -265,6 +267,5 @@ void convertParamsToCharArray(){
   dtostrf(SCD41_low_reference, 4, 2, SCD41_low_reference_buff);
   dtostrf(SCD41_low_reading, 4, 2, SCD41_low_reading_buff);
   //Additional
-  dtostrf(baud, 4, 0, baud_buff);
-  dtostrf(pressure, 4, 2, pressure_buff);
+  //dtostrf(baud, 4, 0, baud_buff);
 }

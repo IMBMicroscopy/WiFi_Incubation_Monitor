@@ -51,10 +51,11 @@ void initWiFi(){
 
 void saveParams() {
   constrainRates();                 // Constrain user-defined readout rates to acceptable values
-
+  //All Keys must be less than or equal to 15 characters long
   preferences.begin("custom", true); // Open Preferences in read mode
   int test = preferences.getInt("baud", -1);  //test if default values exist in flash, if they dont, set value to -1
   preferences.end();
+  delay(20);
 
   preferences.begin("custom", false); // Open Preferences in write mode
   //save IO dashboard parameters if required
@@ -68,16 +69,17 @@ void saveParams() {
   //save default configuration parameter values
   if ((test == -1) || saveIO){
     if(test == -1){Serial.println("default parameters dont exist, write them to flash");}
-    if(saveIO){Serial.println("writing customised default parameters to flash");}
+    else{Serial.println("writing customised default parameters to flash");}
     //feature toggles
-    preferences.putBool("low_CO2_Monitor", low_CO2_Monitor);
-    preferences.putBool("high_CO2_Monitor", high_CO2_Monitor);
-    preferences.putBool("pressure_Monitor", pressure_Monitor);
-    preferences.putBool("battery_Monitor", battery_Monitor);
-    preferences.putBool("dashboard_Monitor", dashboard_Monitor);
-    preferences.putBool("room_Monitor", room_Monitor);
-    //sensor parameters
-    preferences.putFloat("switchCO2Sensors", switchCO2Sensors);
+    // Feature toggles
+    preferences.putBool("low_CO2_Mon", low_CO2_Monitor);
+    preferences.putBool("hi_CO2_Mon", high_CO2_Monitor);
+    preferences.putBool("press_Mon", pressure_Monitor);
+    preferences.putBool("batt_Mon", battery_Monitor);
+    preferences.putBool("dash_Mon", dashboard_Monitor);
+    preferences.putBool("room_Mon", room_Monitor);
+    // Sensor parameters
+    preferences.putFloat("swCO2Sens", switchCO2Sensors);
     preferences.putFloat("lowCO2", lowCO2);
     preferences.putFloat("highCO2", highCO2);
     preferences.putFloat("lowRH", lowRH);
@@ -85,57 +87,62 @@ void saveParams() {
     preferences.putFloat("lowTemp", lowTemp);
     preferences.putFloat("highTemp", highTemp);
     preferences.putFloat("lowBatt", lowBatt);
-    preferences.putInt("sensorRate", sensorRate);
-    preferences.putInt("compensateRate", compensateRate);
-    preferences.putInt("dashboardRate", dashboardRate);
-    preferences.putInt("batteryRate", batteryRate);
-    // BME280 calibration
-    preferences.putFloat("bme280_offsetTemp", bme280_offsetTemp);
-    preferences.putBool("bme280_calibrateRH", bme280_calibrateRH);
-    preferences.putFloat("bme280_high_reference", bme280_high_reference);
-    preferences.putFloat("bme280_high_reading", bme280_high_reading);
-    preferences.putFloat("bme280_low_reference", bme280_low_reference);
-    preferences.putFloat("bme280_low_reading", bme280_low_reading);
-    // SHTC3 calibration
-    preferences.putFloat("SHTC3_offsetTemp", SHTC3_offsetTemp);
-    preferences.putBool("SHTC3_calibrateRH", SHTC3_calibrateRH);
-    preferences.putFloat("SHTC3_high_reference", SHTC3_high_reference);
-    preferences.putFloat("SHTC3_high_reading", SHTC3_high_reading);
-    preferences.putFloat("SHTC3_low_reference", SHTC3_low_reference);
-    preferences.putFloat("SHTC3_low_reading", SHTC3_low_reading);
-    // SCD41 calibration
-    preferences.putFloat("SCD41_offsetTemp", SCD41_offsetTemp);
-    preferences.putBool("SCD41_calibrateRH", SCD41_calibrateRH);
-    preferences.putFloat("SCD41_high_reference", SCD41_high_reference);
-    preferences.putFloat("SCD41_high_reading", SCD41_high_reading);
-    preferences.putFloat("SCD41_low_reference", SCD41_low_reference);
-    preferences.putFloat("SCD41_low_reading", SCD41_low_reading);
-    //additional
-    preferences.putInt("baud", baud);
     preferences.putFloat("pressure", pressure);
+    // update rates
+    preferences.putInt("sensorRate", sensorRate);
+    preferences.putInt("compRate", compensateRate);
+    preferences.putInt("dashRate", dashboardRate);
+    preferences.putInt("battRate", batteryRate);
+    // BME280 calibration
+    preferences.putFloat("bme_offsetT", bme280_offsetTemp);
+    preferences.putBool("bme_calRH", bme280_calibrateRH);
+    preferences.putFloat("bme_high_ref", bme280_high_reference);
+    preferences.putFloat("bme_high_read", bme280_high_reading);
+    preferences.putFloat("bme_low_ref", bme280_low_reference);
+    preferences.putFloat("bme_low_read", bme280_low_reading);
+    // SHTC3 calibration
+    preferences.putFloat("sht_offsetT", SHTC3_offsetTemp);
+    preferences.putBool("sht_calRH", SHTC3_calibrateRH);
+    preferences.putFloat("sht_high_ref", SHTC3_high_reference);
+    preferences.putFloat("sht_high_read", SHTC3_high_reading);
+    preferences.putFloat("sht_low_ref", SHTC3_low_reference);
+    preferences.putFloat("sht_low_read", SHTC3_low_reading);
+    // SCD41 calibration
+    preferences.putFloat("scd_offsetT", SCD41_offsetTemp);
+    preferences.putBool("scd_calRH", SCD41_calibrateRH);
+    preferences.putFloat("scd_high_ref", SCD41_high_reference);
+    preferences.putFloat("scd_high_read", SCD41_high_reading);
+    preferences.putFloat("scd_low_ref", SCD41_low_reference);
+    preferences.putFloat("scd_low_read", SCD41_low_reading);
+    //additional
+    //preferences.putInt("baud", baud);
 
+    Serial.println("writing to Flash complete, go back to the homepage and click Exit");
   }else{Serial.println("default Values exist and havent been customised, dont write new values to flash");}
-  preferences.end();    
+  delay(20);
+  preferences.end();
+  delay(20);    
   saveIO = false;
 }
 
 
 void loadParams() {
+  Serial.println(F("Loading custom parameters from file"));
+  //All Keys must be less than or equal to 15 characters long
   preferences.begin("custom", true); // Open Preferences in read mode
-
   //read parameters from preferences file, if they're not available then use the default values
   (preferences.getString("IO_USERNAME", "")).toCharArray(IO_USERNAME_buff, sizeof(IO_USERNAME_buff));  //may need to convert to character array from string first
   (preferences.getString("IO_KEY", "")).toCharArray(IO_KEY_buff, sizeof(IO_KEY_buff));
   (preferences.getString("IO_Dashboard","")).toCharArray(IO_Dashboard_buff, sizeof(IO_Dashboard_buff));
   //feature toggles
-  low_CO2_Monitor = preferences.getBool("low_CO2_Monitor", low_CO2_Monitor);
-  high_CO2_Monitor = preferences.getBool("high_CO2_Monitor", high_CO2_Monitor);
-  pressure_Monitor = preferences.getBool("pressure_Monitor", pressure_Monitor);
-  battery_Monitor = preferences.getBool("battery_Monitor", battery_Monitor);
-  dashboard_Monitor = preferences.getBool("dashboard_Monitor", dashboard_Monitor);
-  room_Monitor = preferences.getBool("room_Monitor", room_Monitor);
+  low_CO2_Monitor = preferences.getBool("low_CO2_Mon", low_CO2_Monitor);
+  high_CO2_Monitor = preferences.getBool("hi_CO2_Mon", high_CO2_Monitor);
+  pressure_Monitor = preferences.getBool("press_Mon", pressure_Monitor);
+  battery_Monitor = preferences.getBool("batt_Mon", battery_Monitor);
+  dashboard_Monitor = preferences.getBool("dash_Mon", dashboard_Monitor);
+  room_Monitor = preferences.getBool("room_Mon", room_Monitor);
   //sensor parameters
-  switchCO2Sensors = preferences.getFloat("switchCO2Sensors", switchCO2Sensors);
+  switchCO2Sensors = preferences.getFloat("swCO2Sens", switchCO2Sensors);
   lowCO2 = preferences.getFloat("lowCO2", lowCO2);
   highCO2 = preferences.getFloat("highCO2", highCO2);
   lowRH = preferences.getFloat("lowRH", lowRH);
@@ -143,44 +150,41 @@ void loadParams() {
   lowTemp = preferences.getFloat("lowTemp", lowTemp);
   highTemp = preferences.getFloat("highTemp", highTemp);
   lowBatt = preferences.getFloat("lowBatt", lowBatt);
-  sensorRate = preferences.getInt("sensorRate", sensorRate);
-  compensateRate = preferences.getInt("compensateRate", compensateRate);
-  dashboardRate = preferences.getInt("dashboardRate", dashboardRate);
-  batteryRate = preferences.getInt("batteryRate", batteryRate);
-  // BME280 calibration
-  bme280_offsetTemp = preferences.getFloat("bme280_offsetTemp", bme280_offsetTemp);
-  bme280_calibrateRH = preferences.getBool("bme280_calibrateRH", bme280_calibrateRH);
-  bme280_high_reference = preferences.getFloat("bme280_high_reference", bme280_high_reference);
-  bme280_high_reading = preferences.getFloat("bme280_high_reading", bme280_high_reading);
-  bme280_low_reference = preferences.getFloat("bme280_low_reference", bme280_low_reference);
-  bme280_low_reading = preferences.getFloat("bme280_low_reading", bme280_low_reading);
-  // SHTC3 calibration
-  SHTC3_offsetTemp = preferences.getFloat("SHTC3_offsetTemp", SHTC3_offsetTemp);
-  SHTC3_calibrateRH = preferences.getBool("SHTC3_calibrateRH", SHTC3_calibrateRH);
-  SHTC3_high_reference = preferences.getFloat("SHTC3_high_reference", SHTC3_high_reference);
-  SHTC3_high_reading = preferences.getFloat("SHTC3_high_reading", SHTC3_high_reading);
-  SHTC3_low_reference = preferences.getFloat("SHTC3_low_reference", SHTC3_low_reference);
-  SHTC3_low_reading = preferences.getFloat("SHTC3_low_reading", SHTC3_low_reading);
-  // SCD41 calibration
-  SCD41_offsetTemp = preferences.getFloat("SCD41_offsetTemp", SCD41_offsetTemp);
-  SCD41_calibrateRH = preferences.getBool("SCD41_calibrateRH", SCD41_calibrateRH);
-  SCD41_high_reference = preferences.getFloat("SCD41_high_reference", SCD41_high_reference);
-  SCD41_high_reading = preferences.getFloat("SCD41_high_reading", SCD41_high_reading);
-  SCD41_low_reference = preferences.getFloat("SCD41_low_reference", SCD41_low_reference);
-  SCD41_low_reading = preferences.getFloat("SCD41_low_reading", SCD41_low_reading);
-  //additional
-  baud = preferences.getInt("baud", baud);
   pressure = preferences.getFloat("pressure", pressure);
+  //update rates
+  sensorRate = preferences.getInt("sensorRate", sensorRate);
+  compensateRate = preferences.getInt("compRate", compensateRate);
+  dashboardRate = preferences.getInt("dashRate", dashboardRate);
+  batteryRate = preferences.getInt("battRate", batteryRate);
+  // BME280 calibration
+  bme280_offsetTemp = preferences.getFloat("bme_offsetT", bme280_offsetTemp);
+  bme280_calibrateRH = preferences.getBool("bme_calRH", bme280_calibrateRH);
+  bme280_high_reference = preferences.getFloat("bme_high_ref", bme280_high_reference);
+  bme280_high_reading = preferences.getFloat("bme_high_read", bme280_high_reading);
+  bme280_low_reference = preferences.getFloat("bme_low_ref", bme280_low_reference);
+  bme280_low_reading = preferences.getFloat("bme_low_read", bme280_low_reading);
+  // SHTC3 calibration
+  SHTC3_offsetTemp = preferences.getFloat("sht_offsetT", SHTC3_offsetTemp);
+  SHTC3_calibrateRH = preferences.getBool("sht_calRH", SHTC3_calibrateRH);
+  SHTC3_high_reference = preferences.getFloat("sht_high_ref", SHTC3_high_reference);
+  SHTC3_high_reading = preferences.getFloat("sht_high_read", SHTC3_high_reading);
+  SHTC3_low_reference = preferences.getFloat("sht_low_ref", SHTC3_low_reference);
+  SHTC3_low_reading = preferences.getFloat("sht_low_read", SHTC3_low_reading);
+  // SCD41 calibration
+  SCD41_offsetTemp = preferences.getFloat("scd_offsetT", SCD41_offsetTemp);
+  SCD41_calibrateRH = preferences.getBool("scd_calRH", SCD41_calibrateRH);
+  SCD41_high_reference = preferences.getFloat("scd_high_ref", SCD41_high_reference);
+  SCD41_high_reading = preferences.getFloat("scd_high_read", SCD41_high_reading);
+  SCD41_low_reference = preferences.getFloat("scd_low_ref", SCD41_low_reference);
+  SCD41_low_reading = preferences.getFloat("scd_low_read", SCD41_low_reading);  //additional
+  //Additional
+  //baud = preferences.getInt("baud", baud);
 
   preferences.end();
   constrainRates();                 // Constrain user-defined readout rates to acceptable values
 }
 
-// callback notifying us of the need to save config
-void saveConfigCallback() {
-  Serial.println("Saving new config");
-  shouldSaveConfig = true;
-
+void getHotspotValues(){
   //get values from hotspot website
   strcpy(IO_USERNAME_buff, custom_IO_USERNAME.getValue());
   strcpy(IO_KEY_buff, custom_IO_KEY.getValue());
@@ -201,6 +205,8 @@ void saveConfigCallback() {
   strcpy(lowTemp_buff, custom_lowTemp.getValue());
   strcpy(highTemp_buff, custom_highTemp.getValue());
   strcpy(lowBatt_buff, custom_lowBatt.getValue());
+  strcpy(pressure_buff, custom_pressure.getValue());
+  //update rates
   strcpy(sensorRate_buff, custom_sensorRate.getValue());
   strcpy(compensateRate_buff, custom_compensateRate.getValue());
   strcpy(dashboardRate_buff, custom_dashboardRate.getValue());
@@ -227,8 +233,7 @@ void saveConfigCallback() {
   strcpy(SCD41_low_reference_buff, custom_SCD41_low_reference.getValue());
   strcpy(SCD41_low_reading_buff, custom_SCD41_low_reading.getValue());
   //additional
-  strcpy(pressure_buff, custom_pressure.getValue());
-  strcpy(baud_buff, custom_baud.getValue());
+  //strcpy(baud_buff, custom_baud.getValue());
 
   //convert character arrays into values used in calculations
   //feature toggles
@@ -247,6 +252,8 @@ void saveConfigCallback() {
   lowTemp = atof(lowTemp_buff);
   highTemp = atof(highTemp_buff);
   lowBatt = atof(lowBatt_buff);
+  pressure = atof(pressure_buff);
+  //update rates
   sensorRate = atof(sensorRate_buff);
   compensateRate = atof(compensateRate_buff);
   dashboardRate = atof(dashboardRate_buff);
@@ -273,32 +280,16 @@ void saveConfigCallback() {
   SCD41_low_reference = atof(SCD41_low_reference_buff);
   SCD41_low_reading = atof(SCD41_low_reading_buff);
   //additional
-  pressure = atof(pressure_buff);
-  baud = atof(baud_buff);
+  //baud = atof(baud_buff);
+}
 
-  //save files to preferences
+// callback to save custom parameters on config hotspot
+void saveParamsCallback() {
+  shouldSaveConfig = true;
+  getHotspotValues();  //read hotspot values and convert as required
   saveIO = true;  //flag to activate save
-  saveParams();
-
-  WiFi.disconnect();   // Disconnect from any previous WiFi
-  delay(1000);         // Small delay to avoid conflicts
-  WiFi.begin();        // Attempt to reconnect with new credentials
-
-  int timeout = 20;    // 10 seconds timeout
-  while (WiFi.status() != WL_CONNECTED && timeout > 0) {
-      Serial.print(".");
-      delay(500);
-      timeout--;
-  }
-
-  if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("\nReconnected successfully!");
-  } else {
-      Serial.println("\nFailed to reconnect, restarting...");
-      ESP.restart();
-  }
+  saveParams(); //save files to preferences
 } // end save
-
 
 //configure WiFi Manager parameters and either autoconnect to known WiFi or launch a hotspot to configure
 void initWiFiManager() {
@@ -340,6 +331,7 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_lowTemp);
   wifiManager.addParameter(&custom_highTemp);
   wifiManager.addParameter(&custom_lowBatt);
+  wifiManager.addParameter(&custom_pressure);
   //update rates
   wifiManager.addParameter(&custom_update_title);
   wifiManager.addParameter(&custom_sensorRate);
@@ -371,9 +363,8 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_SCD41_low_reference);
   wifiManager.addParameter(&custom_SCD41_low_reading);
   //additional
-  wifiManager.addParameter(&custom_Additional_title);
-  wifiManager.addParameter(&custom_pressure);
-  wifiManager.addParameter(&custom_baud);
+  //wifiManager.addParameter(&custom_Additional_title);
+  //wifiManager.addParameter(&custom_baud);
   
   //apply values to hotspot
   custom_IO_USERNAME.setValue(IO_USERNAME_buff, 64); // set custom parameter value
@@ -395,6 +386,8 @@ void initWiFiManager() {
   custom_lowTemp.setValue(lowTemp_buff, 8);
   custom_highTemp.setValue(highTemp_buff, 8);
   custom_lowBatt.setValue(lowBatt_buff, 8);
+  custom_pressure.setValue(pressure_buff, 8);
+  //update rates
   custom_sensorRate.setValue(sensorRate_buff, 8);
   custom_compensateRate.setValue(compensateRate_buff, 8);
   custom_dashboardRate.setValue(dashboardRate_buff, 8);
@@ -421,14 +414,12 @@ void initWiFiManager() {
   custom_SCD41_low_reference.setValue(SCD41_low_reference_buff, 8);
   custom_SCD41_low_reading.setValue(SCD41_low_reading_buff, 8);
   //additional
-  custom_pressure.setValue(pressure_buff, 8);
-  custom_baud.setValue(baud_buff, 8);
+  //custom_baud.setValue(baud_buff, 8);
 
   initTFT();  //reset TFT display
   tft.println(F("Hotspot On"));
-  wifiManager.setSaveParamsCallback(saveConfigCallback);
-  wifiManager.setSaveConfigCallback(saveConfigCallback); // set config save notify callback
-
+  
+  wifiManager.setSaveParamsCallback(saveParamsCallback);  //called when saving either WiFi or Setup params page
 
   if(startPortalFlag){
     wifiManager.startConfigPortal(hotspotSSID, hotspotPWD);  //start hotspot if user pressed button

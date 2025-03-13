@@ -24,21 +24,6 @@ float switchCO2Sensors = 0.7; // Changeover from low-CO2 (SCD41) to high-CO2 (ST
 // ignored if low_CO2_Monitor = false
 
 // -------------------------------------------------------------------
-// bme280 calibration
-// -------------------------------------------------------------------
-float offsetTemp = -1;  //offset bme280 temperature to match other sensors
-
-bool calibrateRH = true;  //Optionally: Use a humidity controlled environment to calibrate the bme280 Humidity Sensor
-//Calibration standards such as salt media (NaCL and MgCL) or an electronically controlled humidity chamber can be used
-//Place saturated salt solution (salt + a little water) in an airtight container.
-//75% RH (NaCl) and 33% RH (MgCl₂)
-//Place sensor in chamber, wait 24hrs or until value plateaus before recording measurement
-float high_Standard = 76;   // High reference humidity chamber value (70-100%) 
-float high_bme280 = 64;     // BME280 measured value when sensor is measuring in high_Standard value chamber
-float low_Standard = 14;    // Low reference humidity chamber value (10-30%) 
-float low_bme280 = 10;      // BME280 measured value when sensor is measuring in low_Standard value chamber
-
-// -------------------------------------------------------------------
 // Measurement Limits (Incubation Settings)
 // Below or above these thresholds, an alarm condition (e.g., TFT color change) occurs
 // -------------------------------------------------------------------
@@ -48,6 +33,7 @@ float lowRH    = 40;  // Relative humidity % BELOW this triggers an alarm
 float highRH   = 100; // Relative humidity % ABOVE this triggers an alarm
 float lowTemp  = 35;  // Temperature (°C) BELOW this triggers an alarm
 float highTemp = 38;  // Temperature (°C) ABOVE this triggers an alarm
+float pressure  = 1020.0;  // Ambient average pressure (mbar) used for CO2 calibration if no BME280 pressure sensor is installed
 
 // -------------------------------------------------------------------
 // Battery Settings
@@ -108,14 +94,10 @@ float SCD41_low_reference = 33;     // Low reference humidity chamber value (10-
 float SCD41_low_reading = 33;       // SCD41 measured value when sensor is measuring in low_reference value chamber
 
 // -------------------------------------------------------------------
-// Additional Parameters
+// Additional Parameters (values below are not configurable in hotspot)
 // -------------------------------------------------------------------
-int   baud      = 115200;  // Serial port baud rate
-float pressure  = 1020.0;  // Ambient average pressure (mbar) used for CO2 calibration if no BME280 pressure sensor is installed
+int  baud = 115200;  // Serial port baud rate
 
-// -------------------------------------------------------------------
-// Configuration Hotspot (values below are configurable in hotspot)
-// -------------------------------------------------------------------
 char hotspotSSID[64] = "Incubation Setup";  // SSID for the configuration hotspot
 char hotspotPWD[64]  = "setup123";         // Password (must be exactly 8 chars)
-int  hotspotTimer    = 10;                 // Seconds to wait after reboot to allow a user to activate the config hotspot
+int  hotspotTimer    = 15;                 // Seconds to wait after reboot to allow a user to activate the config hotspot

@@ -1,10 +1,11 @@
 // Incubation Monitor Main Code
 
 void setup() {
+  Serial.begin(baud);               // Initialize serial port for debugging
+  delay(3000);
+
   saveParams();                     // save default Config parameters to flash if they dont exist already
   loadParams();
-  Serial.begin(baud);               // Initialize serial port for debugging
-  delay(2000);
 
   Wire.begin();                     // Start I2C for sensor readings
   initTFT();                        // Initialize the TFT display
