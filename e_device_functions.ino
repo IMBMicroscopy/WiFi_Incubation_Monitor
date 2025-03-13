@@ -182,10 +182,12 @@ void readBME() {
       bmeRH = myBME280.readHumidity();
       bmeCRH = BME280_correctedRH(bmeRH);
       
-      Serial.print(F("BME280: "));
-      Serial.print(F("Temperature: ")); Serial.print(bmeTemp,1); Serial.print('C');
-      Serial.print(F("\tHumidity: ")); Serial.print(bmeCRH, 0); Serial.print(F("%"));
-      Serial.print(F("\t\t\tPressure: ")); Serial.print(bmePress*.01, 1); Serial.println(F("mBar"));
+      if(!compSerialFlag){
+        Serial.print(F("BME280: "));
+        Serial.print(F("Temperature: ")); Serial.print(bmeTemp,1); Serial.print('C');
+        Serial.print(F("\tHumidity: ")); Serial.print(bmeCRH, 0); Serial.print(F("%"));
+        Serial.print(F("\t\t\tPressure: ")); Serial.print(bmePress*.01, 1); Serial.println(F("mBar"));
+      }
       break;
     }
     if(i == 10){Serial.println(F("bme280 read failed, use last values"));}
@@ -204,12 +206,14 @@ void readSCD41(){
       scdCO2 = mySCD41.getCO2()*0.0001;
       scdRH = mySCD41.getHumidity();
       scdCRH = SCD41_correctedRH(scdRH);
-
-      Serial.print(F("SCD41: "));
-      Serial.print(F("\tTemperature: ")); Serial.print(scdTemp, 1); Serial.print(F("C"));
-      Serial.print(F("\tHumidity: ")); Serial.print(scdCRH, 0); Serial.print(F("%"));
-      Serial.print(F("\tCO2: ")); Serial.print(scdCO2, 2); Serial.print(F("%"));
-      Serial.println();
+      
+      if(!compSerialFlag){
+        Serial.print(F("SCD41: "));
+        Serial.print(F("\tTemperature: ")); Serial.print(scdTemp, 1); Serial.print(F("C"));
+        Serial.print(F("\tHumidity: ")); Serial.print(scdCRH, 0); Serial.print(F("%"));
+        Serial.print(F("\tCO2: ")); Serial.print(scdCO2, 2); Serial.print(F("%"));
+        Serial.println();
+      }
       break;
     }
     if(i == 10){Serial.println(F("SCD41 read failed, use last values"));}
@@ -233,11 +237,13 @@ void readSTC31() {
       stcRH = mySHTC3.toPercent();
       stcCRH = SHTC3_correctedRH(stcRH);
 
-      Serial.print(F("STC31: "));
-      Serial.print(F("\tTemperature: ")); Serial.print(stcTemp, 1); Serial.print(F("C"));
-      Serial.print(F("\tHumidity: ")); Serial.print(stcCRH, 0); Serial.print(F("%"));
-      Serial.print(F("\tCO2: ")); Serial.print(stcCO2, 2); Serial.print(F("%"));
-      Serial.println(F(""));
+      if(!compSerialFlag){
+        Serial.print(F("STC31: "));
+        Serial.print(F("\tTemperature: ")); Serial.print(stcTemp, 1); Serial.print(F("C"));
+        Serial.print(F("\tHumidity: ")); Serial.print(stcCRH, 0); Serial.print(F("%"));
+        Serial.print(F("\tCO2: ")); Serial.print(stcCO2, 2); Serial.print(F("%"));
+        Serial.println(F(""));
+      }
       break;
     }
     if(i == 10){Serial.println(F("STC31 read failed, use last values"));}
@@ -308,6 +314,8 @@ void readSensors() {
 //Compensate the CO2 reading for temperature and relative humidity using the readings from the SHTC3 as well as a static pressure measurement
 void compensate() {
   Serial.println(F("Running compensation routine..."));
+  compFlag = true;  //flag to indicate calibration has been performed on TFT
+  compSerialFlag = true;
 
   //take sensor readings, pressure required for CO2 compensation
   if(pressure_Monitor){
@@ -346,8 +354,7 @@ void compensate() {
     Serial.println(F(" successful"));
 
   }
-
-  compFlag = true;  //flag to indicate calibration has been performed on TFT
+  compSerialFlag = false;
   delay(2000);
 }
 

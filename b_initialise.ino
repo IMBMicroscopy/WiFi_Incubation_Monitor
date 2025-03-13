@@ -91,7 +91,6 @@ char SCD41_high_reference_buff[8] = "";
 char SCD41_high_reading_buff[8] = "";
 char SCD41_low_reference_buff[8] = "";
 char SCD41_low_reading_buff[8] = "";
-
 //Additional
 //char baud_buff[8] = "";
 
@@ -190,9 +189,9 @@ float bmeTemp = 0.00, bmeRH = 0.00, bmePress = 0.00, bmeCRH = 0.00;
 float myCO2 = 0.00, myTemp = 0.00, myRH = 0.00, myPress = 0.00;
 long int compCounter = 0, battCounter = 0;
 
-// Flags
+// Event Flags
 bool firstRun = true;
-bool compFlag = false;
+bool compFlag = false, compSerialFlag = false;
 bool updatingDashboardFlag = false;
 bool battExistsFlag = false;
 bool BME280Exists = false;
@@ -202,3 +201,4 @@ bool startPortalFlag = false;
 bool writeConfigValues = false;
 bool shouldSaveConfig = false;
 bool saveIO = false;
+bool wifiAsleepFlag = false;

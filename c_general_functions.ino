@@ -182,7 +182,7 @@ void updateTFT(){
     }
 
     //display Wifi and IO indicators if Dashboard is enabled
-    if(dashboard_Monitor){
+    if(dashboard_Monitor && !wifiAsleepFlag){
       if(!battExistsFlag){
         tft.setTextSize(1);
         tft.println("");

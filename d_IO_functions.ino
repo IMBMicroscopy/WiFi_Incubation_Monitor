@@ -23,7 +23,6 @@ void userActivatedHotspot(){
 }
 
 void initWiFi(){
-  
     WiFi.mode(WIFI_STA);  // Set WiFi to Station mode
     WiFi.begin(); // Initialise WiFi
     delay(500);
@@ -121,13 +120,12 @@ void saveParams() {
     //preferences.putInt("baud", baud);
 
     Serial.println("writing to Flash complete, go back to the homepage and click Exit");
-  }else{Serial.println("default Values exist and havent been customised, dont write new values to flash");}
+  }else{Serial.println("parameter values exist, dont write new values to flash");}
   delay(20);
   preferences.end();
   delay(20);    
   saveIO = false;
 }
-
 
 void loadParams() {
   Serial.println(F("Loading custom parameters from file"));
@@ -455,53 +453,61 @@ void initWiFiManager() {
 void initDashboard() {
   if(dashboard_Monitor){
     if(wifiConnectedFlag){
-      //create feed names
-      strcpy (CO2_FeedName_buff, IO_Dashboard_buff);
-      strcat (CO2_FeedName_buff, "_probe_CO2");  //create string identifier for data feed
-      String CO2String((char*)CO2_FeedName_buff);
-      strlwr (CO2_FeedName_buff);  //make lower case
-
-      strcpy(Temp_FeedName_buff, IO_Dashboard_buff);
-      strcat(Temp_FeedName_buff, "_probe_TEMP");  //create string identifier for data feed
-      String TempString((char*)Temp_FeedName_buff);
-      strlwr(Temp_FeedName_buff);  //make lower case
-
-      strcpy(RH_FeedName_buff, IO_Dashboard_buff);
-      strcat(RH_FeedName_buff, "_probe_RH");  //create string identifier for data feed
-      String RHString((char*)RH_FeedName_buff);
-      strlwr(RH_FeedName_buff);  //make lower case
-
-      Serial.printf("\nCO2 data feed name: %s\n", CO2_FeedName_buff);
-      Serial.printf("Temperature data feed name: %s\n", Temp_FeedName_buff);
-      Serial.printf("Relative Humidity data feed name: %s\n", RH_FeedName_buff);
-      Serial.println("");
-
-      if(room_Monitor){
-        //create feed names for the room monitor
-        strcpy(roomTemp_FeedName_buff, IO_Dashboard_buff);
-        strcat(roomTemp_FeedName_buff, "_room_TEMP");  //create string identifier for data feed
-        String roomTempString((char*)roomTemp_FeedName_buff);
-        strlwr(roomTemp_FeedName_buff);  //make lower case
       
-        strcpy(roomRH_FeedName_buff, IO_Dashboard_buff);
-        strcat(roomRH_FeedName_buff, "_room_RH");  //create string identifier for data feed
-        String roomRHString((char*)roomRH_FeedName_buff);
-        strlwr(roomRH_FeedName_buff);  //make lower case
+        //create feed names
+        strcpy (CO2_FeedName_buff, IO_Dashboard_buff);
+        strcat (CO2_FeedName_buff, "_probe_CO2");  //create string identifier for data feed
+        String CO2String((char*)CO2_FeedName_buff);
+        strlwr (CO2_FeedName_buff);  //make lower case
 
-        strcpy(roomPress_FeedName_buff, IO_Dashboard_buff);
-        strcat(roomPress_FeedName_buff, "_room_Press");  //create string identifier for data feed
-        String roomPressString((char*)roomPress_FeedName_buff);
-        strlwr(roomPress_FeedName_buff);  //make lower case
+        strcpy(Temp_FeedName_buff, IO_Dashboard_buff);
+        strcat(Temp_FeedName_buff, "_probe_TEMP");  //create string identifier for data feed
+        String TempString((char*)Temp_FeedName_buff);
+        strlwr(Temp_FeedName_buff);  //make lower case
 
-        Serial.printf("Temperature data feed name: %s\n", roomTemp_FeedName_buff);
-        Serial.printf("Relative Humidity data feed name: %s\n", roomRH_FeedName_buff);
-        Serial.printf("Pressure data feed name: %s\n", roomPress_FeedName_buff);
-        Serial.println("");
-      }
+        strcpy(RH_FeedName_buff, IO_Dashboard_buff);
+        strcat(RH_FeedName_buff, "_probe_RH");  //create string identifier for data feed
+        String RHString((char*)RH_FeedName_buff);
+        strlwr(RH_FeedName_buff);  //make lower case
 
-      //if dashboad feed name was created, then connect to dashboard, otherwise dont
+        if(firstRun){
+          Serial.printf("\nCO2 data feed name: %s\n", CO2_FeedName_buff);
+          Serial.printf("Temperature data feed name: %s\n", Temp_FeedName_buff);
+          Serial.printf("Relative Humidity data feed name: %s\n", RH_FeedName_buff);
+          Serial.println("");
+        }
+
+        if(room_Monitor){
+          //create feed names for the room monitor
+          strcpy(roomTemp_FeedName_buff, IO_Dashboard_buff);
+          strcat(roomTemp_FeedName_buff, "_room_TEMP");  //create string identifier for data feed
+          String roomTempString((char*)roomTemp_FeedName_buff);
+          strlwr(roomTemp_FeedName_buff);  //make lower case
+        
+          strcpy(roomRH_FeedName_buff, IO_Dashboard_buff);
+          strcat(roomRH_FeedName_buff, "_room_RH");  //create string identifier for data feed
+          String roomRHString((char*)roomRH_FeedName_buff);
+          strlwr(roomRH_FeedName_buff);  //make lower case
+
+          strcpy(roomPress_FeedName_buff, IO_Dashboard_buff);
+          strcat(roomPress_FeedName_buff, "_room_Press");  //create string identifier for data feed
+          String roomPressString((char*)roomPress_FeedName_buff);
+          strlwr(roomPress_FeedName_buff);  //make lower case
+
+          if(firstRun){
+            Serial.printf("Temperature data feed name: %s\n", roomTemp_FeedName_buff);
+            Serial.printf("Relative Humidity data feed name: %s\n", roomRH_FeedName_buff);
+            Serial.printf("Pressure data feed name: %s\n", roomPress_FeedName_buff);
+            Serial.println("");
+          }
+        }
+      
+
+      //if dashboard feed name was created, then connect to dashboard, otherwise dont
       if((CO2String != "_CO2") && (TempString != "_TEMP") && (RHString != "_RH")){
-        io = new (objStorage) AdafruitIO_WiFi(IO_USERNAME_buff, IO_KEY_buff, "", ""); //create IO object with user details for subsequent connection
+        if(firstRun){
+          io = new (objStorage) AdafruitIO_WiFi(IO_USERNAME_buff, IO_KEY_buff, "", ""); //create IO object with user details for subsequent connection
+        }
         Serial.printf("Connecting to Adafruit IO with User: %s, Dashboard: %s.\n", IO_USERNAME_buff, IO_Dashboard_buff);
 
         io->connect(); //initiate IO connection for data feeds
@@ -515,51 +521,59 @@ void initDashboard() {
         }
 
         // wait for a connection
+        const int connectionTimeout = 10; // seconds
         int cursorCounter = 0;
-        while ((io->status() < AIO_CONNECTED)) //|| (io.status() != AIO_NET_CONNECTED))
-        {
-          Serial.print(".");
-          cursorCounter = rotatingCursor(cursorCounter, cursorX, cursorY);
-          delay(500);
+        ioConnectedFlag = false;  // Assume failure by default
+        for (int i = 0; i < connectionTimeout; i++) {  
+            if (io->status() >= AIO_CONNECTED) {  
+                ioConnectedFlag = true;  // Successfully connected
+                break;  
+            }  
+            Serial.print(".");  // Visual feedback in Serial Monitor
+            cursorCounter = rotatingCursor(cursorCounter, cursorX, cursorY);
+            delay(1000);  // Wait 1 second before next check  
         }
 
-        //Configure data feeds for each parameter to log
-        CO2_Feed = io->feed(CO2_FeedName_buff);
-        Temp_Feed = io->feed(Temp_FeedName_buff);
-        RH_Feed = io->feed(RH_FeedName_buff);
+        if(ioConnectedFlag){
+          //Configure data feeds for each parameter to log
+          CO2_Feed = io->feed(CO2_FeedName_buff);
+          Temp_Feed = io->feed(Temp_FeedName_buff);
+          RH_Feed = io->feed(RH_FeedName_buff);
 
-        if(room_Monitor){
-          roomPress_Feed = io->feed(roomPress_FeedName_buff);
-          roomTemp_Feed = io->feed(roomTemp_FeedName_buff);
-          roomRH_Feed = io->feed(roomRH_FeedName_buff);
-        }
+          if(room_Monitor){
+            roomPress_Feed = io->feed(roomPress_FeedName_buff);
+            roomTemp_Feed = io->feed(roomTemp_FeedName_buff);
+            roomRH_Feed = io->feed(roomRH_FeedName_buff);
+          }
 
-        Serial.println(F("Adafruit IO connection established\n"));
-        if(firstRun){
-          tft.setCursor(cursorX0, cursorY0);
-          tft.println(F("IO Success"));
-          delay(1000);
+          Serial.println(F("Adafruit IO connection established\n"));
+          if(firstRun){
+            tft.setCursor(cursorX0, cursorY0);
+            tft.println(F("IO Success"));
+            delay(1000);
+          }
+          ioConnectedFlag = true;          // successful connection
+        }else{
+          Serial.println("\nFailed to connect to Adafruit IO - disable dashboard upload ");
+          if(firstRun){
+            tft.setCursor(cursorX0, cursorY0);
+            tft.println(F("IO Failed"));
+            delay(1000);
+          }
+          ioConnectedFlag = false;
         }
-        ioConnectedFlag = true;          // successful connection
-      }else{
-        Serial.println(F("Adafruit IO values missing - disable dashboard upload"));
-        Serial.print(F("IO_USERNAME: "));Serial.println(IO_USERNAME_buff);
-        Serial.print(F("IO_Dashboard: "));Serial.println(IO_Dashboard_buff);
-        if(firstRun){
-          tft.setCursor(cursorX0, cursorY0);
-          tft.println(F("IO Failed"));
-          delay(1000);
-        }
-        ioConnectedFlag = false;
-      }
-    }else{Serial.println(F("Wifi not connected"));}
+      }else{Serial.println(F("failed to read data feed parameters"));}
+    }else{
+      Serial.println(F("Wifi not connected"));
+      wifiConnectedFlag = false; 
+    }
   }else{Serial.println(F("Dashboard disabled in config"));}
 }
 
 void ioStatus(){
-    elapsedIOTime = (millis() - lastIOTime)/1000;
-    if(dashboard_Monitor && (firstRun || (elapsedIOTime >= dashboardRate))){
-      lastIOTime = millis(); //update timer
+  elapsedIOTime = (millis() - lastIOTime)/1000;
+  if(dashboard_Monitor && (firstRun || (elapsedIOTime >= dashboardRate))){
+    lastIOTime = millis(); //update timer
 
     //auto reconnect to wifi if connection is lost
     if(WiFi.status() != WL_CONNECTED) {
@@ -568,14 +582,21 @@ void ioStatus(){
       wifiManager.setEnableConfigPortal(false);
       wifiManager.disconnect();
       WiFi.disconnect();
-      delay(1000);
-      WiFi.begin();
-      Serial.print("reconnect to wifi SSID: "); Serial.println(WiFi.SSID());
-      wifiManager.autoConnect((WiFi.SSID()).c_str(),(WiFi.psk()).c_str());
-      delay(1000);
-    }else{
-      wifiConnectedFlag = true;
-    }
+      delay(500);
+      WiFi.mode(WIFI_STA);  // Set WiFi to Station mode
+      WiFi.begin(); // Initialise WiFi
+      delay(500);
+      //check wifi status
+      const int connectionTimeout = 10; // seconds
+      for (int i = 0; i < connectionTimeout; i++) {  
+        if(WiFi.status() == WL_CONNECTED) {
+          wifiConnectedFlag = true;
+          break;
+        }
+        Serial.print(".");  // Visual feedback in Serial Monitor
+        delay(1000);  // Wait 1 second before next check  
+      }
+    }else{wifiConnectedFlag = true;}
   
     //stay connected to adafruit io
     if(wifiConnectedFlag){ 
@@ -588,12 +609,14 @@ void ioStatus(){
       }
     } else{ioConnectedFlag = false;}
   }else{
-    //disable WiFi
-    ioConnectedFlag = false;
-    wifiConnectedFlag = false;
-    WiFi.disconnect(false); // Disconnect but keep credentials
-    WiFi.mode(WIFI_OFF);    // Turn off WiFi module
-    delay(100);
+    if(WiFi.status() == WL_CONNECTED){
+      //disable WiFi
+      ioConnectedFlag = false;
+      wifiConnectedFlag = false;
+      //WiFi.disconnect(false); // Disconnect but keep credentials
+      //WiFi.mode(WIFI_OFF);    // Turn off WiFi module
+      //delay(100);
+    }
   }
 }
 
@@ -604,20 +627,37 @@ void updateDashboard(){
     if(dashboard_Monitor && (firstRun || elapsedDashboardTime >= dashboardRate)){
       lastDashboardTime = millis(); //update timer
       updatingDashboardFlag = true;
+      wifiAsleepFlag = false;
+
       //report elapsed time
       Serial.println(F("")); Serial.print(F("Elapsed Time = ")); Serial.print(hour); Serial.print("h:"); Serial.print(minute); Serial.print("m"); Serial.print(second); Serial.println("s");
-      
       Serial.println(F("Updating Dashboard"));
       
       //update online dashboard values
-      if(myCO2 >0){CO2_Feed->save(myCO2);}
-      Temp_Feed->save(myTemp);
-      RH_Feed->save(myRH);
-
+      if(myCO2 >0){CO2_Feed->save(String(myCO2, 2));}
+      Temp_Feed->save(String(myTemp, 1));
+      RH_Feed->save(String(myRH, 1));
+      
       if(room_Monitor){
-        roomTemp_Feed->save(bmeTemp);
-        roomRH_Feed->save(bmeRH);
-        roomPress_Feed->save(bmePress);
+        roomTemp_Feed->save(String(bmeTemp, 1));
+        roomRH_Feed->save(String(bmeRH, 1));
+        roomPress_Feed->save(String((bmePress * .01f), 1));
+      }
+    }else{wifiAsleepFlag = true; }
+  }else{wifiAsleepFlag = true; }
+}
+
+void sleepWiFi(){
+  if(ioConnectedFlag){
+    elapsedWiFiTime = (millis() - lastWiFiTime)/1000;
+    if(dashboard_Monitor && (firstRun || elapsedWiFiTime >= dashboardRate)){
+      lastWiFiTime = millis(); //update timer
+      if(low_power_WiFi){
+        //disable WiFi between updates to save power
+        WiFi.disconnect(false); // Disconnect but keep credentials
+        WiFi.mode(WIFI_OFF);    // Turn off WiFi module
+        delay(100);
+        wifiAsleepFlag = true;
       }
     }
   }
