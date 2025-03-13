@@ -181,29 +181,33 @@ void updateTFT(){
       */
     }
 
-    //display Wifi text if required
-    if(!battExistsFlag){
-      tft.setTextSize(1);
-      tft.println("");
-    }
-    tft.setTextSize(3);
-    if(wifiConnectedFlag){
-      tft.setTextColor(ST77XX_GREEN);
-    }else{
-      tft.setTextColor(ST77XX_RED);  
-    }
-    tft.print("WiFi ");
+    //display Wifi and IO indicators if Dashboard is enabled
+    if(dashboard_Monitor){
+      if(!battExistsFlag){
+        tft.setTextSize(1);
+        tft.println("");
+      }
+
+      //display WiFi indicator
+      tft.setTextSize(3);
+      if(wifiConnectedFlag){
+        tft.setTextColor(ST77XX_GREEN);
+      }else{
+        tft.setTextColor(ST77XX_RED);  
+      }
+      tft.print("WiFi ");
   
-    //display IO text if required
-    if(updatingDashboardFlag){
-      tft.setTextColor(ST77XX_GREEN);
-      tft.setTextSize(3);
-      tft.print("^");
-      updatingDashboardFlag = false;
-    }else if(!ioConnectedFlag){
-      tft.setTextColor(ST77XX_RED);
-      tft.setTextSize(3);
-      tft.print("^");
+      //display IO indicator 
+      if(updatingDashboardFlag){
+        tft.setTextColor(ST77XX_GREEN);
+        tft.setTextSize(3);
+        tft.print("^");
+        updatingDashboardFlag = false;
+      }else if(!ioConnectedFlag){
+        tft.setTextColor(ST77XX_RED);
+        tft.setTextSize(3);
+        tft.print("^");
+      }
     }
   }
 }

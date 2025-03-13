@@ -23,7 +23,8 @@ void userActivatedHotspot(){
 }
 
 void initWiFi(){
-  if(dashboard_Monitor){
+  
+    WiFi.mode(WIFI_STA);  // Set WiFi to Station mode
     WiFi.begin(); // Initialise WiFi
     delay(500);
     initTFT(); // Initialise TFT display
@@ -45,6 +46,8 @@ void initWiFi(){
     }
   
     initWiFiManager();  // initialise wifi manager config and establish connection to Dashboard
+
+  if(dashboard_Monitor){
     initDashboard();  //initialise dashboard parameters
   } 
 }
@@ -424,15 +427,18 @@ void initWiFiManager() {
   if(startPortalFlag){
     wifiManager.startConfigPortal(hotspotSSID, hotspotPWD);  //start hotspot if user pressed button
   }else{
-    if (!wifiManager.autoConnect(hotspotSSID, hotspotPWD)) // connect to wifi with existing setting or start config hotspot if wifi not found
-    {
-      Serial.println(F("User failed to connect to hotspot"));
-      tft.println(F("WiFi Failed") );
-    }
-    else
-    {
-      Serial.println(F("Connected to WiFi."));
-      tft.println(F("WiFi Success"));
+    //if dashboard monitor is enabled, then autoconnect to existing WiFi if found, else start hotspot
+    if(dashboard_Monitor){
+      if (!wifiManager.autoConnect(hotspotSSID, hotspotPWD)) // connect to wifi with existing setting or start config hotspot if wifi not found
+      {
+        Serial.println(F("User failed to connect to hotspot"));
+        tft.println(F("WiFi Failed") );
+      }
+      else
+      {
+        Serial.println(F("Connected to WiFi."));
+        tft.println(F("WiFi Success"));
+      }
     }
   }
 
@@ -581,6 +587,13 @@ void ioStatus(){
         initDashboard();      
       }
     } else{ioConnectedFlag = false;}
+  }else{
+    //disable WiFi
+    ioConnectedFlag = false;
+    wifiConnectedFlag = false;
+    WiFi.disconnect(false); // Disconnect but keep credentials
+    WiFi.mode(WIFI_OFF);    // Turn off WiFi module
+    delay(100);
   }
 }
 
