@@ -144,9 +144,11 @@
 - Installation has been tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
 - The Arduino IDE Serial monitor can be used to monitor and debug operation of the unit if required (ensure "Both NL & CR" and the correct baud rate (115200 default))
 - The BME280 may cause an I2C address conflict by default and you will need to change the address, either by setting the dipswitch to ON or installing a surface mount resistor to the address pad as per the board manufacturers instructions
+  
+![Display](https://github.com/user-attachments/assets/ea00b058-6d7c-4633-9912-bed9eeb6a5f1)
 
 - Due to the limited size of the included TFT display, some creativity was required to squish everything onto the display.
-  - If "room_monitoring
+  - If "room_monitoring is enabled, additional Temperature and Relative Humidity values will be displayed in white after the probe values
   - "*" indicates the system is calibrating the CO2 sensor (rate is set in the code or via the configuration hotspot)
   - "WIFI" in green text indicates connected wifi, Yellow text indicates the wifi is asleep to save power, Red text indicates the WiFi connection has failed.
   - "^" indicates the system is uploading data to the dashboard (rate is set in the code or via the configuration hotspot)
