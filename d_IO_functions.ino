@@ -519,14 +519,12 @@ void initDashboard() {
 
         io->connect(); //initiate IO connection for data feeds
 
-        if(firstRun){
-          cursorX0 = tft.getCursorX();
-          cursorY0 = tft.getCursorY();
-          tft.print(F("IO Attempt "));
-          cursorX = tft.getCursorX();
-          cursorY = tft.getCursorY();
-        }
-
+        cursorX0 = tft.getCursorX();
+        cursorY0 = tft.getCursorY();
+        if(firstRun){tft.print(F("IO Attempt "));}
+        cursorX = tft.getCursorX();
+        cursorY = tft.getCursorY();
+        
         // wait for a connection
         const int connectionTimeout = 10; // seconds
         int cursorCounter = 0;
@@ -537,7 +535,7 @@ void initDashboard() {
                 break;  
             }  
             Serial.print(".");  // Visual feedback in Serial Monitor
-            if(firstRun){cursorCounter = rotatingCursor(cursorCounter, cursorX, cursorY);}
+            cursorCounter = rotatingCursor(cursorCounter, cursorX, cursorY);
             delay(1000);  // Wait 1 second before next check  
         }
 
@@ -585,7 +583,6 @@ void ioStatus(){
     //auto reconnect to wifi if connection is lost
     if(WiFi.status() != WL_CONNECTED) {
       wifiConnectedFlag = false;
-      Serial.println(F("\nReconnecting to WiFi..."));
       wifiManager.setEnableConfigPortal(false);
       wifiManager.disconnect();
       WiFi.disconnect();
@@ -593,16 +590,22 @@ void ioStatus(){
       WiFi.mode(WIFI_STA);  // Set WiFi to Station mode
       WiFi.begin(); // Initialise WiFi
       delay(500);
+      
+      Serial.print(F("\nReconnecting to WiFi"));
+
       //check wifi status
-      const int connectionTimeout = 10; // seconds
+      const int connectionTimeout = 15; // seconds
       for (int i = 0; i < connectionTimeout; i++) {  
         if(WiFi.status() == WL_CONNECTED) {
           wifiConnectedFlag = true;
           break;
         }
-        Serial.print(".");  // Visual feedback in Serial Monitor
+        Serial.print(F("."));  // Visual feedback in Serial Monitor
         delay(1000);  // Wait 1 second before next check  
       }
+      Serial.println(F(""));
+      if(wifiConnectedFlag){Serial.println(F("WiFi connected"));}
+      else{Serial.println(F("WiFi failed to connect"));}
     }else{wifiConnectedFlag = true;}
   
     //stay connected to adafruit io
