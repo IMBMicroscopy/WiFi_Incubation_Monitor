@@ -210,7 +210,6 @@ void updateTFT(){
   }
 }
 
-
 void boolToCharArray(bool value, char* output) {
     strcpy(output, value ? "true" : "false");
 }
