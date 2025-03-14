@@ -28,7 +28,7 @@ void loop() {
   ioStatus();                       // Check and reconnect to WiFi and IO dashboard if needed
   updateDashboard();                // Update the online dashboard
   updateTFT();                      // Refresh the TFT display
-  sleepWiFi();                       // put WiFi to sleep until next dashboard update
+  sleepWiFi();                      // put WiFi to sleep until next dashboard update
   
   firstRun = false;                 // Reset first-run flag to trigger events at the required rate
   delay(100);                       // Short delay to prevent excessive loop frequency

@@ -15,7 +15,7 @@ bool pressure_Monitor   = true; // Optional BME280 sensor for measuring ambient 
 bool battery_Monitor    = true; // Monitor battery charge if a battery is connected
 bool dashboard_Monitor  = true; // Enable/disable online dashboard reporting (requires WiFi or Ethernet)
 bool room_Monitor       = true; // if pressure_Monitor is true, Enable/disable reporting of T, RH and Pressure values from bme280 installed in the display case
-bool low_power_WiFi     = true; // Disable WiFi between dashboard updates to save battery power
+bool sleep_WiFi         = true; // Disable WiFi between dashboard updates to save battery power
 // -------------------------------------------------------------------
 // CO2 Sensor Configuration
 // -------------------------------------------------------------------

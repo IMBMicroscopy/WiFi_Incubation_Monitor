@@ -234,6 +234,7 @@ void convertParamsToCharArray(){
   boolToCharArray(battery_Monitor, battery_Monitor_buff);
   boolToCharArray(dashboard_Monitor, dashboard_Monitor_buff);
   boolToCharArray(room_Monitor, room_Monitor_buff);
+  boolToCharArray(sleep_WiFi, sleep_WiFi_buff);
   //Sensor Parameters
   dtostrf(switchCO2Sensors, 4, 2, switchCO2Sensors_buff);
   dtostrf(lowCO2, 4, 2, lowCO2_buff);

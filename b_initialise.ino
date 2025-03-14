@@ -55,6 +55,7 @@ char pressure_Monitor_buff[6] = "";
 char battery_Monitor_buff[6] = "";
 char dashboard_Monitor_buff[6] = "";
 char room_Monitor_buff[6] = "";
+char sleep_WiFi_buff[6] = "";
 //Sensor Settings
 char switchCO2Sensors_buff[8] = "";
 char lowCO2_buff[8] = "";
@@ -118,6 +119,7 @@ WiFiManagerParameter custom_pressure_Monitor("pressure_Monitor", "pressure monit
 WiFiManagerParameter custom_battery_Monitor("battery_Monitor", "battery monitor (true/false)", battery_Monitor_buff, 6);
 WiFiManagerParameter custom_dashboard_Monitor("dashboard_Monitor", "dashboard monitor (true/false)", dashboard_Monitor_buff, 6);
 WiFiManagerParameter custom_room_Monitor("room_Monitor", "Room monitor (true/false)", room_Monitor_buff, 6);
+WiFiManagerParameter custom_sleep_WiFi("sleep_WiFi", "Sleep WiFi (true/false)", sleep_WiFi_buff, 6);
 //Sensor parameters
 WiFiManagerParameter custom_sensor_title("<p>----------------------Sensor Parameters----------------------</p>");
 WiFiManagerParameter custom_switch_CO2_Sensors("switch_CO2_Sensors", "switch between CO2 sensors (%)", switchCO2Sensors_buff, 8);

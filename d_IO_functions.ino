@@ -80,6 +80,7 @@ void saveParams() {
     preferences.putBool("batt_Mon", battery_Monitor);
     preferences.putBool("dash_Mon", dashboard_Monitor);
     preferences.putBool("room_Mon", room_Monitor);
+    preferences.putBool("sleep_WiFi", sleep_WiFi);
     // Sensor parameters
     preferences.putFloat("swCO2Sens", switchCO2Sensors);
     preferences.putFloat("lowCO2", lowCO2);
@@ -142,6 +143,7 @@ void loadParams() {
   battery_Monitor = preferences.getBool("batt_Mon", battery_Monitor);
   dashboard_Monitor = preferences.getBool("dash_Mon", dashboard_Monitor);
   room_Monitor = preferences.getBool("room_Mon", room_Monitor);
+  sleep_WiFi = preferences.getBool("sleep_WiFi", sleep_WiFi);
   //sensor parameters
   switchCO2Sensors = preferences.getFloat("swCO2Sens", switchCO2Sensors);
   lowCO2 = preferences.getFloat("lowCO2", lowCO2);
@@ -197,6 +199,7 @@ void getHotspotValues(){
   strcpy(battery_Monitor_buff, custom_battery_Monitor.getValue());
   strcpy(dashboard_Monitor_buff, custom_dashboard_Monitor.getValue());
   strcpy(room_Monitor_buff, custom_room_Monitor.getValue());
+  strcpy(sleep_WiFi_buff, custom_sleep_WiFi.getValue());
   //sensor parameters
   strcpy(switchCO2Sensors_buff, custom_switch_CO2_Sensors.getValue());
   strcpy(lowCO2_buff, custom_lowCO2.getValue());
@@ -244,6 +247,7 @@ void getHotspotValues(){
   battery_Monitor = charArrayToBool(battery_Monitor_buff);
   dashboard_Monitor = charArrayToBool(dashboard_Monitor_buff);
   room_Monitor = charArrayToBool(room_Monitor_buff);
+  sleep_WiFi = charArrayToBool(sleep_WiFi_buff);
   //sensor parameters
   switchCO2Sensors = atof(switchCO2Sensors_buff);
   lowCO2 = atof(lowCO2_buff);
@@ -322,6 +326,7 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_battery_Monitor);  
   wifiManager.addParameter(&custom_dashboard_Monitor);  
   wifiManager.addParameter(&custom_room_Monitor);
+  wifiManager.addParameter(&custom_sleep_WiFi);
   //custom parameters for sensors
   wifiManager.addParameter(&custom_sensor_title);
   wifiManager.addParameter(&custom_switch_CO2_Sensors);
@@ -378,6 +383,8 @@ void initWiFiManager() {
   custom_battery_Monitor.setValue(battery_Monitor_buff, 6);
   custom_dashboard_Monitor.setValue(dashboard_Monitor_buff, 6);
   custom_room_Monitor.setValue(room_Monitor_buff, 6);
+  custom_sleep_WiFi.setValue(sleep_WiFi_buff, 6);
+
   //sensor parameters
   custom_switch_CO2_Sensors.setValue(switchCO2Sensors_buff, 8);
   custom_lowCO2.setValue(lowCO2_buff, 8);
@@ -530,7 +537,7 @@ void initDashboard() {
                 break;  
             }  
             Serial.print(".");  // Visual feedback in Serial Monitor
-            cursorCounter = rotatingCursor(cursorCounter, cursorX, cursorY);
+            if(firstRun){cursorCounter = rotatingCursor(cursorCounter, cursorX, cursorY);}
             delay(1000);  // Wait 1 second before next check  
         }
 
@@ -652,7 +659,7 @@ void sleepWiFi(){
     elapsedWiFiTime = (millis() - lastWiFiTime)/1000;
     if(dashboard_Monitor && (firstRun || elapsedWiFiTime >= dashboardRate)){
       lastWiFiTime = millis(); //update timer
-      if(low_power_WiFi){
+      if(sleep_WiFi){
         //disable WiFi between updates to save power
         WiFi.disconnect(false); // Disconnect but keep credentials
         WiFi.mode(WIFI_OFF);    // Turn off WiFi module
