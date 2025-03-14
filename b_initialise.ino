@@ -110,16 +110,16 @@ WiFiManager wifiManager;
 WiFiManagerParameter custom_dashboard_title("<p>-------------------IO Dashboard Parameters-------------------</p>");
 WiFiManagerParameter custom_IO_USERNAME("io_user", "Adafruit IO Username", IO_USERNAME_buff, 60);
 WiFiManagerParameter custom_IO_KEY("io_key", "Adafruit IO Key", IO_KEY_buff, 60);
-WiFiManagerParameter custom_IO_Dashboard("io_dashboard", "Adafruit IO Dashboard Short Name", IO_Dashboard_buff, 60);
+WiFiManagerParameter custom_IO_Dashboard("io_dashboard", "Adafruit IO Data Feed Prefix", IO_Dashboard_buff, 60);
 // Optional WiFiManager parameters
 WiFiManagerParameter custom_monitor_title("<p>-------------------Feature Toggles-------------------</p>");
-WiFiManagerParameter custom_low_CO2_Monitor("low_CO2_Monitor", "low CO2 monitor (true/false)", low_CO2_Monitor_buff, 6);
-WiFiManagerParameter custom_high_CO2_Monitor("high_CO2_Monitor", "high CO2 monitor (true/false)", high_CO2_Monitor_buff, 6);
-WiFiManagerParameter custom_pressure_Monitor("pressure_Monitor", "pressure monitor (true/false)", pressure_Monitor_buff, 6);
-WiFiManagerParameter custom_battery_Monitor("battery_Monitor", "battery monitor (true/false)", battery_Monitor_buff, 6);
-WiFiManagerParameter custom_dashboard_Monitor("dashboard_Monitor", "dashboard monitor (true/false)", dashboard_Monitor_buff, 6);
+WiFiManagerParameter custom_low_CO2_Monitor("low_CO2_Monitor", "low CO2 monitor - monitor 0-1% CO2 (true/false)", low_CO2_Monitor_buff, 6);
+WiFiManagerParameter custom_high_CO2_Monitor("high_CO2_Monitor", "high CO2 monitor - monitor 1-100% CO2 (true/false)", high_CO2_Monitor_buff, 6);
+WiFiManagerParameter custom_pressure_Monitor("pressure_Monitor", "pressure monitor - use bme280 sensor (true/false)", pressure_Monitor_buff, 6);
+WiFiManagerParameter custom_battery_Monitor("battery_Monitor", "battery monitor - report BMS values (true/false)", battery_Monitor_buff, 6);
+WiFiManagerParameter custom_dashboard_Monitor("dashboard_Monitor", "dashboard monitor - update online dashboard (true/false)", dashboard_Monitor_buff, 6);
 WiFiManagerParameter custom_room_Monitor("room_Monitor", "Room monitor (true/false)", room_Monitor_buff, 6);
-WiFiManagerParameter custom_sleep_WiFi("sleep_WiFi", "Sleep WiFi (true/false)", sleep_WiFi_buff, 6);
+WiFiManagerParameter custom_sleep_WiFi("sleep_WiFi", "Sleep WiFi - to save battery power (true/false)", sleep_WiFi_buff, 6);
 //Sensor parameters
 WiFiManagerParameter custom_sensor_title("<p>----------------------Sensor Parameters----------------------</p>");
 WiFiManagerParameter custom_switch_CO2_Sensors("switch_CO2_Sensors", "switch between CO2 sensors (%)", switchCO2Sensors_buff, 8);
@@ -134,10 +134,10 @@ WiFiManagerParameter custom_pressure("pressure", "manual pressure value (mbar)",
 
 //Update rates
 WiFiManagerParameter custom_update_title("<p>-------------------- Update Rates ---------------------</p>");
-WiFiManagerParameter custom_sensorRate("sensor_Rate", "sensor readout rate (s)", sensorRate_buff, 8);
-WiFiManagerParameter custom_compensateRate("compensate_Rate", "compensate sensor Rate (s)", compensateRate_buff, 8);
-WiFiManagerParameter custom_dashboardRate("dashboard_Rate", "dashboard update Rate (s)", dashboardRate_buff, 8);
-WiFiManagerParameter custom_batteryRate("battery_Rate", "battery BMS readout rate (s)", batteryRate_buff, 8);
+WiFiManagerParameter custom_sensorRate("sensor_Rate", "sensor update rate (s)", sensorRate_buff, 8);
+WiFiManagerParameter custom_compensateRate("compensate_Rate", "compensate CO2 sensor Rate (s)", compensateRate_buff, 8);
+WiFiManagerParameter custom_dashboardRate("dashboard_Rate", "online dashboard update Rate (s)", dashboardRate_buff, 8);
+WiFiManagerParameter custom_batteryRate("battery_Rate", "battery BMS update rate (s)", batteryRate_buff, 8);
 // BME280 WiFiManager Parameters
 WiFiManagerParameter custom_bme280_title("<p>---------------------- BME280 Calibration ----------------------</p>");
 WiFiManagerParameter custom_bme280_offsetTemp("bme280_offsetTemp", "Offset BME280 temperature to match other sensors", bme280_offsetTemp_buff, 8);

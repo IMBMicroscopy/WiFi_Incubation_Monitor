@@ -152,7 +152,7 @@ void updateTFT(){
     }
     tft.print("%"); tft.println("");
     
-    compFlag = false;
+    compFlag = false;  //turn off compensation indicator on next tft update
 
     //if the battery parameters are in range it probably exists, so display values on display
     if(battExistsFlag){
@@ -182,7 +182,7 @@ void updateTFT(){
     }
 
     //display Wifi and IO indicators if Dashboard is enabled
-    if(dashboard_Monitor && !wifiAsleepFlag){
+    if(dashboard_Monitor){
       if(!battExistsFlag){
         tft.setTextSize(1);
         tft.println("");
@@ -190,20 +190,18 @@ void updateTFT(){
 
       //display WiFi indicator
       tft.setTextSize(3);
-      if(wifiConnectedFlag){
-        tft.setTextColor(ST77XX_GREEN);
-      }else{
-        tft.setTextColor(ST77XX_RED);  
-      }
+      if(wifiConnectedFlag){tft.setTextColor(ST77XX_GREEN);}
+      if(wifiAsleepFlag){tft.setTextColor(ST77XX_YELLOW);}
+      else if(!updatingDashboardFlag){tft.setTextColor(ST77XX_RED);}
       tft.print("WiFi ");
   
       //display IO indicator 
-      if(updatingDashboardFlag){
+      if(updatingDashboardFlag && !wifiAsleepFlag){
         tft.setTextColor(ST77XX_GREEN);
         tft.setTextSize(3);
         tft.print("^");
         updatingDashboardFlag = false;
-      }else if(!ioConnectedFlag){
+      }else if(!ioConnectedFlag && !wifiAsleepFlag){
         tft.setTextColor(ST77XX_RED);
         tft.setTextSize(3);
         tft.print("^");
