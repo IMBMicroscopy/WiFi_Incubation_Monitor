@@ -584,15 +584,15 @@ void ioStatus(){
       wifiManager.setEnableConfigPortal(false);
       wifiManager.disconnect();
       WiFi.disconnect();
-      delay(500);
+      delay(1000);
       WiFi.mode(WIFI_STA);  // Set WiFi to Station mode
       WiFi.begin(); // Initialise WiFi
-      delay(500);
+      delay(1000);
       
       Serial.print(F("\nReconnecting to WiFi"));
 
       //check wifi status
-      const int connectionTimeout = 15; // seconds
+      const int connectionTimeout = sensorRate; // seconds
       for (int i = 0; i < connectionTimeout; i++) {  
         if(WiFi.status() == WL_CONNECTED) {
           wifiConnectedFlag = true;
@@ -658,7 +658,7 @@ void sleepWiFi(){
         WiFi.mode(WIFI_OFF);    // Turn off WiFi module
         delay(100);
         wifiAsleepFlag = true;
-      }
+      }else{wifiAsleepFlag = false;}
     }
   }
 }

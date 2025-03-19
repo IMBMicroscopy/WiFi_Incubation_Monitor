@@ -36,6 +36,8 @@ Preferences preferences;
 // Define constants and parameters
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
 
+#define version "1.0.1" //Software version
+
 // WiFi Manager parameters stored in character array buffers
 char IO_USERNAME_buff[64] = "";
 char IO_KEY_buff[64] = "";

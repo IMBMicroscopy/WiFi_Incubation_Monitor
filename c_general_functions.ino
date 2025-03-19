@@ -35,10 +35,11 @@ void constrainRates(){
 void startupText(){
   Serial.println(F(" "));
   Serial.println(F("Incubation Monitor Initialising"));
+  Serial.printf("Incubation Monitor, Ver: %s Initialising\n", version);
   Serial.print(F("WiFi Mac Address: ")); Serial.println(getDefaultMacAddress());
   tft.setTextColor(ST77XX_WHITE);  //default text colour
   tft.setTextSize(3);  //1 (small) - 4(biggest) text size
-  tft.printf("Incubation\n\nMonitor\n\nInitialising\n");
+  tft.printf("Incubation\n\nMonitor\n\nVer: %s\n\n, version ");
 }
 
 //update current time for use in other functions to control code execution
@@ -191,8 +192,9 @@ void updateTFT(){
       //display WiFi indicator
       tft.setTextSize(3);
       if(wifiConnectedFlag){tft.setTextColor(ST77XX_GREEN);}
-      if(wifiAsleepFlag){tft.setTextColor(ST77XX_YELLOW);}
+      else if(wifiAsleepFlag){tft.setTextColor(ST77XX_YELLOW);}
       else if(!updatingDashboardFlag){tft.setTextColor(ST77XX_RED);}
+      else{tft.setTextColor(ST77XX_BLUE);}
       tft.print("WiFi ");
   
       //display IO indicator 
