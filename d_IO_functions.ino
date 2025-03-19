@@ -326,7 +326,7 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_battery_Monitor);  
   wifiManager.addParameter(&custom_dashboard_Monitor);  
   wifiManager.addParameter(&custom_room_Monitor);
-  wifiManager.addParameter(&custom_sleep_WiFi);
+  //wifiManager.addParameter(&custom_sleep_WiFi);
   //custom parameters for sensors
   wifiManager.addParameter(&custom_sensor_title);
   wifiManager.addParameter(&custom_switch_CO2_Sensors);
@@ -634,10 +634,12 @@ void updateDashboard(){
       Serial.println(F("Updating Dashboard"));
       
       //update online dashboard values
-      if(myCO2 >0){CO2_Feed->save(String(myCO2, 2));}
-      Temp_Feed->save(String(myTemp, 1));
-      RH_Feed->save(String(myRH, 1));
-      
+      if(low_CO2_Monitor || high_CO2_Monitor){
+        if(myCO2 >0){CO2_Feed->save(String(myCO2, 2));}
+        Temp_Feed->save(String(myTemp, 1));
+        RH_Feed->save(String(myRH, 1));
+      }
+
       if(room_Monitor){
         roomTemp_Feed->save(String(bmeTemp, 1));
         roomRH_Feed->save(String(bmeRH, 1));

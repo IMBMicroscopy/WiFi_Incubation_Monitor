@@ -35,11 +35,11 @@ void constrainRates(){
 void startupText(){
   Serial.println(F(" "));
   Serial.println(F("Incubation Monitor Initialising"));
-  Serial.printf("Incubation Monitor, Ver: %s Initialising\n", version);
+  Serial.printf("Incubation Monitor, Ver: %s Initialising\n", SOFTWARE_VERSION);
   Serial.print(F("WiFi Mac Address: ")); Serial.println(getDefaultMacAddress());
   tft.setTextColor(ST77XX_WHITE);  //default text colour
   tft.setTextSize(3);  //1 (small) - 4(biggest) text size
-  tft.printf("Incubation\n\nMonitor\n\nVer: %s\n\n, version ");
+  tft.printf("Incubation\n\nMonitor\n\nVer: %s\n\n, SOFTWARE_VERSION ");
 }
 
 //update current time for use in other functions to control code execution
@@ -93,120 +93,131 @@ void updateTFT(){
     tft.setCursor(0, 0); //position cursor at top left
     tft.setTextColor(ST77XX_WHITE); //set text colour
     tft.setTextSize(3);
+      
+    bool probeMonitor = low_CO2_Monitor || high_CO2_Monitor;
+    bool roomOnly = room_Monitor && !probeMonitor;
 
-    if(myCO2 > 0){
-      tft.print("CO2:");
-      if(myCO2 < lowCO2){
-        tft.setTextColor(ST77XX_RED);  //values out of range in RED
-      }else if(myCO2 > highCO2) {
-        tft.setTextColor(ST77XX_RED); //values out of range in RED       
-      }else{
-        tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
-      }
-      tft.print(myCO2, 2); tft.print("%");
-      if(compFlag){tft.println(" *");}else{tft.println("");}
+    // CO2
+    if(probeMonitor){
+      if (myCO2 > 0) {
+          tft.print("CO2:");
+          // Set text color based on CO2 range
+          tft.setTextColor((myCO2 < lowCO2 || myCO2 > highCO2) ? ST77XX_RED : ST77XX_GREEN);
+          tft.print(myCO2, 2);
+          tft.print("%");
+          // Display '*' if compFlag is true
+          tft.println(compFlag ? " *" : "");
+      } 
     }
-    
-    //Temperature
-    tft.setTextColor(ST77XX_WHITE);
-    tft.setTextSize(1);
-    tft.println("");
-    tft.setTextSize(3);
-    tft.print("T:"); 
-    if(myTemp < lowTemp){
-      tft.setTextColor(ST77XX_RED);  //values out of range in RED
-    }else if(myTemp > highTemp) {
-      tft.setTextColor(ST77XX_RED);  //values out of range in RED      
-    }else{
-      tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
-    }
-    tft.print(myTemp, 1);// tft.print("C");
-    if(room_Monitor){
-      tft.setTextColor(ST77XX_WHITE);
-      tft.setTextSize(2);
-      tft.print(" / "); 
-      tft.setTextSize(3);
-      tft.print(bmeTemp, 1); 
-    }
-    tft.print("C"); tft.println("");
 
-    //Relative Humidity
-    tft.setTextColor(ST77XX_WHITE);
-    tft.setTextSize(1);
-    tft.println("");
-    tft.setTextSize(3);
-    tft.print("RH:"); 
-    if(myRH < lowRH){
-      tft.setTextColor(ST77XX_RED);  //values out of range in RED
-    }else if(myRH > highRH) {
-      tft.setTextColor(ST77XX_RED); //values out of range in RED       
-    }else{
-      tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
-    }
-    tft.print(myRH, 0); //tft.print("%");
-    if(room_Monitor){
-      tft.setTextColor(ST77XX_WHITE);
-      tft.setTextSize(2);
-      tft.print(" / "); 
-      tft.setTextSize(3);
-      tft.print(bmeCRH, 0); 
-    }
-    tft.print("%"); tft.println("");
-    
-    compFlag = false;  //turn off compensation indicator on next tft update
-
-    //if the battery parameters are in range it probably exists, so display values on display
-    if(battExistsFlag){
-      //Battery SOC and charge rate
+    // Temperature
+    if (probeMonitor || room_Monitor) {
       tft.setTextColor(ST77XX_WHITE);
       tft.setTextSize(1);
       tft.println("");
       tft.setTextSize(3);
-      tft.print("B:"); 
-      if(battPercent < lowBatt){
-        tft.setTextColor(ST77XX_RED);  //values out of range in RED
-      }else{
-        tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
-      }
-      tft.setTextSize(3);
-      tft.print(battPercent, 0); tft.print("% ");
-      tft.setTextSize(3);
+      tft.print("T: ");
 
-      //Battery charge/discharge rate
-      /*if(battRate < 0){
-        tft.setTextColor(ST77XX_RED); //values out of range in RED
-      }else{
-        tft.setTextColor(ST77XX_GREEN);  //values in range in GREEN
+
+      if (probeMonitor) {
+        // Probe monitor temperature range check
+        tft.setTextColor((myTemp < lowTemp || myTemp > highTemp) ? ST77XX_RED : ST77XX_GREEN);
+        tft.print(myTemp, 1);
+        if (probeMonitor && room_Monitor){
+          // Room monitor
+          tft.setTextColor(ST77XX_WHITE);
+          tft.setTextSize(2);
+          tft.print(" / ");
+          tft.setTextSize(3);
+        }
+        if (room_Monitor) {
+            tft.print(bmeTemp, 1);
+        }
+      }else if (roomOnly) {
+        tft.print(bmeTemp, 1);
       }
-      tft.print(" "); tft.print(battRate, 0); tft.println("%/h");
-      */
+      tft.print("C");
+      tft.println("");
     }
 
-    //display Wifi and IO indicators if Dashboard is enabled
-    if(dashboard_Monitor){
-      if(!battExistsFlag){
+    // Relative Humidity
+    if (probeMonitor || room_Monitor) {
+        tft.setTextColor(ST77XX_WHITE);
         tft.setTextSize(1);
         tft.println("");
+        tft.setTextSize(3);
+        tft.print("RH: ");
+
+        bool probeMonitor = low_CO2_Monitor || high_CO2_Monitor;
+        bool roomOnly = room_Monitor && !probeMonitor;
+
+        if (probeMonitor) {
+          // Probe monitor RH range check
+          tft.setTextColor((myRH < lowRH || myRH > highRH) ? ST77XX_RED : ST77XX_GREEN);
+          tft.print(myRH, 0);
+          if (probeMonitor && room_Monitor){
+            // Room monitor
+            tft.setTextColor(ST77XX_WHITE);
+            tft.setTextSize(2);
+            tft.print(" / ");
+            tft.setTextSize(3);
+          }
+          if (room_Monitor) {
+            tft.print(bmeCRH, 0);
+          }
+        } else if (roomOnly) {
+          tft.print(bmeCRH, 0);
+        }
+        tft.print("%");
+        tft.println("");
+    }
+    
+    compFlag = false;  //turn off compensation indicator on next tft update
+
+    //if the battery parameters are in range it probably exists, so display values on display
+    if (battExistsFlag) {
+        // Battery SOC
+        tft.setTextColor(ST77XX_WHITE);
+        tft.setTextSize(1);
+        tft.println("");
+        tft.setTextSize(3);
+        tft.print("B: ");
+
+        // Set text color based on battery percentage
+        tft.setTextColor(battPercent < lowBatt ? ST77XX_RED : ST77XX_GREEN);
+        tft.print(battPercent, 0);
+        tft.print("%");
+
+        // Uncomment the following block if you want to display charge/discharge rate
+        /*
+        tft.setTextColor(battRate < 0 ? ST77XX_RED : ST77XX_GREEN);
+        tft.print(" ");
+        tft.print(battRate, 0);
+        tft.println("%/h");
+        */
+    }
+
+    // Display WiFi and IO indicators if Dashboard is enabled
+    if (dashboard_Monitor) {
+      if (!battExistsFlag) {
+          tft.setTextSize(1);
+          tft.println("");
       }
 
-      //display WiFi indicator
+      // Set WiFi indicator color
       tft.setTextSize(3);
-      if(wifiConnectedFlag){tft.setTextColor(ST77XX_GREEN);}
-      else if(wifiAsleepFlag){tft.setTextColor(ST77XX_YELLOW);}
-      else if(!updatingDashboardFlag){tft.setTextColor(ST77XX_RED);}
-      else{tft.setTextColor(ST77XX_BLUE);}
+      tft.setTextColor(wifiConnectedFlag ? ST77XX_GREEN :
+                      wifiAsleepFlag ? ST77XX_YELLOW :
+                      !updatingDashboardFlag ? ST77XX_RED : ST77XX_BLUE);
       tft.print("WiFi ");
-  
-      //display IO indicator 
-      if(updatingDashboardFlag && !wifiAsleepFlag){
-        tft.setTextColor(ST77XX_GREEN);
-        tft.setTextSize(3);
-        tft.print("^");
-        updatingDashboardFlag = false;
-      }else if(!ioConnectedFlag && !wifiAsleepFlag){
-        tft.setTextColor(ST77XX_RED);
-        tft.setTextSize(3);
-        tft.print("^");
+      //tft.drawBitmap(tft.getCursorX(), tft.getCursorY(), wifiSymbolBitMap, WIFI_WIDTH, WIFI_HEIGHT, ST77XX_WHITE);
+      //tft.setCursor(tft.getCursorX() + WIFI_WIDTH + 2, tft.getCursorY());
+
+      // Display IO indicator
+      if (!wifiAsleepFlag) {
+          tft.setTextColor(updatingDashboardFlag ? ST77XX_GREEN : ST77XX_RED);
+          tft.print("^");
+          if (updatingDashboardFlag) updatingDashboardFlag = false;
       }
     }
   }

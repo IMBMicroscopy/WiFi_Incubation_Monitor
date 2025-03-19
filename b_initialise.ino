@@ -1,3 +1,5 @@
+#define SOFTWARE_VERSION "1.0.2"
+
 // Include required libraries
 #include "esp_mac.h"             // Exposes esp_mac_type_t values
 #include <cstring>               // For strcmp, strcpy, strcasecmp
@@ -36,7 +38,21 @@ Preferences preferences;
 // Define constants and parameters
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
 
-#define version "1.0.1" //Software version
+// Wifi symbol
+#define WIFI_WIDTH 12
+#define WIFI_HEIGHT 8
+/*
+const uint8_t wifiSymbolBitMap[] PROGMEM = {
+  0b00000000, 0b11000000,
+  0b00000011, 0b11100000,
+  0b00001111, 0b11110000,
+  0b00011100, 0b01111000,
+  0b00110000, 0b00001100,
+  0b01100000, 0b00000110,
+  0b01000000, 0b00000010,
+  0b00000000, 0b00000000
+};
+*/
 
 // WiFi Manager parameters stored in character array buffers
 char IO_USERNAME_buff[64] = "";
