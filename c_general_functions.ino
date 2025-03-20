@@ -181,12 +181,12 @@ void updateTFT(){
         tft.setTextSize(1);
         tft.println("");
         tft.setTextSize(3);
-        tft.print("B: ");
+        tft.print("B:");
 
         // Set text color based on battery percentage
         tft.setTextColor(battPercent < lowBatt ? ST77XX_RED : ST77XX_GREEN);
         tft.print(battPercent, 0);
-        tft.print("%");
+        tft.print("% ");
 
         // Uncomment the following block if you want to display charge/discharge rate
         /*
