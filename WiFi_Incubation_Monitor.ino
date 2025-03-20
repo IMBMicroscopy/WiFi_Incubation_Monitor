@@ -9,13 +9,13 @@
 // Feature Toggles
 // Set to false if you haven't installed the hardware or don't require the feature.
 // -------------------------------------------------------------------
-bool low_CO2_Monitor    = true; // Optional SCD41 sensor for measuring low ambient levels of CO2 (<1%)
+bool low_CO2_Monitor    = false; // Optional SCD41 sensor for measuring low ambient levels of CO2 (<1%)
 bool high_CO2_Monitor   = true; // STC31 sensor (0.7 - 100% CO2) attached?
 bool pressure_Monitor   = true; // Optional BME280 sensor for measuring ambient pressure and room conditions (T and RH)
 bool battery_Monitor    = true; // Monitor battery charge if a battery is connected
 bool dashboard_Monitor  = true; // Enable/disable online dashboard reporting (requires WiFi or Ethernet)
 bool room_Monitor       = true; // if pressure_Monitor is true, Enable/disable reporting of T, RH and Pressure values from bme280 installed in the display case
-bool sleep_WiFi         = true; // Disable WiFi between dashboard updates to save battery power
+//bool sleep_WiFi         = false; // Disable WiFi between dashboard updates to save battery power (feature not currently working reliably, disabled in initialise.ino and main.ino)
 // -------------------------------------------------------------------
 // CO2 Sensor Configuration
 // -------------------------------------------------------------------

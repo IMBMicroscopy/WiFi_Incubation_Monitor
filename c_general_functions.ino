@@ -116,7 +116,7 @@ void updateTFT(){
       tft.setTextSize(1);
       tft.println("");
       tft.setTextSize(3);
-      tft.print("T: ");
+      tft.print("T:");
 
 
       if (probeMonitor) {
@@ -146,7 +146,7 @@ void updateTFT(){
         tft.setTextSize(1);
         tft.println("");
         tft.setTextSize(3);
-        tft.print("RH: ");
+        tft.print("RH:");
 
         bool probeMonitor = low_CO2_Monitor || high_CO2_Monitor;
         bool roomOnly = room_Monitor && !probeMonitor;
@@ -210,8 +210,6 @@ void updateTFT(){
                       wifiAsleepFlag ? ST77XX_YELLOW :
                       !updatingDashboardFlag ? ST77XX_RED : ST77XX_BLUE);
       tft.print("WiFi ");
-      //tft.drawBitmap(tft.getCursorX(), tft.getCursorY(), wifiSymbolBitMap, WIFI_WIDTH, WIFI_HEIGHT, ST77XX_WHITE);
-      //tft.setCursor(tft.getCursorX() + WIFI_WIDTH + 2, tft.getCursorY());
 
       // Display IO indicator
       if (!wifiAsleepFlag) {

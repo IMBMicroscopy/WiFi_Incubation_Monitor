@@ -8,6 +8,7 @@
 #include <Adafruit_Sensor.h>     // Adafruit sensor library
 #include <Adafruit_GFX.h>        // Core graphics library for TFT
 #include <Adafruit_ST7789.h>     // Hardware-specific library for ST7789
+
 Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST); // TFT variable for Adafruit Feather
 
 // Include sensor libraries
@@ -222,3 +223,5 @@ bool writeConfigValues = false;
 bool shouldSaveConfig = false;
 bool saveIO = false;
 bool wifiAsleepFlag = false;
+
+bool  sleep_WiFi = false; //disable this feature for now due to instability

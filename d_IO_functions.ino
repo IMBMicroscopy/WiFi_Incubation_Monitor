@@ -326,7 +326,8 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_battery_Monitor);  
   wifiManager.addParameter(&custom_dashboard_Monitor);  
   wifiManager.addParameter(&custom_room_Monitor);
-  //wifiManager.addParameter(&custom_sleep_WiFi);
+  wifiManager.addParameter(&custom_sleep_WiFi);
+
   //custom parameters for sensors
   wifiManager.addParameter(&custom_sensor_title);
   wifiManager.addParameter(&custom_switch_CO2_Sensors);

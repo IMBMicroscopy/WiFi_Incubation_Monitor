@@ -15,8 +15,10 @@ void setup() {
   initSensors();                    // Initialize the incubation sensors
   initBattery();                    // Initialize the battery monitor
   initTimers();                     // Get the current time for loop operations
-
   Serial.println(F("Finished setup"));
+
+  sleep_WiFi = false; //disable this feature for now due to instability
+
 } // setup()
 
 void loop() {
