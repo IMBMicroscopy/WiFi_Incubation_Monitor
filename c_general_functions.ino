@@ -34,7 +34,6 @@ void constrainRates(){
 //device startup text
 void startupText(){
   Serial.println(F(" "));
-  Serial.println(F("Incubation Monitor Initialising"));
   Serial.printf("Incubation Monitor, Ver: %s Initialising\n", SOFTWARE_VERSION);
   Serial.print(F("WiFi Mac Address: ")); Serial.println(getDefaultMacAddress());
   tft.setTextColor(ST77XX_WHITE);  //default text colour

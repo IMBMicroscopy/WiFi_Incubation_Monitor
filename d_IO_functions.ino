@@ -55,7 +55,7 @@ void saveParams() {
   constrainRates();                 // Constrain user-defined readout rates to acceptable values
   //All Keys must be less than or equal to 15 characters long
   preferences.begin("custom", true); // Open Preferences in read mode
-  int test = preferences.getInt("baud", -1);  //test if default values exist in flash, if they dont, set value to -1
+  int test = preferences.getFloat("pressure", -1);  //test if default values exist in flash, if they dont, set value to -1
   preferences.end();
   delay(20);
 
@@ -120,7 +120,10 @@ void saveParams() {
     //additional
     //preferences.putInt("baud", baud);
 
-    Serial.println("writing to Flash complete, go back to the homepage and click Exit");
+    Serial.print(F("writing to Flash complete"));
+    if(saveIO){Serial.print(F(", go back to the homepage and click Exit"));}
+    Serial.println(F(""));
+
   }else{Serial.println("parameter values exist, dont write new values to flash");}
   delay(20);
   preferences.end();
