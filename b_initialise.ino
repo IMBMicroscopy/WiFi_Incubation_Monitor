@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "1.1.2"
+#define SOFTWARE_VERSION "1.1.3"
 
 // Include required libraries
 #include "esp_mac.h"             // Exposes esp_mac_type_t values
