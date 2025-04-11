@@ -149,6 +149,7 @@
 - Installation has been tested on Mac OS 15.3.1 with Arduino IDE 2.3.4
 - The Arduino IDE Serial monitor can be used to monitor and debug operation of the unit if required (ensure "Both NL & CR" and the correct baud rate (115200 default))
 - The BME280 may cause an I2C address conflict by default and you will need to change the address, either by setting the dipswitch to ON or installing a surface mount resistor to the address pad as per the board manufacturers instructions
+- If you use a board other than the ESP32 reverse TFT, you may need to change the configuration hotspot trigger button assignment by altering "#define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration" in initilise.ino 
   
 ![Display](https://github.com/user-attachments/assets/ea00b058-6d7c-4633-9912-bed9eeb6a5f1)
 
