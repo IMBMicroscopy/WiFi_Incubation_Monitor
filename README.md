@@ -164,6 +164,9 @@
 - 3D Printed Case:
 -   The included 3D printed case file allows for a BME280 breakout board to be installed as well as a lithium ion battery inside the case (enable "Room Monitoring" in the configuration hotspot)
 -   However you may also mount the BME280 breakout board outside of the case in a location of your choosing such as the main incubation chamber of the microscope, to monitor ambient incubation conditions, and daisy chain on the SCD41 (low CO2) and STC31 breakout board (high CO2) with another I2C cable to install inside the imaging chamber near the sample.
+-   In order to assemble the components within the 3d printed case, insert the ESP32 into the front case, gently spread the vertical panels and push down on the ESP32 until it seats under the latch,
+-   Install the cables onto the ESP32, then install the heatshields, then the bme280, route the battery and cabling, then install the battery support by pushing down until it clicks lightly.
+-   Place the battery on top of the support, pass the long sensor cable out through the hole in the back case, then install the case by sliding it over all of the components and pushing down until it clicks.
  
     
 - Library versions tested
