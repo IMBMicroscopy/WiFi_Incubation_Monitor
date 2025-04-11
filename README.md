@@ -20,8 +20,8 @@
 **Required hardware:**
 
 - Arduino compatible hardware such as: the following tested hardware
-- Adafruit Feather ESP32-S3TFT mainboard such as [https://learn.adafruit.com/adafruit-esp32-s3-tft-feather/overview](https://learn.adafruit.com/adafruit-esp32-s3-tft-feather/overview) (the code for the TFT has been optimised for this display size/resolution and will require modification for other displays)
-- STC31 CO2 sensor board such as [https://www.sparkfun.com/products/18385](https://www.sparkfun.com/products/18385) or https://sensirion.com/products/catalog/SEK-STC31-C (a custom sensor board which includes the BME280 pressure sensor is in development)
+- Adafruit Feather ESP32-S3 reverse TFT mainboard such as https://learn.adafruit.com/esp32-s3-reverse-tft-feather (the code for the TFT has been optimised for this display size/resolution and will require modification for other displays)
+- STC31 CO2 sensor board such as [https://www.sparkfun.com/products/18385](https://www.sparkfun.com/products/18385) or https://sensirion.com/products/catalog/SEK-STC31-C 
 - Sparkfun Qwiic connector 500mm (or longer) cable: [https://www.sparkfun.com/products/17257](https://www.sparkfun.com/products/17257) (or you may manually solder the cables)
 - This minimum configuration requires no soldering or electronics knowledge
 
@@ -37,6 +37,8 @@
 
 - "SparkFun_SHTC3.h" Temperature and Relative Humidity sensor library [http://librarymanager/All#SparkFun_SHTC3](http://librarymanager/All#SparkFun_SHTC3)
 
+- "Adafruit_SHT4x.h" //SHT4x Temp/RH sensor library for use with the SEK-STC31-C development kit http://librarymanager/All#Adafruit SHT4x
+
 - "Adafruit_GFX.h" Core graphics library for TFT display [http://librarymanager/All#Adafruit_GFX_Library](http://librarymanager/All#Adafruit_GFX_Library)
 
 - "Adafruit_ST7789.h" Hardware-specific library for ST7789 controller [http://librarymanager/All#Adafruit_ST7789](http://librarymanager/All#Adafruit_ST7789)
@@ -48,8 +50,8 @@
 
 **Optional:**
 
-- 3D printed case: AutoDesk Fusion https://a360.co/41NLKR4  
-- Atmospheric pressure BME280 sensor [https://www.sparkfun.com/products/15440](https://www.sparkfun.com/products/15440) to measure atmospheric pressure for CO2 sensor calibration
+- 3D printed case: AutoDesk Fusion https://a360.co/41NLKR4 or see included .3mf file
+- Atmospheric pressure BME280 sensor [https://www.sparkfun.com/products/15440](https://www.sparkfun.com/products/15440) to measure atmospheric pressure for CO2 sensor calibration (also used for room T and RH monitoring)
 - Adafruit BME280 Library for Environmental sensor [http://librarymanager/All#BME280](http://librarymanager/All#BME280)
 - Low concentration CO2 sensor SCD41 [https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html](https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html)
 - "SparkFun_SCD4x_Arduino_Library.h"  SCD41 CO2 sensor library [http://librarymanager/All#SparkFun_SCD4x](http://librarymanager/All#SparkFun_SCD4x)
@@ -76,6 +78,7 @@
 - Connect the ESP32 to the computer via USB cable
 - Go to "Tools" menu and select "Board" and select "ESP32", then select the "Adafruit Feather ESP-32 S3 Reverse TFT" board
 - Go to "Tools" menu and select "Port" and then select the device that contains the "Adafruit Feather"
+- IF you have the SEK-STC31-C development sensor board for CO2 measurement, then you need to set "#define SEK true" in the initialise.ino file, else it should be set to false.
 - Upload "Incubation_Monitor" sketch to ESP32 hardware (use the arrow button in the top left corner of the IDE), the device will restart when the upload is complete (if it doesnt, press the RST button on the ESP32)
 - Click on the Arduino IDE serial monitor (top right corner of IDE) and ensure it is set to "Both NL & CR" and "115200 baud" to monitor the device setup progress
 - The Mac address for the device will be displayed in the serial monitor, you may need to register this with your IT department to gain WiFi access to hidden WiFi networks
@@ -131,8 +134,10 @@
 - Once the ESP32 device is running and has started transmitting the data feeds, they should appear in the Data Feeds section of Adafruit IO
 - Then you will need to create an Adafruit IO dashboard for each incubator with a graph to log the CO2, Temperature and Humidity values from the data feeds
 - The CO2, Temperature and RH values must be assigned to a unique data feed name in the Adafruit IO dashboard
-- ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the data feed name prefix will be something like LI1 and will automatically create "LI1_probe_CO2", "LI1_probe_Temp" and "LI1_probe_RH" 
-- you can also enable "room_monitoring" in the configuration hotspot settings to create additional feeds from the bme280 sensor in the 3D printed case, ie: "LI1_room_Temp", "LI1_room_RH" and "LI1_room_press"
+- ie: the Dashboard for the incubator would be the name of the microscope, ie: "Live Imager 1" and the data feed name prefix will be something like LI1 and will automatically create "LI1_probe_CO2", "LI1_probe_Temp" and "LI1_probe_RH"
+- These will be the CO2, Temp and RH data feeds for the STC31 sensor on the long cable which is placed in the imaging chamber
+- You can also enable "room_monitoring" in the configuration hotspot settings to create additional feeds from the optional bme280 sensor mounted in the 3D printed case, ie: "LI1_room_Temp", "LI1_room_RH" and "LI1_room_press"
+- This can be used to monitor the environmental conditions in the microscope room, where the display unit is mounted, rather than in the imaging chamber
 - Once the Dashboard is created, Create a new block such as a line graph and link them to the relevant datafeeds to display your data
 - Edit the layout, to resize and position the blocks, then save your layout
 - Adafruit IO allows you to publish read only versions of your dashboards to other websites for monitoring incubation conditions as well as configuring actions to send alert emails when conditions exceed limits
@@ -156,13 +161,14 @@
   - the battery discharge rate information doesnt currently fit on the display due to WiFi and IO indicators, so has been commented out in the code
 - Additional sensors such as the BME280 (Environmental Sensor including Pressure) and SCD41 (low CO2) can be daisy chained in any order with the STC31 (high CO2 sensor) to the ESP32 using addtional I2C cables using the STEMMA/QWIIC connector or via solder joints  
 - 3D Printed Case:
--   The included 3D printed case file allows for a BME280 breakout board to be installed as well as a lithium ion battery inside the case 
+-   The included 3D printed case file allows for a BME280 breakout board to be installed as well as a lithium ion battery inside the case (enable "Room Monitoring" in the configuration hotspot)
 -   However you may also mount the BME280 breakout board outside of the case in a location of your choosing such as the main incubation chamber of the microscope, to monitor ambient incubation conditions, and daisy chain on the SCD41 (low CO2) and STC31 breakout board (high CO2) with another I2C cable to install inside the imaging chamber near the sample.
  
     
 - Library versions tested
   - "SparkFun_STC3x_Arduino_Library.h" 1.0.0
   - "SparkFun_SHTC3.h" 1.1.4
+  - "Adafruit_SHT4x.h" 1.0.5
   - "Adafruit_GFX.h" 1.12.0
   - "Adafruit_ST7789.h" 1.11.0
   - "Adafruit IO Arduino Library" 4.3.0
