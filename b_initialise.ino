@@ -1,4 +1,6 @@
-#define SOFTWARE_VERSION "1.1.3"
+#define SOFTWARE_VERSION "1.2.1"
+
+#define SEK true //only set this line to true if the SEK-STC31 evaluation kit for the CO2 sensor, which requires the SHT4x instead of the SHTC3 libraries 
 
 // Include required libraries
 #include "esp_mac.h"             // Exposes esp_mac_type_t values
@@ -24,8 +26,14 @@ SCD4x mySCD41;
 #include "SparkFun_STC3x_Arduino_Library.h"  // STC31 high CO2 % sensor library
 STC3x mySTC31;
 
-#include "SparkFun_SHTC3.h"  // SHTC3 Temp/RH sensor library
-SHTC3 mySHTC3;
+#ifdef SEK == true
+  #include "Adafruit_SHT4x.h" //SHT4x Temp/RH sensor library
+  Adafruit_SHT4x mySHT = Adafruit_SHT4x();
+#else
+  #include "SparkFun_SHT.h"  // SHT Temp/RH sensor library
+  SHT mySHT;
+#endif
+
 
 // WiFi and IO libraries
 #include <WiFiManager.h>
@@ -38,22 +46,6 @@ Preferences preferences;
 
 // Define constants and parameters
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
-
-// Wifi symbol
-#define WIFI_WIDTH 12
-#define WIFI_HEIGHT 8
-/*
-const uint8_t wifiSymbolBitMap[] PROGMEM = {
-  0b00000000, 0b11000000,
-  0b00000011, 0b11100000,
-  0b00001111, 0b11110000,
-  0b00011100, 0b01111000,
-  0b00110000, 0b00001100,
-  0b01100000, 0b00000110,
-  0b01000000, 0b00000010,
-  0b00000000, 0b00000000
-};
-*/
 
 // WiFi Manager parameters stored in character array buffers
 char IO_USERNAME_buff[64] = "";
@@ -90,6 +82,8 @@ char sensorRate_buff[8] = "";
 char compensateRate_buff[8] = "";
 char dashboardRate_buff[8] = "";
 char batteryRate_buff[8] = "";
+// STC31 calibration
+char stc31_offsetCO2_buff[8] = "";
 // BME280 calibration
 char bme280_offsetTemp_buff[8] = "";
 char bme280_calibrateRH_buff[6] = "";
@@ -97,13 +91,13 @@ char bme280_high_reference_buff[8] = "";
 char bme280_high_reading_buff[8] = "";
 char bme280_low_reference_buff[8] = "";
 char bme280_low_reading_buff[8] = "";
-// SHTC3 calibration
-char SHTC3_offsetTemp_buff[8] = "";
-char SHTC3_calibrateRH_buff[6] = "";
-char SHTC3_high_reference_buff[8] = "";
-char SHTC3_high_reading_buff[8] = "";
-char SHTC3_low_reference_buff[8] = "";
-char SHTC3_low_reading_buff[8] = "";
+// SHT calibration
+char sht_offsetTemp_buff[8] = "";
+char sht_calibrateRH_buff[6] = "";
+char sht_high_reference_buff[8] = "";
+char sht_high_reading_buff[8] = "";
+char sht_low_reference_buff[8] = "";
+char sht_low_reading_buff[8] = "";
 // SCD41 calibration
 char SCD41_offsetTemp_buff[8] = "";
 char SCD41_calibrateRH_buff[6] = "";
@@ -157,6 +151,9 @@ WiFiManagerParameter custom_sensorRate("sensor_Rate", "sensor update rate (s)", 
 WiFiManagerParameter custom_compensateRate("compensate_Rate", "compensate CO2 sensor Rate (s)", compensateRate_buff, 8);
 WiFiManagerParameter custom_dashboardRate("dashboard_Rate", "online dashboard update Rate (s)", dashboardRate_buff, 8);
 WiFiManagerParameter custom_batteryRate("battery_Rate", "battery BMS update rate (s)", batteryRate_buff, 8);
+// STC31 WiFiManager Parameters
+WiFiManagerParameter custom_stc31_title("<p>---------------------- STC31 Calibration ----------------------</p>");
+WiFiManagerParameter custom_stc31_offsetCO2("stc31_offsetCO2", "Offset STC31 CO2 value to match calibration standard", stc31_offsetCO2_buff, 8);
 // BME280 WiFiManager Parameters
 WiFiManagerParameter custom_bme280_title("<p>---------------------- BME280 Calibration ----------------------</p>");
 WiFiManagerParameter custom_bme280_offsetTemp("bme280_offsetTemp", "Offset BME280 temperature to match other sensors", bme280_offsetTemp_buff, 8);
@@ -165,14 +162,14 @@ WiFiManagerParameter custom_bme280_high_reference("bme280_high_reference", "HIGH
 WiFiManagerParameter custom_bme280_high_reading("bme280_high_reading", "BME280 measured HIGH reference value", bme280_high_reading_buff, 8);
 WiFiManagerParameter custom_bme280_low_reference("bme280_low_reference", "LOW reference humidity chamber value (10-30%)", bme280_low_reference_buff, 8);
 WiFiManagerParameter custom_bme280_low_reading("bme280_low_reading", "BME280 measured LOW reference value", bme280_low_reading_buff, 8);
-// SHTC3 WiFiManager Parameters
-WiFiManagerParameter custom_SHTC3_title("<p>---------------------- SHTC3 Calibration ----------------------</p>");
-WiFiManagerParameter custom_SHTC3_offsetTemp("SHTC3_offsetTemp", "Offset SHTC3 temperature to match other sensors", SHTC3_offsetTemp_buff, 8);
-WiFiManagerParameter custom_SHTC3_calibrateRH("SHTC3_calibrateRH", "Apply RH calibration values below (true/false)", SHTC3_calibrateRH_buff, 6);
-WiFiManagerParameter custom_SHTC3_high_reference("SHTC3_high_reference", "HIGH reference humidity chamber value (70-100%)", SHTC3_high_reference_buff, 8);
-WiFiManagerParameter custom_SHTC3_high_reading("SHTC3_high_reading", "SHTC3 measured HIGH reference value", SHTC3_high_reading_buff, 8);
-WiFiManagerParameter custom_SHTC3_low_reference("SHTC3_low_reference", "LOW reference humidity chamber value (10-30%)", SHTC3_low_reference_buff, 8);
-WiFiManagerParameter custom_SHTC3_low_reading("SHTC3_low_reading", "SHTC3 measured LOW reference value", SHTC3_low_reading_buff, 8);
+// SHT WiFiManager Parameters
+WiFiManagerParameter custom_sht_title("<p>---------------------- SHT Calibration ----------------------</p>");
+WiFiManagerParameter custom_sht_offsetTemp("sht_offsetTemp", "Offset SHT temperature to match other sensors", sht_offsetTemp_buff, 8);
+WiFiManagerParameter custom_sht_calibrateRH("sht_calibrateRH", "Apply RH calibration values below (true/false)", sht_calibrateRH_buff, 6);
+WiFiManagerParameter custom_sht_high_reference("sht_high_reference", "HIGH reference humidity chamber value (70-100%)", sht_high_reference_buff, 8);
+WiFiManagerParameter custom_sht_high_reading("sht_high_reading", "SHT measured HIGH reference value", sht_high_reading_buff, 8);
+WiFiManagerParameter custom_sht_low_reference("sht_low_reference", "LOW reference humidity chamber value (10-30%)", sht_low_reference_buff, 8);
+WiFiManagerParameter custom_sht_low_reading("sht_low_reading", "SHT measured LOW reference value", sht_low_reading_buff, 8);
 // SCD41 WiFiManager Parameters
 WiFiManagerParameter custom_SCD41_title("<p>---------------------- SCD41 Calibration ----------------------</p>");
 WiFiManagerParameter custom_SCD41_offsetTemp("SCD41_offsetTemp", "Offset SCD41 temperature to match other sensors", SCD41_offsetTemp_buff, 8);

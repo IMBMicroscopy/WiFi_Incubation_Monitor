@@ -96,6 +96,8 @@ void saveParams() {
     preferences.putInt("compRate", compensateRate);
     preferences.putInt("dashRate", dashboardRate);
     preferences.putInt("battRate", batteryRate);
+    // STC31 calibration
+    preferences.putFloat("stc_offsetCO2", stc31_offsetCO2);
     // BME280 calibration
     preferences.putFloat("bme_offsetT", bme280_offsetTemp);
     preferences.putBool("bme_calRH", bme280_calibrateRH);
@@ -103,13 +105,13 @@ void saveParams() {
     preferences.putFloat("bme_high_read", bme280_high_reading);
     preferences.putFloat("bme_low_ref", bme280_low_reference);
     preferences.putFloat("bme_low_read", bme280_low_reading);
-    // SHTC3 calibration
-    preferences.putFloat("sht_offsetT", SHTC3_offsetTemp);
-    preferences.putBool("sht_calRH", SHTC3_calibrateRH);
-    preferences.putFloat("sht_high_ref", SHTC3_high_reference);
-    preferences.putFloat("sht_high_read", SHTC3_high_reading);
-    preferences.putFloat("sht_low_ref", SHTC3_low_reference);
-    preferences.putFloat("sht_low_read", SHTC3_low_reading);
+    // sht calibration
+    preferences.putFloat("sht_offsetT", sht_offsetTemp);
+    preferences.putBool("sht_calRH", sht_calibrateRH);
+    preferences.putFloat("sht_high_ref", sht_high_reference);
+    preferences.putFloat("sht_high_read", sht_high_reading);
+    preferences.putFloat("sht_low_ref", sht_low_reference);
+    preferences.putFloat("sht_low_read", sht_low_reading);
     // SCD41 calibration
     preferences.putFloat("scd_offsetT", SCD41_offsetTemp);
     preferences.putBool("scd_calRH", SCD41_calibrateRH);
@@ -162,6 +164,8 @@ void loadParams() {
   compensateRate = preferences.getInt("compRate", compensateRate);
   dashboardRate = preferences.getInt("dashRate", dashboardRate);
   batteryRate = preferences.getInt("battRate", batteryRate);
+  // STC31 calibration
+  stc31_offsetCO2 = preferences.getFloat("stc_offsetCO2", stc31_offsetCO2);
   // BME280 calibration
   bme280_offsetTemp = preferences.getFloat("bme_offsetT", bme280_offsetTemp);
   bme280_calibrateRH = preferences.getBool("bme_calRH", bme280_calibrateRH);
@@ -169,13 +173,13 @@ void loadParams() {
   bme280_high_reading = preferences.getFloat("bme_high_read", bme280_high_reading);
   bme280_low_reference = preferences.getFloat("bme_low_ref", bme280_low_reference);
   bme280_low_reading = preferences.getFloat("bme_low_read", bme280_low_reading);
-  // SHTC3 calibration
-  SHTC3_offsetTemp = preferences.getFloat("sht_offsetT", SHTC3_offsetTemp);
-  SHTC3_calibrateRH = preferences.getBool("sht_calRH", SHTC3_calibrateRH);
-  SHTC3_high_reference = preferences.getFloat("sht_high_ref", SHTC3_high_reference);
-  SHTC3_high_reading = preferences.getFloat("sht_high_read", SHTC3_high_reading);
-  SHTC3_low_reference = preferences.getFloat("sht_low_ref", SHTC3_low_reference);
-  SHTC3_low_reading = preferences.getFloat("sht_low_read", SHTC3_low_reading);
+  // sht calibration
+  sht_offsetTemp = preferences.getFloat("sht_offsetT", sht_offsetTemp);
+  sht_calibrateRH = preferences.getBool("sht_calRH", sht_calibrateRH);
+  sht_high_reference = preferences.getFloat("sht_high_ref", sht_high_reference);
+  sht_high_reading = preferences.getFloat("sht_high_read", sht_high_reading);
+  sht_low_reference = preferences.getFloat("sht_low_ref", sht_low_reference);
+  sht_low_reading = preferences.getFloat("sht_low_read", sht_low_reading);
   // SCD41 calibration
   SCD41_offsetTemp = preferences.getFloat("scd_offsetT", SCD41_offsetTemp);
   SCD41_calibrateRH = preferences.getBool("scd_calRH", SCD41_calibrateRH);
@@ -218,6 +222,8 @@ void getHotspotValues(){
   strcpy(compensateRate_buff, custom_compensateRate.getValue());
   strcpy(dashboardRate_buff, custom_dashboardRate.getValue());
   strcpy(batteryRate_buff, custom_batteryRate.getValue());
+  // STC31 calibration
+  strcpy(stc31_offsetCO2_buff, custom_stc31_offsetCO2.getValue());
   // BME280 calibration
   strcpy(bme280_offsetTemp_buff, custom_bme280_offsetTemp.getValue());
   strcpy(bme280_calibrateRH_buff, custom_bme280_calibrateRH.getValue());
@@ -225,13 +231,13 @@ void getHotspotValues(){
   strcpy(bme280_high_reading_buff, custom_bme280_high_reading.getValue());
   strcpy(bme280_low_reference_buff, custom_bme280_low_reference.getValue());
   strcpy(bme280_low_reading_buff, custom_bme280_low_reading.getValue());
-  // SHTC3 calibration
-  strcpy(SHTC3_offsetTemp_buff, custom_SHTC3_offsetTemp.getValue());
-  strcpy(SHTC3_calibrateRH_buff, custom_SHTC3_calibrateRH.getValue());
-  strcpy(SHTC3_high_reference_buff, custom_SHTC3_high_reference.getValue());
-  strcpy(SHTC3_high_reading_buff, custom_SHTC3_high_reading.getValue());
-  strcpy(SHTC3_low_reference_buff, custom_SHTC3_low_reference.getValue());
-  strcpy(SHTC3_low_reading_buff, custom_SHTC3_low_reading.getValue());
+  // sht calibration
+  strcpy(sht_offsetTemp_buff, custom_sht_offsetTemp.getValue());
+  strcpy(sht_calibrateRH_buff, custom_sht_calibrateRH.getValue());
+  strcpy(sht_high_reference_buff, custom_sht_high_reference.getValue());
+  strcpy(sht_high_reading_buff, custom_sht_high_reading.getValue());
+  strcpy(sht_low_reference_buff, custom_sht_low_reference.getValue());
+  strcpy(sht_low_reading_buff, custom_sht_low_reading.getValue());
   // SCD41 calibration
   strcpy(SCD41_offsetTemp_buff, custom_SCD41_offsetTemp.getValue());
   strcpy(SCD41_calibrateRH_buff, custom_SCD41_calibrateRH.getValue());
@@ -266,6 +272,8 @@ void getHotspotValues(){
   compensateRate = atof(compensateRate_buff);
   dashboardRate = atof(dashboardRate_buff);
   batteryRate = atof(batteryRate_buff);
+  // STC31 calibration
+  stc31_offsetCO2 = atof(stc31_offsetCO2_buff);
   // BME280 calibration
   bme280_offsetTemp = atof(bme280_offsetTemp_buff);
   bme280_calibrateRH = charArrayToBool(bme280_calibrateRH_buff);
@@ -273,13 +281,13 @@ void getHotspotValues(){
   bme280_high_reading = atof(bme280_high_reading_buff);
   bme280_low_reference = atof(bme280_low_reference_buff);
   bme280_low_reading = atof(bme280_low_reading_buff);
-  // SHTC3 calibration
-  SHTC3_offsetTemp = atof(SHTC3_offsetTemp_buff);
-  SHTC3_calibrateRH = charArrayToBool(SHTC3_calibrateRH_buff);
-  SHTC3_high_reference = atof(SHTC3_high_reference_buff);
-  SHTC3_high_reading = atof(SHTC3_high_reading_buff);
-  SHTC3_low_reference = atof(SHTC3_low_reference_buff);
-  SHTC3_low_reading = atof(SHTC3_low_reading_buff);
+  // sht calibration
+  sht_offsetTemp = atof(sht_offsetTemp_buff);
+  sht_calibrateRH = charArrayToBool(sht_calibrateRH_buff);
+  sht_high_reference = atof(sht_high_reference_buff);
+  sht_high_reading = atof(sht_high_reading_buff);
+  sht_low_reference = atof(sht_low_reference_buff);
+  sht_low_reading = atof(sht_low_reading_buff);
   // SCD41 calibration
   SCD41_offsetTemp = atof(SCD41_offsetTemp_buff);
   SCD41_calibrateRH = charArrayToBool(SCD41_calibrateRH_buff);
@@ -348,6 +356,9 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_compensateRate);
   wifiManager.addParameter(&custom_dashboardRate);
   wifiManager.addParameter(&custom_batteryRate);
+  // STC31 calibration
+  wifiManager.addParameter(&custom_stc31_title);
+  wifiManager.addParameter(&custom_stc31_offsetCO2);
   // BME280 calibration
   wifiManager.addParameter(&custom_bme280_title);
   wifiManager.addParameter(&custom_bme280_offsetTemp);
@@ -356,14 +367,14 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_bme280_high_reading);
   wifiManager.addParameter(&custom_bme280_low_reference);
   wifiManager.addParameter(&custom_bme280_low_reading);
-  // SHTC3 calibration
-  wifiManager.addParameter(&custom_SHTC3_title);
-  wifiManager.addParameter(&custom_SHTC3_offsetTemp);
-  wifiManager.addParameter(&custom_SHTC3_calibrateRH);
-  wifiManager.addParameter(&custom_SHTC3_high_reference);
-  wifiManager.addParameter(&custom_SHTC3_high_reading);
-  wifiManager.addParameter(&custom_SHTC3_low_reference);
-  wifiManager.addParameter(&custom_SHTC3_low_reading);
+  // sht calibration
+  wifiManager.addParameter(&custom_sht_title);
+  wifiManager.addParameter(&custom_sht_offsetTemp);
+  wifiManager.addParameter(&custom_sht_calibrateRH);
+  wifiManager.addParameter(&custom_sht_high_reference);
+  wifiManager.addParameter(&custom_sht_high_reading);
+  wifiManager.addParameter(&custom_sht_low_reference);
+  wifiManager.addParameter(&custom_sht_low_reading);
   // SCD41 calibration
   wifiManager.addParameter(&custom_SCD41_title);
   wifiManager.addParameter(&custom_SCD41_offsetTemp);
@@ -404,6 +415,8 @@ void initWiFiManager() {
   custom_compensateRate.setValue(compensateRate_buff, 8);
   custom_dashboardRate.setValue(dashboardRate_buff, 8);
   custom_batteryRate.setValue(batteryRate_buff, 8);
+  // STC31 calibration
+  custom_stc31_offsetCO2.setValue(stc31_offsetCO2_buff, 8);
   // BME280 calibration
   custom_bme280_offsetTemp.setValue(bme280_offsetTemp_buff, 8);
   custom_bme280_calibrateRH.setValue(bme280_calibrateRH_buff, 6);
@@ -411,13 +424,13 @@ void initWiFiManager() {
   custom_bme280_high_reading.setValue(bme280_high_reading_buff, 8);
   custom_bme280_low_reference.setValue(bme280_low_reference_buff, 8);
   custom_bme280_low_reading.setValue(bme280_low_reading_buff, 8);
-  // SHTC3 calibration
-  custom_SHTC3_offsetTemp.setValue(SHTC3_offsetTemp_buff, 8);
-  custom_SHTC3_calibrateRH.setValue(SHTC3_calibrateRH_buff, 6);
-  custom_SHTC3_high_reference.setValue(SHTC3_high_reference_buff, 8);
-  custom_SHTC3_high_reading.setValue(SHTC3_high_reading_buff, 8);
-  custom_SHTC3_low_reference.setValue(SHTC3_low_reference_buff, 8);
-  custom_SHTC3_low_reading.setValue(SHTC3_low_reading_buff, 8);
+  // sht calibration
+  custom_sht_offsetTemp.setValue(sht_offsetTemp_buff, 8);
+  custom_sht_calibrateRH.setValue(sht_calibrateRH_buff, 6);
+  custom_sht_high_reference.setValue(sht_high_reference_buff, 8);
+  custom_sht_high_reading.setValue(sht_high_reading_buff, 8);
+  custom_sht_low_reference.setValue(sht_low_reference_buff, 8);
+  custom_sht_low_reading.setValue(sht_low_reading_buff, 8);
   // SCD41 calibration
   custom_SCD41_offsetTemp.setValue(SCD41_offsetTemp_buff, 8);
   custom_SCD41_calibrateRH.setValue(SCD41_calibrateRH_buff, 6);

@@ -57,7 +57,7 @@ void initSensors(){
 
   }
 
-  //find high pressure sensor if enabled in settings
+  //find high CO2 sensor if enabled in settings
   if(high_CO2_Monitor){
     for(int i=0; i<=5; i++){
       if (!mySTC31.begin()){
@@ -76,21 +76,39 @@ void initSensors(){
     }
 
     if(high_CO2_Monitor){
-      for(int i=0; i<=5; i++){
-        if (mySHTC3.begin() != SHTC3_Status_Nominal){
-          Serial.println(F("SHTC3 not detected."));
-          if(i == 5){
-            high_CO2_Monitor = false;
-            tft.println(F("Fail SHTC3"));
+      #ifdef SEK == true
+        for(int i=0; i<=5; i++){
+          if (!mySHT.begin()){
+            Serial.println(F("SHT4 not detected."));
+            if(i == 5){
+              high_CO2_Monitor = false;
+              tft.println(F("Fail SHT4"));
+              break;
+            }
+          }else{
+            Serial.println(F("Found SHT4 sensor."));
+            tft.println(F("Found SHT4"));
             break;
           }
-        }else{
-          Serial.println(F("Found SHTC3 sensor."));
-          tft.println(F("Found SHTC3"));
-          break;
+          delay(1000);          
         }
-        delay(1000);
-      }
+      #else 
+        for(int i=0; i<=5; i++){
+          if (mySHT.begin() != SHTC3_Status_Nominal){
+            Serial.println(F("SHTC3 not detected."));
+            if(i == 5){
+              high_CO2_Monitor = false;
+              tft.println(F("Fail SHTC3"));
+              break;
+            }
+          }else{
+            Serial.println(F("Found SHTC3 sensor."));
+            tft.println(F("Found SHTC3"));
+            break;
+          }
+          delay(1000);          
+        }
+      #endif
     }
 
     //We need to tell the STC3x what binary gas and full range we are using
@@ -145,11 +163,11 @@ float BME280_correctedRH(float RH) {
   }
 }
 
-float SHTC3_correctedRH(float RH) {
-  if (SHTC3_calibrateRH) {
-    // Function to calibrate the SHTC3 humidity against a known standard
-    float a = (SHTC3_high_reference - SHTC3_low_reference) / (SHTC3_high_reading - SHTC3_low_reading);
-    float b = SHTC3_high_reference - (a * SHTC3_high_reading);
+float SHT_correctedRH(float RH) {
+  if (sht_calibrateRH) {
+    // Function to calibrate the SHT humidity against a known standard
+    float a = (sht_high_reference - sht_low_reference) / (sht_high_reading - sht_low_reading);
+    float b = sht_high_reference - (a * sht_high_reading);
 
     // Apply correction 
     float cRH = (a * RH) + b;
@@ -223,8 +241,12 @@ void readSCD41(){
 
 void readSTC31() {
   for(int i=0;i <=20;i++) {  
-    if(mySHTC3.update() == SHTC3_Status_Nominal) {break;} //request a measurement
-    if(i == 10){Serial.println(F("SHTC3 read failed, use last values"));}
+    #ifdef SEK == true
+      if(mySHT.getTemperatureSensor()) {break;}
+    #else
+      if(mySHT.update() == SHTC3_Status_Nominal) {break;} //request a measurement
+    #endif
+    if(i == 10){Serial.println(F("SHT read failed, use last values"));}
     delay(500);
   }
   
@@ -232,10 +254,17 @@ void readSTC31() {
     if (mySTC31.measureGasConcentration()) { // measureGasConcentration will return true when fresh data is available
       delay(20);
       //get sensor readings
-      stcCO2 = mySTC31.getCO2();
-      stcTemp = mySHTC3.toDegC() + SHTC3_offsetTemp;
-      stcRH = mySHTC3.toPercent();
-      stcCRH = SHTC3_correctedRH(stcRH);
+      stcCO2 = mySTC31.getCO2() + stc31_offsetCO2;
+      #ifdef SEK == true
+        sensors_event_t humidity, temp;
+        mySHT.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
+        stcTemp = temp.temperature;
+        stcRH = humidity.relative_humidity;
+      #else
+        stcTemp = mySHT.toDegC() + SHT_offsetTemp;
+        stcRH = mySHT.toPercent();
+      #endif
+      stcCRH = SHT_correctedRH(stcRH);
 
       if(!compSerialFlag){
         Serial.print(F("STC31: "));
@@ -248,7 +277,6 @@ void readSTC31() {
     }
     if(i == 10){Serial.println(F("STC31 read failed, use last values"));}
     delay(500);
-
   }
 }
 
@@ -311,7 +339,7 @@ void readSensors() {
   }
 }
 
-//Compensate the CO2 reading for temperature and relative humidity using the readings from the SHTC3 as well as a static pressure measurement
+//Compensate the CO2 reading for temperature and relative humidity using the readings from the SHT as well as a static pressure measurement
 void compensate() {
   Serial.println(F("Running compensation routine..."));
   compFlag = true;  //flag to indicate calibration has been performed on TFT

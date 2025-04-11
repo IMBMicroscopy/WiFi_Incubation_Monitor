@@ -98,7 +98,7 @@ void updateTFT(){
 
     // CO2
     if(probeMonitor){
-      if (myCO2 > 0) {
+      //if (myCO2 >= 0) {
           tft.print("CO2:");
           // Set text color based on CO2 range
           tft.setTextColor((myCO2 < lowCO2 || myCO2 > highCO2) ? ST77XX_RED : ST77XX_GREEN);
@@ -106,7 +106,7 @@ void updateTFT(){
           tft.print("%");
           // Display '*' if compFlag is true
           tft.println(compFlag ? " *" : "");
-      } 
+      //} 
     }
 
     // Temperature
@@ -257,6 +257,8 @@ void convertParamsToCharArray(){
   dtostrf(compensateRate, 4, 0, compensateRate_buff);
   dtostrf(dashboardRate, 4, 0, dashboardRate_buff);
   dtostrf(batteryRate, 4, 0, batteryRate_buff);
+  // STC31 calibration
+  dtostrf(stc31_offsetCO2, 4, 2, stc31_offsetCO2_buff);
   // BME280 calibration
   dtostrf(bme280_offsetTemp, 4, 2, bme280_offsetTemp_buff);
   boolToCharArray(bme280_calibrateRH, bme280_calibrateRH_buff);
@@ -264,13 +266,13 @@ void convertParamsToCharArray(){
   dtostrf(bme280_high_reading, 4, 2, bme280_high_reading_buff);
   dtostrf(bme280_low_reference, 4, 2, bme280_low_reference_buff);
   dtostrf(bme280_low_reading, 4, 2, bme280_low_reading_buff);
-  // SHTC3 calibration
-  dtostrf(SHTC3_offsetTemp, 4, 2, SHTC3_offsetTemp_buff);
-  boolToCharArray(SHTC3_calibrateRH, SHTC3_calibrateRH_buff);
-  dtostrf(SHTC3_high_reference, 4, 2, SHTC3_high_reference_buff);
-  dtostrf(SHTC3_high_reading, 4, 2, SHTC3_high_reading_buff);
-  dtostrf(SHTC3_low_reference, 4, 2, SHTC3_low_reference_buff);
-  dtostrf(SHTC3_low_reading, 4, 2, SHTC3_low_reading_buff);
+  // sht calibration
+  dtostrf(sht_offsetTemp, 4, 2, sht_offsetTemp_buff);
+  boolToCharArray(sht_calibrateRH, sht_calibrateRH_buff);
+  dtostrf(sht_high_reference, 4, 2, sht_high_reference_buff);
+  dtostrf(sht_high_reading, 4, 2, sht_high_reading_buff);
+  dtostrf(sht_low_reference, 4, 2, sht_low_reference_buff);
+  dtostrf(sht_low_reading, 4, 2, sht_low_reading_buff);
   // SCD41 calibration
   dtostrf(SCD41_offsetTemp, 4, 2, SCD41_offsetTemp_buff);
   boolToCharArray(SCD41_calibrateRH, SCD41_calibrateRH_buff);

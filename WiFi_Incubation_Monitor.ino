@@ -50,6 +50,11 @@ int dashboardRate   = 60;  // Update the online dashboard every X seconds (>= se
 int batteryRate     = 300; // Check BMS hibernation status and wake if needed (>= sensorRate)
 
 // -------------------------------------------------------------------
+// STC31 calibration 
+// -------------------------------------------------------------------
+float stc31_offsetCO2 = 0;  //offset STC31 CO2 value to match calibration standard
+
+// -------------------------------------------------------------------
 // bme280 calibration (in case for room monitoring)
 // -------------------------------------------------------------------
 float bme280_offsetTemp = 0;  //offset bme280 temperature to match other sensors
@@ -65,19 +70,19 @@ float bme280_low_reference = 14;    // Low reference humidity chamber value (10-
 float bme280_low_reading = 10;      // BME280 measured value when sensor is measuring in low_reference value chamber
 
 // -------------------------------------------------------------------
-// SHTC3 calibration (on High CO2 STC31 sensor board)
+// SHT calibration (on High CO2 STC31 sensor board)
 // -------------------------------------------------------------------
-float SHTC3_offsetTemp = 0;  // Offset SHTC3 temperature to match other sensors
+float sht_offsetTemp = 0;  // Offset SHTC3 temperature to match other sensors
 
-bool SHTC3_calibrateRH = false;  // Optionally: Use a humidity-controlled environment to calibrate the SHTC3 Humidity Sensor
+bool sht_calibrateRH = false;  // Optionally: Use a humidity-controlled environment to calibrate the SHTC3 Humidity Sensor
 // Calibration standards such as salt media (NaCl and MgCl₂) or an electronically controlled humidity chamber can be used
 // Place saturated salt solution (salt + a little water) in an airtight container.
 // 75% RH (NaCl) and 33% RH (MgCl₂)
 // Place sensor in chamber, wait 24hrs or until value plateaus before recording measurement
-float SHTC3_high_reference = 75;    // High reference humidity chamber value (70-100%) or validated sensor reading
-float SHTC3_high_reading = 75;      // SHTC3 measured value when sensor is measuring in high_reference value chamber
-float SHTC3_low_reference = 33;     // Low reference humidity chamber value (10-30%) or validated sensor reading
-float SHTC3_low_reading = 33;       // SHTC3 measured value when sensor is measuring in low_reference value chamber
+float sht_high_reference = 75;    // High reference humidity chamber value (70-100%) or validated sensor reading
+float sht_high_reading = 75;      // SHTC3 measured value when sensor is measuring in high_reference value chamber
+float sht_low_reference = 33;     // Low reference humidity chamber value (10-30%) or validated sensor reading
+float sht_low_reading = 33;       // SHTC3 measured value when sensor is measuring in low_reference value chamber
 
 // -------------------------------------------------------------------
 // SCD41 calibration (on Low CO2 sensor board)
