@@ -356,9 +356,6 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_compensateRate);
   wifiManager.addParameter(&custom_dashboardRate);
   wifiManager.addParameter(&custom_batteryRate);
-  // STC31 calibration
-  wifiManager.addParameter(&custom_stc31_title);
-  wifiManager.addParameter(&custom_stc31_offsetCO2);
   // BME280 calibration
   wifiManager.addParameter(&custom_bme280_title);
   wifiManager.addParameter(&custom_bme280_offsetTemp);
@@ -367,6 +364,9 @@ void initWiFiManager() {
   wifiManager.addParameter(&custom_bme280_high_reading);
   wifiManager.addParameter(&custom_bme280_low_reference);
   wifiManager.addParameter(&custom_bme280_low_reading);
+  // STC31 calibration
+  wifiManager.addParameter(&custom_stc31_title);
+  wifiManager.addParameter(&custom_stc31_offsetCO2);
   // sht calibration
   wifiManager.addParameter(&custom_sht_title);
   wifiManager.addParameter(&custom_sht_offsetTemp);

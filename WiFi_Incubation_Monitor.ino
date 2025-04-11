@@ -50,11 +50,6 @@ int dashboardRate   = 60;  // Update the online dashboard every X seconds (>= se
 int batteryRate     = 300; // Check BMS hibernation status and wake if needed (>= sensorRate)
 
 // -------------------------------------------------------------------
-// STC31 calibration 
-// -------------------------------------------------------------------
-float stc31_offsetCO2 = 0;  //offset STC31 CO2 value to match calibration standard
-
-// -------------------------------------------------------------------
 // bme280 calibration (in case for room monitoring)
 // -------------------------------------------------------------------
 float bme280_offsetTemp = 0;  //offset bme280 temperature to match other sensors
@@ -68,6 +63,11 @@ float bme280_high_reference = 76;   // High reference humidity chamber value (70
 float bme280_high_reading = 64;     // BME280 measured value when sensor is measuring in high_reference value chamber
 float bme280_low_reference = 14;    // Low reference humidity chamber value (10-30%) or validated sensor reading
 float bme280_low_reading = 10;      // BME280 measured value when sensor is measuring in low_reference value chamber
+
+// -------------------------------------------------------------------
+// STC31 calibration 
+// -------------------------------------------------------------------
+float stc31_offsetCO2 = 0;  //offset STC31 CO2 value to match calibration standard
 
 // -------------------------------------------------------------------
 // SHT calibration (on High CO2 STC31 sensor board)
