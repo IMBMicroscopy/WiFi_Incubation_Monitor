@@ -162,11 +162,15 @@
   - the battery discharge rate information doesnt currently fit on the display due to WiFi and IO indicators, so has been commented out in the code
 - Additional sensors such as the BME280 (Environmental Sensor including Pressure) and SCD41 (low CO2) can be daisy chained in any order with the STC31 (high CO2 sensor) to the ESP32 using addtional I2C cables using the STEMMA/QWIIC connector or via solder joints  
 - 3D Printed Case:
--   The included 3D printed case file allows for a BME280 breakout board to be installed as well as a lithium ion battery inside the case (enable "Room Monitoring" in the configuration hotspot)
--   However you may also mount the BME280 breakout board outside of the case in a location of your choosing such as the main incubation chamber of the microscope, to monitor ambient incubation conditions, and daisy chain on the SCD41 (low CO2) and STC31 breakout board (high CO2) with another I2C cable to install inside the imaging chamber near the sample.
--   In order to assemble the components within the 3d printed case, insert the ESP32 into the front case, gently spread the vertical panels and push down on the ESP32 until it seats under the latch,
--   Install the cables onto the ESP32, then install the heatshields, then the bme280, route the battery and cabling, then install the battery support by pushing down until it clicks lightly.
--   Place the battery on top of the support, pass the long sensor cable out through the hole in the back case, then install the case by sliding it over all of the components and pushing down until it clicks.
+  -   The included 3D printed case file allows for a BME280 breakout board to be installed as well as a lithium ion battery inside the case (enable "Room Monitoring" in the configuration hotspot)
+  -   However you may also mount the BME280 breakout board outside of the case in a location of your choosing such as the main incubation chamber of the microscope, to monitor ambient incubation conditions, and daisy chain on the SCD41 (low CO2) and STC31 breakout board (high CO2)   with another I2C cable to install inside the imaging chamber near the sample.
+  -   In order to assemble the components within the 3d printed case, insert the ESP32 into the front case, gently spread the vertical panels and push down on the ESP32 until it seats under the latch,
+  -   Install the cables onto the ESP32, then install the heatshields, then the bme280, route the battery and cabling, then install the battery support by pushing down until it clicks lightly.
+  -   Place the battery on top of the support, pass the long sensor cable out through the hole in the back case, then install the case by sliding it over all of the components and pushing down until it clicks.
+- Sensor Calibration:
+  - The configuration hotspot contains settings for each sensor to offset the Temperature or CO2 values as well as perform a 2 point calbration for the Relative Humidity
+  - Once built and configured you should ideally run the sensors for atleast 30mins to warm up and then place them in a known condition such as T, RH or CO2 and measure the offset and correct using the parameters available in the configuration hotspot
+  - RH can be calibrated by using two known conditions of high and low RH at a measured temperature and applying these settings for each sensor
  
     
 - Library versions tested
