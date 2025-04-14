@@ -76,7 +76,7 @@ void initSensors(){
     }
 
     if(high_CO2_Monitor){
-      #ifdef SEK == true
+      #ifdef SEK
         for(int i=0; i<=5; i++){
           if (!mySHT.begin()){
             Serial.println(F("SHT4 not detected."));
@@ -241,7 +241,7 @@ void readSCD41(){
 
 void readSTC31() {
   for(int i=0;i <=20;i++) {  
-    #ifdef SEK == true
+    #ifdef SEK
       if(mySHT.getTemperatureSensor()) {break;}
     #else
       if(mySHT.update() == SHTC3_Status_Nominal) {break;} //request a measurement
@@ -255,15 +255,16 @@ void readSTC31() {
       delay(20);
       //get sensor readings
       stcCO2 = mySTC31.getCO2() + stc31_offsetCO2;
-      #ifdef SEK == true
+      #ifdef SEK
         sensors_event_t humidity, temp;
         mySHT.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
         stcTemp = temp.temperature;
         stcRH = humidity.relative_humidity;
       #else
-        stcTemp = mySHT.toDegC() + SHT_offsetTemp;
+        stcTemp = mySHT.toDegC();
         stcRH = mySHT.toPercent();
       #endif
+      stcTemp = stcTemp + sht_offsetTemp;
       stcCRH = SHT_correctedRH(stcRH);
 
       if(!compSerialFlag){

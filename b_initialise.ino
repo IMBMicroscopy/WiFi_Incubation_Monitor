@@ -1,6 +1,8 @@
 #define SOFTWARE_VERSION "1.3.0"
 
-#define SEK true // set this line to true if the SEK-STC31 evaluation kit for the CO2 sensor, which requires the SHT4x instead of the SHTC3 libraries, else set to false for CO2 sensor breakout boards that use the SHTC3 Temp/humidity sensor
+// Define constants and parameters
+#define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
+//#define SEK  // uncomment this line if using the SEK-STC31 evaluation kit for the CO2 sensor, which requires the SHT4x instead of the SHTC3 libraries, else comment out for CO2 sensor breakout boards that use the SHTC3 Temp/humidity sensor
 
 // Include required libraries
 #include "esp_mac.h"             // Exposes esp_mac_type_t values
@@ -30,8 +32,8 @@ STC3x mySTC31;
   #include "Adafruit_SHT4x.h" //SHT4x Temp/RH sensor library
   Adafruit_SHT4x mySHT = Adafruit_SHT4x();
 #else
-  #include "SparkFun_SHT.h"  // SHT Temp/RH sensor library
-  SHT mySHT;
+  #include "SparkFun_SHTC3.h"  // SHT Temp/RH sensor library
+  SHTC3 mySHT;
 #endif
 
 
@@ -43,9 +45,6 @@ STC3x mySTC31;
 // save parameters to preferences file
 #include <Preferences.h>
 Preferences preferences;
-
-// Define constants and parameters
-#define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
 
 // WiFi Manager parameters stored in character array buffers
 char IO_USERNAME_buff[64] = "";
