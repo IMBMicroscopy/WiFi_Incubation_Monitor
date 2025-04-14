@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "1.3.0"
+#define SOFTWARE_VERSION "1.3.1"
 
 // Define constants and parameters
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
