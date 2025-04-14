@@ -1,6 +1,6 @@
-#define SOFTWARE_VERSION "1.2.1"
+#define SOFTWARE_VERSION "1.3.0"
 
-#define SEK true //only set this line to true if the SEK-STC31 evaluation kit for the CO2 sensor, which requires the SHT4x instead of the SHTC3 libraries 
+#define SEK true // set this line to true if the SEK-STC31 evaluation kit for the CO2 sensor, which requires the SHT4x instead of the SHTC3 libraries, else set to false for CO2 sensor breakout boards that use the SHTC3 Temp/humidity sensor
 
 // Include required libraries
 #include "esp_mac.h"             // Exposes esp_mac_type_t values

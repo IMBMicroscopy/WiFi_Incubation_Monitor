@@ -171,6 +171,18 @@ void updateTFT(){
         tft.println("");
     }
     
+    // Relative Humidity
+    if (roomOnly) {
+      tft.setTextColor(ST77XX_WHITE);
+      tft.setTextSize(1);
+      tft.println("");
+      tft.setTextSize(3);
+      tft.print("P:");
+      tft.print(myPress, 0);
+      tft.print("mBar");
+      tft.println("");
+    }
+
     compFlag = false;  //turn off compensation indicator on next tft update
 
     //if the battery parameters are in range it probably exists, so display values on display
