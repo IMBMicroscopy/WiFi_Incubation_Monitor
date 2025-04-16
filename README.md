@@ -50,7 +50,7 @@
 
 **Optional:**
 
-- 3D printed case: AutoDesk Fusion [[https://a360.co/41NLKR4](https://a360.co/44nJUId)](https://a360.co/4j8FKbL) or see included .3mf file
+- 3D printed case: AutoDesk Fusion https://a360.co/4j8FKbL or see included .3mf file
 - Atmospheric pressure BME280 sensor [https://www.sparkfun.com/products/15440](https://www.sparkfun.com/products/15440) to measure atmospheric pressure for CO2 sensor calibration (also used for room T and RH monitoring)
 - Adafruit BME280 Library for Environmental sensor [http://librarymanager/All#BME280](http://librarymanager/All#BME280)
 - Low concentration CO2 sensor SCD41 [https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html](https://www.sparkfun.com/sparkfun-co-humidity-and-temperature-sensor-scd41-qwiic.html)
