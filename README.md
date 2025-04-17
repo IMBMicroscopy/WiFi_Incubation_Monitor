@@ -118,6 +118,7 @@
 
 **Adjust Parameters**
 
+- To view the main parameters at any time, press the info page button (default=D1 pin)
 - To adjust the Wifi and/or Adafruit parameters after initial setup and at any time, press the Reset button on the ESP32 device,
 - Then when "Config -&gt;" appears on the display, press and hold the top right D0 button for one second,
 - The "Incubation Setup" Wifi access point will appear on your network after a few seconds.
