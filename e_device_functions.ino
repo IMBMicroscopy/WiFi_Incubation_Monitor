@@ -7,126 +7,123 @@ void initSensors(){
 
   if(pressure_Monitor){
     for(int i=0;i <=5;i++) {  
-      if(!myBME280.begin(0x76, &Wire) && !myBME280.begin(0x77, &Wire)){
-        Serial.println(F("Couldn't find BME280 sensor!"));
-        if(i == 5){
-          pressure_Monitor = false;
-          BME280Exists = false;
-          tft.println(F("Fail BME280"));
-          break;
-        }
-        delay(1000);
-      }else{
+      if(myBME280.begin(0x76, &Wire) || myBME280.begin(0x77, &Wire)){
         Serial.println(F("Found BME280 sensor."));
         tft.println(F("Found BME280"));
-        BME280Exists = true;
+        bme280Exists = true;
+
+        myBME280.setSampling(Adafruit_BME280::MODE_FORCED,
+                    Adafruit_BME280::SAMPLING_X4, // temperature
+                    Adafruit_BME280::SAMPLING_X4, // pressure
+                    Adafruit_BME280::SAMPLING_X4, // humidity
+                    Adafruit_BME280::FILTER_X4   );
+
+        myBME280.MODE_SLEEP;
+        myBME280.setTemperatureCompensation(bme280_offsetTemp);
+
         break;
       }
-      delay(1000);
-      break;
+      delay(200);
     }
-    myBME280.setSampling(Adafruit_BME280::MODE_FORCED,
-                        Adafruit_BME280::SAMPLING_X4, // temperature
-                        Adafruit_BME280::SAMPLING_X4, // pressure
-                        Adafruit_BME280::SAMPLING_X4, // humidity
-                        Adafruit_BME280::FILTER_X4   );
-
-    myBME280.MODE_SLEEP;
-    myBME280.setTemperatureCompensation(bme280_offsetTemp);
+    if(!bme280Exists){
+      Serial.println(F("Couldn't find BME280 sensor!"));
+      pressure_Monitor = false;
+      bme280Exists = false;
+      tft.println(F("Fail BME280"));
+    }
   }
+  delay(500);
 
   //find low pressure sensor if enabled in settings
   if(low_CO2_Monitor){
     for(int i=0; i<=5; i++){
-      if(!mySCD41.begin()) {
-        Serial.println(F("SCD41 sensor not detected."));
-        if(i==5){
-          low_CO2_Monitor = false;
-          break;
-        }
-      }else{
+      if(mySCD41.begin()) {
         Serial.println(F("Found SCD41 sensor."));
         tft.println(F("Found SCD41"));
+        scd41Exists = true;
+        //mySCD41.stopPeriodicMeasurement();
+        mySCD41.startPeriodicMeasurement();
+        mySCD41.setTemperatureOffset(SCD41_offsetTemp);
         break;
       }
-      delay(1000);
+      delay(200);
     }
-    //mySCD41.stopPeriodicMeasurement();
-    mySCD41.startPeriodicMeasurement();
-    mySCD41.setTemperatureOffset(SCD41_offsetTemp);
-
+    if(!scd41Exists){
+      Serial.println(F("SCD41 sensor not detected."));
+      low_CO2_Monitor = false;
+    }
   }
+  delay(500);
 
   //find high CO2 sensor if enabled in settings
   if(high_CO2_Monitor){
     for(int i=0; i<=5; i++){
-      if (!mySTC31.begin()){
-        Serial.println(F("STC31 sensor not detected."));
-        if(i == 5){
-          high_CO2_Monitor = false;
-          tft.println(F("Fail STC31"));
-          break;
-        }
-      }else{
+      if (mySTC31.begin()){
         Serial.println(F("Found STC31 sensor."));
         tft.println(F("Found STC31"));
+        stc31Exists = true;
         break;
       }
-      delay(1000);
+      delay(200);
+    }
+    if(!stc31Exists){
+      Serial.println(F("STC31 sensor not detected."));
+      tft.println(F("Fail STC31"));
+      high_CO2_Monitor = false;
     }
 
     if(high_CO2_Monitor){
-      #ifdef SEK
-        for(int i=0; i<=5; i++){
-          if (!mySHT.begin()){
-            Serial.println(F("SHT4 not detected."));
-            if(i == 5){
-              high_CO2_Monitor = false;
-              tft.println(F("Fail SHT4"));
-              break;
-            }
-          }else{
-            Serial.println(F("Found SHT4 sensor."));
-            tft.println(F("Found SHT4"));
-            break;
-          }
-          delay(1000);          
+      // Try SHT4 sensor
+      for (int i = 0; i <= 5; i++) {
+        if (mySHT4.begin()) {
+          Serial.println(F("Found SHT4 sensor."));
+          tft.println(F("Found SHT4"));
+          sht4Exists = true;
+          break;
         }
-      #else 
-        for(int i=0; i<=5; i++){
-          if (mySHT.begin() != SHTC3_Status_Nominal){
-            Serial.println(F("SHTC3 not detected."));
-            if(i == 5){
-              high_CO2_Monitor = false;
-              tft.println(F("Fail SHTC3"));
-              break;
-            }
-          }else{
+        delay(500);
+      }
+
+      // If SHT4 not found, try SHTC3
+      if (!sht4Exists) {
+        for (int i = 0; i <= 5; i++) {
+          if (mySHTC3.begin() == SHTC3_Status_Nominal) {
             Serial.println(F("Found SHTC3 sensor."));
             tft.println(F("Found SHTC3"));
+            shtC3Exists = true;
             break;
           }
-          delay(1000);          
+          delay(500);
         }
-      #endif
+      }
+
+      // If neither sensor is found
+      if (!sht4Exists && !shtC3Exists) {
+        Serial.println(F("SHT4/SHTC3 not detected."));
+        tft.println(F("Fail SHT"));
+        high_CO2_Monitor = false;
+      }    
     }
 
-    //We need to tell the STC3x what binary gas and full range we are using
-    //Possible values are:
-    //  STC3X_BINARY_GAS_CO2_N2_100   : Set binary gas to CO2 in N2.  Range: 0 to 100 vol%
-    //  STC3X_BINARY_GAS_CO2_AIR_100  : Set binary gas to CO2 in Air. Range: 0 to 100 vol%
-    //  STC3X_BINARY_GAS_CO2_N2_25    : Set binary gas to CO2 in N2.  Range: 0 to 25 vol%
-    //  STC3X_BINARY_GAS_CO2_AIR_25   : Set binary gas to CO2 in Air. Range: 0 to 25 vol%
     if(high_CO2_Monitor){
+      //We need to tell the STC3x what binary gas and full range we are using
+      //Possible values are:
+      //  STC3X_BINARY_GAS_CO2_N2_100   : Set binary gas to CO2 in N2.  Range: 0 to 100 vol%
+      //  STC3X_BINARY_GAS_CO2_AIR_100  : Set binary gas to CO2 in Air. Range: 0 to 100 vol%
+      //  STC3X_BINARY_GAS_CO2_N2_25    : Set binary gas to CO2 in N2.  Range: 0 to 25 vol%
+      //  STC3X_BINARY_GAS_CO2_AIR_25   : Set binary gas to CO2 in Air. Range: 0 to 25 vol%
+
       for(int i=0; i<=5; i++){
-        if (mySTC31.setBinaryGas(STC3X_BINARY_GAS_CO2_AIR_25) == false){
-          Serial.println(F("Could not set the binary gas!"));
-          if(i==5){
-            high_CO2_Monitor = false;
-            break;
-          }
+        if (mySTC31.setBinaryGas(STC3X_BINARY_GAS_CO2_AIR_25) == true){
+          Serial.println(F("Binary gas set"));
+          gasExists = true;
+          break;
         }
-        delay(1000);
+        delay(200);
+      }
+      if(!gasExists){
+        Serial.println(F("Could not set the binary gas!"));
+        high_CO2_Monitor = false;
       }
     }
   }
@@ -241,11 +238,11 @@ void readSCD41(){
 
 void readSTC31() {
   for(int i=0;i <=20;i++) {  
-    #ifdef SEK
-      if(mySHT.getTemperatureSensor()) {break;}
-    #else
-      if(mySHT.update() == SHTC3_Status_Nominal) {break;} //request a measurement
-    #endif
+    if(sht4Exists){
+      if(mySHT4.getTemperatureSensor()) {break;}
+    }else{
+      if(mySHTC3.update() == SHTC3_Status_Nominal) {break;} //request a measurement
+    }
     if(i == 10){Serial.println(F("SHT read failed, use last values"));}
     delay(500);
   }
@@ -255,15 +252,15 @@ void readSTC31() {
       delay(20);
       //get sensor readings
       stcCO2 = mySTC31.getCO2() + stc31_offsetCO2;
-      #ifdef SEK
+      if(sht4Exists){
         sensors_event_t humidity, temp;
-        mySHT.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
+        mySHT4.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
         stcTemp = temp.temperature;
         stcRH = humidity.relative_humidity;
-      #else
-        stcTemp = mySHT.toDegC();
-        stcRH = mySHT.toPercent();
-      #endif
+      }else{
+        stcTemp = mySHTC3.toDegC();
+        stcRH = mySHTC3.toPercent();
+      }
       stcTemp = stcTemp + sht_offsetTemp;
       stcCRH = SHT_correctedRH(stcRH);
 
@@ -367,7 +364,7 @@ void compensate() {
 
     //include Pressure measurement in CO2 calculation.
     //can use a live measurement if you include a pressure sensor, or define average value at beginning of code
-    if(BME280Exists && (bmePress*0.01 > 600) && (bmePress*.01 < 1200)) {pressure = bmePress*0.01;} //use actual pressure from BME280 vs estimated pressure value in mbar
+    if(bme280Exists && (bmePress*0.01 > 600) && (bmePress*.01 < 1200)) {pressure = bmePress*0.01;} //use actual pressure from BME280 vs estimated pressure value in mbar
     Serial.print(F("Setting STC3x pressure to ")); Serial.print(pressure); Serial.print(F("mBar was "));
     if (mySTC31.setPressure(pressure) == false){Serial.print(F("not "));}
     Serial.println(F("successful"));
@@ -377,7 +374,7 @@ void compensate() {
   if(low_CO2_Monitor){
     readSCD41();
 
-    if(BME280Exists && (bmePress > 60000) && (bmePress < 120000)) {pascals = bmePress;}else{pascals = pressure*100;} //use actual pressure from BME280 vs estimated pressure value
+    if(bme280Exists && (bmePress > 60000) && (bmePress < 120000)) {pascals = bmePress;}else{pascals = pressure*100;} //use actual pressure from BME280 vs estimated pressure value
     Serial.print(F("Setting SCD41 pressure to ")); Serial.print(pascals); Serial.print(F(" Pa"));
     if (mySCD41.setAmbientPressure(pascals) == false){Serial.print(F(" not"));}
     Serial.println(F(" successful"));

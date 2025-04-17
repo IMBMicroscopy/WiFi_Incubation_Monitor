@@ -1,10 +1,8 @@
-#define SOFTWARE_VERSION "1.4.2"
+#define SOFTWARE_VERSION "1.5.0"
 
 // Define constants and parameters
 #define infoPin 1 // Pushbutton pin to active info screen
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
-
-//#define SEK  // uncomment this line if using the SEK-STC31 evaluation kit for the CO2 sensor, which requires the SHT4x instead of the SHTC3 libraries, else comment out for CO2 sensor breakout boards that use the SHTC3 Temp/humidity sensor
 
 
 // Include required libraries
@@ -31,13 +29,11 @@ SCD4x mySCD41;
 #include "SparkFun_STC3x_Arduino_Library.h"  // STC31 high CO2 % sensor library
 STC3x mySTC31;
 
-#ifdef SEK == true
-  #include "Adafruit_SHT4x.h" //SHT4x Temp/RH sensor library
-  Adafruit_SHT4x mySHT = Adafruit_SHT4x();
-#else
-  #include "SparkFun_SHTC3.h"  // SHT Temp/RH sensor library
-  SHTC3 mySHT;
-#endif
+#include "Adafruit_SHT4x.h" //SHT4x Temp/RH sensor library
+Adafruit_SHT4x mySHT4 = Adafruit_SHT4x();
+
+#include "SparkFun_SHTC3.h"  // SHTC3 Temp/RH sensor library
+SHTC3 mySHTC3;
 
 
 // WiFi and IO libraries
@@ -214,12 +210,12 @@ bool firstRun = true;
 bool compFlag = false, compSerialFlag = false;
 bool updatingDashboardFlag = false;
 bool battExistsFlag = false;
-bool BME280Exists = false;
 bool wifiConnectedFlag = false;
 bool ioConnectedFlag = false;
 bool startPortalFlag = false;
 bool writeConfigValues = false;
 bool shouldSaveConfig = false;
 bool saveIO = false;
+bool sht4Exists = false, shtC3Exists = false, stc31Exists = false, bme280Exists = false, gasExists = false, scd41Exists = false;
 bool wifiAsleepFlag = false;
 bool sleep_WiFi = false; //disable this feature for now due to instability
