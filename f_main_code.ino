@@ -5,6 +5,7 @@ void setup() {
   delay(3000);
 
   Wire.begin();                     // Start I2C for sensor readings
+  configPins();                     // assign buttons
   initTFT();                        // Initialize the TFT display
   startupText();                    // Display startup text
   delay(2000);
@@ -23,6 +24,7 @@ void setup() {
 
 void loop() {
   updateTime();                     // Update current time values for functions
+  infoPage();                       // Display info page if requested
   recalSensor();                    // Recalibrate sensor if required
   readSensors();                    // Read sensor values and display them on the TFT
   batteryMonitoring();              // Monitor battery values and display them on the TFT

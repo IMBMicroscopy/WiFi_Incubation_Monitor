@@ -38,7 +38,52 @@ void startupText(){
   Serial.print(F("WiFi Mac Address: ")); Serial.println(getDefaultMacAddress());
   tft.setTextColor(ST77XX_WHITE);  //default text colour
   tft.setTextSize(3);  //1 (small) - 4(biggest) text size
-  tft.printf("Incubation\n\nMonitor\n\nVer: %s\n\n, SOFTWARE_VERSION ");
+  tft.printf("Incubation\n\nMonitor\n\nVer: %s\n\n", SOFTWARE_VERSION);
+}
+
+void infoPage(){
+  //Check for user initiated info page request by button press
+  if (digitalRead(infoPin) == HIGH){
+    initTFT();
+    tft.setTextColor(ST77XX_WHITE);  //default text colour
+
+    Serial.println(F(" "));
+    Serial.println(F("Info Page Initiated..."));
+
+    startupText();  //Write startup text
+    delay(3000);
+
+    //Write Dashboard parameters
+    Serial.printf("Adafruit IO values for Username: %s , Dashboard: %s.\n", IO_USERNAME_buff, IO_Dashboard_buff);
+    initTFT();
+    tft.setTextSize(3);  //1 (small) - 4(biggest) text size
+    preferences.begin("custom", true); // Open Preferences in read mode
+    tft.printf("User:\n"); tft.printf("%s\n", preferences.getString("IO_USERNAME", ""));
+    tft.printf("\nFeed:\n"); tft.printf("%s\n", preferences.getString("IO_Dashboard", ""));
+    delay(5000);
+
+    //Write configuration parameters 
+    Serial.printf("lowCO2:  %s\n", low_CO2_Monitor ? "true" : "false");
+    Serial.printf("highCO2: %s\n", high_CO2_Monitor ? "true" : "false");
+    Serial.printf("Press:   %s\n", pressure_Monitor ? "true" : "false");
+    Serial.printf("Batt:    %s\n", battery_Monitor ? "true" : "false");
+    Serial.printf("Dash:    %s\n", dashboard_Monitor ? "true" : "false");
+    Serial.printf("Room:    %s\n", room_Monitor ? "true" : "false");
+    Serial.printf("Sleep:   %s\n", sleep_WiFi ? "true" : "false");
+    initTFT();
+    tft.setTextSize(2);  //1 (small) - 4(biggest) text size
+    tft.printf("lowCO2:  %s\n", low_CO2_Monitor ? "true" : "false");
+    tft.printf("highCO2: %s\n", high_CO2_Monitor ? "true" : "false");
+    tft.printf("Press:   %s\n", pressure_Monitor ? "true" : "false");
+    tft.printf("Batt:    %s\n", battery_Monitor ? "true" : "false");
+    tft.printf("Dash:    %s\n", dashboard_Monitor ? "true" : "false");
+    tft.printf("Room:    %s\n", room_Monitor ? "true" : "false");
+    tft.printf("Sleep:   %s\n", sleep_WiFi ? "true" : "false");
+
+    preferences.end();
+    tft.setTextSize(3);  //1 (small) - 4(biggest) text size
+    delay(5000);
+  }
 }
 
 //update current time for use in other functions to control code execution

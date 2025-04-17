@@ -1,8 +1,11 @@
-#define SOFTWARE_VERSION "1.3.2"
+#define SOFTWARE_VERSION "1.4.2"
 
 // Define constants and parameters
+#define infoPin 1 // Pushbutton pin to active info screen
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
+
 //#define SEK  // uncomment this line if using the SEK-STC31 evaluation kit for the CO2 sensor, which requires the SHT4x instead of the SHTC3 libraries, else comment out for CO2 sensor breakout boards that use the SHTC3 Temp/humidity sensor
+
 
 // Include required libraries
 #include "esp_mac.h"             // Exposes esp_mac_type_t values
@@ -219,5 +222,4 @@ bool writeConfigValues = false;
 bool shouldSaveConfig = false;
 bool saveIO = false;
 bool wifiAsleepFlag = false;
-
-bool  sleep_WiFi = false; //disable this feature for now due to instability
+bool sleep_WiFi = false; //disable this feature for now due to instability

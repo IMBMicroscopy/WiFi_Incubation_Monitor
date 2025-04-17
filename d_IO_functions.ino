@@ -2,7 +2,6 @@
 
 void userActivatedHotspot(){
   //Check for user initiated Wifi hotspot request by button press
-  pinMode(hotspotPin, INPUT);
   unsigned long timeNow = millis();
   int cursorCounter = 0;
   while (millis() - timeNow < (hotspotTimer*1000)) {
@@ -17,9 +16,18 @@ void userActivatedHotspot(){
       delay(1000);
       startPortalFlag = true;
       break;
+    }else if(digitalRead(infoPin) == HIGH){
+      infoPage();
+      initTFT();
+      initWiFi();
     }
     delay(500);
   }
+}
+
+void configPins(){
+  pinMode(infoPin, INPUT);
+  pinMode(hotspotPin, INPUT);
 }
 
 void initWiFi(){
@@ -30,7 +38,8 @@ void initWiFi(){
     Serial.print(F("Hold D2 button to reset parameters and start WiFi Manager"));
     cursorX = tft.getCursorX();
     cursorY = tft.getCursorY();
-    tft.printf(" Config -> ", hotspotPin);
+    tft.printf(" Config -> \n");
+    tft.printf("\n Info -> \n");
 
     userActivatedHotspot();
     Serial.printf("\n");
@@ -313,7 +322,7 @@ void initWiFiManager() {
 
   //configure portal
   wifiManager.setClass("invert");          // enable "dark mode" for the config portal
-  wifiManager.setConfigPortalTimeout(30); // sets timeout before AP,webserver loop ends and exits even if there has been no setup.
+  wifiManager.setConfigPortalTimeout(90); // Closes portal after X seconds of no connection
   wifiManager.setAPClientCheck(true);      // avoid timeout if client connected to hotspot
   wifiManager.setWiFiAutoReconnect(true);  // enable the device to auto connect to Wifi if it drops out
   wifiManager.setConnectRetries(15);  //sets number of retries for autoconnect, force retry after wait failure exit
