@@ -249,9 +249,9 @@ void readSTC31() {
   
   for(int i=0;i <= 20;i++) {  
     if (mySTC31.measureGasConcentration()) { // measureGasConcentration will return true when fresh data is available
-      delay(20);
-      //get sensor readings
-      stcCO2 = mySTC31.getCO2() + stc31_offsetCO2;
+      delay(50);
+      stcCO2 = mySTC31.getCO2() + stc31_offsetCO2; //get CO2 reading and apply offset value
+
       if(sht4Exists){
         sensors_event_t humidity, temp;
         mySHT4.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data

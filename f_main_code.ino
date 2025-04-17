@@ -1,6 +1,7 @@
 // Incubation Monitor Main Code
 
 void setup() {
+  delay(500);
   Serial.begin(baud);               // Initialize serial port for debugging
   delay(3000);
 
