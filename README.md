@@ -152,7 +152,7 @@
 - The BME280 may cause an I2C address conflict by default and you will need to change the address, either by setting the dipswitch to ON or installing a surface mount resistor to the address pad as per the board manufacturers instructions
 - If you use a board other than the ESP32 reverse TFT, you may need to change the configuration hotspot trigger button assignment by altering "#define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration" in initilise.ino 
   
-![Display](https://github.com/user-attachments/assets/ea00b058-6d7c-4633-9912-bed9eeb6a5f1)
+![Image](https://github.com/user-attachments/assets/2c29147b-fbd4-44f0-9c4c-b5c6fa359ebb)
 
 - Due to the limited size of the included TFT display, some creativity was required to squish everything onto the display.
   - If "room_monitoring is enabled, additional Temperature and Relative Humidity values will be displayed in white after the probe values
