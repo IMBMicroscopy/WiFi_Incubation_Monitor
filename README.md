@@ -78,7 +78,6 @@
 - Connect the ESP32 to the computer via USB cable
 - Go to "Tools" menu and select "Board" and select "ESP32", then select the "Adafruit Feather ESP-32 S3 Reverse TFT" board
 - Go to "Tools" menu and select "Port" and then select the device that contains the "Adafruit Feather"
-- IF you have the SEK-STC31-C development sensor board for CO2 measurement, then you need to uncomment "#define SEK" in the initialise.ino file, else it should be commented out with "//".
 - Upload "Incubation_Monitor" sketch to ESP32 hardware (use the arrow button in the top left corner of the IDE), the device will restart when the upload is complete (if it doesnt, press the RST button on the ESP32)
 - Click on the Arduino IDE serial monitor (top right corner of IDE) and ensure it is set to "Both NL & CR" and "115200 baud" to monitor the device setup progress
 - The Mac address for the device will be displayed in the serial monitor, you may need to register this with your IT department to gain WiFi access to hidden WiFi networks
