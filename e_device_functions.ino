@@ -250,7 +250,8 @@ void readSTC31() {
   for(int i=0;i <= 20;i++) {  
     if (mySTC31.measureGasConcentration()) { // measureGasConcentration will return true when fresh data is available
       delay(50);
-      stcCO2 = mySTC31.getCO2() + stc31_offsetCO2; //get CO2 reading and apply offset value
+      stcCO2 = roundf((mySTC31.getCO2() + stc31_offsetCO2) * 10) / 10.0; //get CO2 reading and apply offset value and round to 1 decimal place
+      constrain(stcCO2, 0, 100); //constrain value within real reading possibilities
 
       if(sht4Exists){
         sensors_event_t humidity, temp;

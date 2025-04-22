@@ -661,7 +661,7 @@ void updateDashboard(){
       
       //update online dashboard values
       if(low_CO2_Monitor || high_CO2_Monitor){
-        if(myCO2 >0){CO2_Feed->save(String(myCO2, 2));}
+        if(myCO2 >0){CO2_Feed->save(String(myCO2, 1));}
         Temp_Feed->save(String(myTemp, 1));
         RH_Feed->save(String(myRH, 1));
       }

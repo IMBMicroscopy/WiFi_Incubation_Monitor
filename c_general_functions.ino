@@ -147,7 +147,7 @@ void updateTFT(){
           tft.print("CO2:");
           // Set text color based on CO2 range
           tft.setTextColor((myCO2 < lowCO2 || myCO2 > highCO2) ? ST77XX_RED : ST77XX_GREEN);
-          tft.print(myCO2, 2);
+          tft.print(myCO2, 1);
           tft.print("%");
           // Display '*' if compFlag is true
           tft.println(compFlag ? " *" : "");
