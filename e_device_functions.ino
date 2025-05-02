@@ -251,7 +251,7 @@ void readSTC31() {
     if (mySTC31.measureGasConcentration()) { // measureGasConcentration will return true when fresh data is available
       delay(50);
       stcCO2 = roundf((mySTC31.getCO2() + stc31_offsetCO2) * 10) / 10.0; //get CO2 reading and apply offset value and round to 1 decimal place
-      constrain(stcCO2, 0, 100); //constrain value within real reading possibilities
+      stcCO2 = constrain(stcCO2, 0, 100); //constrain value within real reading possibilities
 
       if(sht4Exists){
         sensors_event_t humidity, temp;
@@ -305,10 +305,11 @@ void readSensors() {
     }
     
     //use the SCD41 CO2 sensor for low CO2 values if available
-    if(low_CO2_Monitor && scdCO2 && ((scdCO2 <= switchCO2Sensors) || (!high_CO2_Monitor) )) { 
+    if (low_CO2_Monitor && scdCO2 >= 0 && ((scdCO2 <= switchCO2Sensors) || !high_CO2_Monitor)) {
       myCO2 = scdCO2;
-    }else{myCO2 = stcCO2;}
-
+    } else {
+      myCO2 = stcCO2;
+    }
     //if the stc31 high CO2 sensor doesnt exist use the scd41 low CO2 sensor for readings
     if(low_CO2_Monitor && !high_CO2_Monitor){
       myTemp = scdTemp;

@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "1.5.1"
+#define SOFTWARE_VERSION "1.5.2"
 
 // Define constants and parameters
 #define infoPin 1 // Pushbutton pin to active info screen
