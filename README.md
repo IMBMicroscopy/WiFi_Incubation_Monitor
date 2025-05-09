@@ -1,5 +1,13 @@
 # WiFi enabled Incubation Monitor
 
+Real-Time Imaging Environment Monitoring Using an ESP32
+
+We present a low-cost, open-source ESP32-based system for monitoring environmental conditions within live-cell imaging incubators. Each device integrates a 0–100% CO₂ sensor (with optional high-accuracy 0–1% sensor), along with temperature and humidity sensors. Optional features include pressure calibration and room environment monitoring.
+
+A built-in TFT display and Adafruit IO dashboard provide real-time and remote data access. Sensor calibration compensates for temperature, humidity, and pressure. The system is user-friendly, requiring no soldering and offering hotspot-based configuration. It supports automated logging, WiFi setup, and dashboard customisation for scalable deployment across multiple incubators.
+
+We are currently developing additional features, including Google Sheets integration for data logging, aligning with existing systems that track hardware and software usage during user sessions. These metrics are imported into Microsoft Power BI to generate dashboards that inform user needs and forecast future facility requirements.
+
 ![updated incubation monitor](https://github.com/user-attachments/assets/96d33d65-d92c-4610-86c6-9e21cd06d4ff)
 
 ![Image](https://github.com/user-attachments/assets/02aba95f-da6f-4bfc-8eb2-71706fd93b8e)
