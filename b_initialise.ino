@@ -1,7 +1,7 @@
 #define SOFTWARE_VERSION "1.5.2"
 
 // Define constants and parameters
-#define infoPin 1 // Pushbutton pin to active info screen
+#define infoPin 1 // Pushbutton pin to activate info screen
 #define hotspotPin 2  // Pushbutton pin to activate hotspot for WiFi configuration
 
 
