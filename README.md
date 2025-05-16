@@ -14,6 +14,12 @@ We are currently developing additional features, including Google Sheets integra
 
 ![Image](https://github.com/user-attachments/assets/93f48372-cce1-4dd0-94da-fd26b47a517c)
 
+![Pecon incubator lid inverted](https://github.com/user-attachments/assets/16065546-82cd-48c2-b64c-303408bf6d64)
+
+![Pecon lid installed](https://github.com/user-attachments/assets/b0f22235-3315-43ec-9f17-dbe96a05290f)
+
+![Monitoring CO2](https://github.com/user-attachments/assets/36489c2d-3997-4754-a955-bb7f0bcb864e)
+
 ## Monitor environmental conditions for live samples using an ESP32 device with STC31 CO2 sensor and SHTC3 temperature and relative humidity sensors
 
 - Calibrate the CO2 sensor using Temperature, Humidity and Pressure
