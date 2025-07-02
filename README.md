@@ -1,8 +1,10 @@
 # WiFi enabled Incubation Monitor
 
-Author: Dr James Springfield (j.springfield@imb.uq.edu.au)
-Affiliation: Institute for Molecular Bioscience (IMB) Microscopy Facility, The University of Queensland
-Date: June 2025
+Author: Dr James Springfield (j.springfield@imb.uq.edu.au). 
+
+Affiliation: Institute for Molecular Bioscience (IMB) Microscopy Facility, The University of Queensland. 
+
+Date: June 2025. 
 
 Real-Time Imaging Environment Monitoring Using an ESP32
 
