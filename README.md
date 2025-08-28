@@ -1,5 +1,11 @@
 # WiFi enabled Incubation Monitor
 
+Author: Dr James Springfield (j.springfield@imb.uq.edu.au). 
+
+Affiliation: Institute for Molecular Bioscience (IMB) Microscopy Facility, The University of Queensland. 
+
+Date: June 2025. 
+
 Real-Time Imaging Environment Monitoring Using an ESP32
 
 We present a low-cost, open-source ESP32-based system for monitoring environmental conditions within live-cell imaging incubators. Each device integrates a 0–100% CO₂ sensor (with optional high-accuracy 0–1% sensor), along with temperature and humidity sensors. Optional features include pressure calibration and room environment monitoring.
