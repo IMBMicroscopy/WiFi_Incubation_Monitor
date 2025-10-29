@@ -1,6 +1,8 @@
 // Incubation Monitor Main Code
 
 void setup() {
+  lastRestartMillis = millis();  // Record the start time
+
   delay(500);
   Serial.begin(baud);               // Initialize serial port for debugging
   delay(3000);
@@ -24,18 +26,19 @@ void setup() {
 } // setup()
 
 void loop() {
-  updateTime();                     // Update current time values for functions
-  infoPage();                       // Display info page if requested
-  recalSensor();                    // Recalibrate sensor if required
-  readSensors();                    // Read sensor values and display them on the TFT
-  batteryMonitoring();              // Monitor battery values and display them on the TFT
+  updateTime();                        // Update current time values for functions
+  checkAutoRestart(RESTART_INTERVAL);  //Restart device if required
+  infoPage();                          // Display info page if requested
+  recalSensor();                       // Recalibrate sensor if required
+  readSensors();                       // Read sensor values and display them on the TFT
+  batteryMonitoring();                 // Monitor battery values and display them on the TFT
   
-  ioStatus();                       // Check and reconnect to WiFi and IO dashboard if needed
-  updateDashboard();                // Update the online dashboard
-  updateTFT();                      // Refresh the TFT display
-  sleepWiFi();                      // put WiFi to sleep until next dashboard update
+  ioStatus();                          // Check and reconnect to WiFi and IO dashboard if needed
+  updateDashboard();                   // Update the online dashboard
+  updateTFT();                         // Refresh the TFT display
+  sleepWiFi();                         // put WiFi to sleep until next dashboard update
   
-  firstRun = false;                 // Reset first-run flag to trigger events at the required rate
-  delay(100);                       // Short delay to prevent excessive loop frequency
+  firstRun = false;                    // Reset first-run flag to trigger events at the required rate
+  delay(100);                          // Short delay to prevent excessive loop frequency
 } // loop()
 

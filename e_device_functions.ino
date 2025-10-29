@@ -1,4 +1,11 @@
 //sensor functions
+void checkAutoRestart(unsigned long interval) {
+  if (millis() - lastRestartMillis >= interval) {
+    Serial.println(F("Restarting after set interval..."));
+    delay(1000);
+    ESP.restart();
+  }
+}
 
 void initSensors(){
   Serial.println(F("initialise sensors..."));

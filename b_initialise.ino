@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "1.5.2"
+#define SOFTWARE_VERSION "1.5.3"
 
 // Define constants and parameters
 #define infoPin 1 // Pushbutton pin to activate info screen
@@ -183,6 +183,9 @@ WiFiManagerParameter custom_SCD41_low_reading("SCD41_low_reading", "SCD41 measur
 #define ms_per_min  60000
 #define ms_per_sec  1000
 
+// Define 24 hours in milliseconds for device restart interval
+#define RESTART_INTERVAL 24UL * 60UL * 60UL * 1000UL  // 24 hours = 86,400,000 ms
+
 // Time variables
 byte hour, minute, second;
 unsigned long now, curr;
@@ -194,6 +197,7 @@ unsigned long elapsedWiFiTime = 0, lastWiFiTime = 0;
 unsigned long elapsedIOTime = 0, lastIOTime = 0;
 unsigned long elapsedTFTTime = 0, lastTFTTime = 0;
 unsigned long setupTime = 0;
+unsigned long lastRestartMillis = 0;
 
 // Sensor and system variables
 int pascals = 0;
