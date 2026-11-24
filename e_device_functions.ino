@@ -243,12 +243,50 @@ void readSCD41(){
   }
 }
 
+// Read the SHTC3 by polling for the result (no clock stretching).
+// The SparkFun SHTC3 library's update() uses clock stretching, which fails on
+// ESP32 Arduino core 3.x and returns zeros (-45 C, 0 %RH).
+bool readSHTC3Polling(float &tempC, float &rh) {
+  const uint8_t addr = 0x70;
+  Wire.beginTransmission(addr); Wire.write(0x35); Wire.write(0x17);   // wake up
+  if (Wire.endTransmission() != 0) return false;
+  delay(1);
+  Wire.beginTransmission(addr); Wire.write(0x78); Wire.write(0x66);   // measure, normal mode, T first, no clock stretching
+  if (Wire.endTransmission() != 0) return false;
+
+  uint8_t got = 0;
+  for (int i = 0; i < 20 && got != 6; i++) {                          // chip NACKs until done (~12 ms), max 100 ms
+    delay(5);
+    got = Wire.requestFrom(addr, (uint8_t)6);
+  }
+  if (got != 6) return false;
+
+  uint8_t b[6];
+  for (int i = 0; i < 6; i++) b[i] = Wire.read();
+  for (int k = 0; k < 6; k += 3) {                                     // check CRC of T and RH words
+    uint8_t crc = 0xFF;
+    for (int i = k; i < k + 2; i++) {
+      crc ^= b[i];
+      for (int j = 0; j < 8; j++) crc = (crc & 0x80) ? (crc << 1) ^ 0x31 : (crc << 1);
+    }
+    if (crc != b[k + 2]) return false;
+  }
+
+  tempC = -45 + 175.0 * (((uint16_t)b[0] << 8) | b[1]) / 65535.0;
+  rh    = 100.0 * (((uint16_t)b[3] << 8) | b[4]) / 65535.0;
+
+  Wire.beginTransmission(addr); Wire.write(0xB0); Wire.write(0x98);   // back to sleep
+  Wire.endTransmission();
+  return true;
+}
+
 void readSTC31() {
+  static float shtcT = 0, shtcRH = 0;  // static: keeps the last good SHTC3 values if a read fails
   for(int i=0;i <=20;i++) {  
     if(sht4Exists){
       if(mySHT4.getTemperatureSensor()) {break;}
     }else{
-      if(mySHTC3.update() == SHTC3_Status_Nominal) {break;} //request a measurement
+      if(readSHTC3Polling(shtcT, shtcRH)) {break;} //request a measurement (polling, no clock stretching)
     }
     if(i == 10){Serial.println(F("SHT read failed, use last values"));}
     delay(500);
@@ -266,8 +304,8 @@ void readSTC31() {
         stcTemp = temp.temperature;
         stcRH = humidity.relative_humidity;
       }else{
-        stcTemp = mySHTC3.toDegC();
-        stcRH = mySHTC3.toPercent();
+        stcTemp = shtcT;
+        stcRH = shtcRH;
       }
       stcTemp = stcTemp + sht_offsetTemp;
       stcCRH = SHT_correctedRH(stcRH);
